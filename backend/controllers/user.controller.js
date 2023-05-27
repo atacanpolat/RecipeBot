@@ -17,10 +17,9 @@ const generateToken = (id) => {
 // @route   POST /api/v1/users/register
 // @access  Public
 const createUser = asyncHandler(async (req, res) => {
-    const { username, email, password} = req.body
-    console.log(username, email, password)
+    const { name, email, password} = req.body
   
-    if (!username || !email || !password) {
+    if (!name || !email || !password) {
       res.status(400).json({status:400, message: 'Please add all fields.'});
       throw new Error('Please add all fields')
     }
@@ -46,7 +45,7 @@ const createUser = asyncHandler(async (req, res) => {
   
     // Create user
     const user = await User.create({
-      username,
+      name,
       email,
       password: hashedPassword,
       avatar: req.file ? req.file.path : null
@@ -55,7 +54,7 @@ const createUser = asyncHandler(async (req, res) => {
     if (user) {
       res.status(201).json({
         _id: user.id,
-        username: user.username,
+        name: user.name,
         email: user.email,
         token: generateToken(user._id),
         status:201
@@ -85,7 +84,7 @@ const loginUser = asyncHandler(async (req, res) => {
     if (user != null && passwordCorrect) {
       res.json({
         _id: user.id,
-        username: user.username,
+        name: user.name,
         email: user.email,
         token: generateToken(user._id),
       })
@@ -119,7 +118,7 @@ const getUserInfoById = async (req, res) => {
 const updateUserInfoById = async (req, res) => {
     try {
         const { id } = req.params;
-        const { username, email, avatar, createdRecipes, savedRecipes, metricSystem, diet} =
+        const { name, email, avatar, createdRecipes, savedRecipes, metricSystem, diet} =
             req.body;
 
         // console.log(req.body);
@@ -128,7 +127,7 @@ const updateUserInfoById = async (req, res) => {
         await User.findByIdAndUpdate(
             { _id: id },
             {
-                username,
+                name,
                 email,
                 avatar,
                 createdRecipes: createdRecipes ? createdRecipes.map(({ _id }) => _id) : [],
