@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
-const mealType = ['soup', 'starter', 'appetizer', 'main', 'salad', 'dessert']
-const diet = ['none', 'gluten-free', 'lactose-free', 'kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
+const mealType = ['breakfast','soup', 'starter', 'appetizer', 'main', 'salad', 'dessert']
+const diet = ['none', 'gluten-free', 'lactose-free', 'Kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
 
 const IngredientSchema = new mongoose.Schema({
     name: String,
@@ -12,6 +12,7 @@ const IngredientSchema = new mongoose.Schema({
 const InstructionSchema = new mongoose.Schema({
     narrative: {type: String, required:true},
     cookingTime:{type:String, required:true},
+    servingSize:{type:String, required:true, default:"2 people"},
     mealType: {
         type: String
     },
@@ -25,10 +26,11 @@ const InstructionSchema = new mongoose.Schema({
 const RecipeSchema = new mongoose.Schema({
     title: { type: String, required: true },
     ingredients: [IngredientSchema],
-    instruction: {InstructionSchema},
+    instruction: InstructionSchema,
     photo: { type: String, required: true },
     reviews: [{type: mongoose.Schema.Types.ObjectId, ref: "Review"}],
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true } 
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true } ,
+    isGenerated: {type: Boolean}
 });
 
 const recipeModel = new mongoose.model("Recipe", RecipeSchema);

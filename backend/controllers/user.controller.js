@@ -1,5 +1,5 @@
 import User from "../mongodb/models/user.js";
-import asyncHandler from "../middleware/helperFunctionsMiddleware.js";
+import asyncHandler from "express-async-handler";
 
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -17,7 +17,7 @@ const generateToken = (id) => {
 // @route   POST /api/v1/users/register
 // @access  Public
 const createUser = asyncHandler(async (req, res) => {
-    const { username, email, password,  avatar} = req.body
+    const { username, email, password} = req.body
     console.log(username, email, password)
   
     if (!username || !email || !password) {
@@ -48,7 +48,8 @@ const createUser = asyncHandler(async (req, res) => {
     const user = await User.create({
       username,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      avatar: req.file ? req.file.path : null
     })
   
     if (user) {
@@ -72,7 +73,6 @@ const createUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
   
-    // Check for user email and password
     const user = await User.findOne({email: email})
   
     if (user == null)  {

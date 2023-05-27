@@ -1,6 +1,5 @@
 import express from "express";
-
-// Import all controllers
+import { upload } from "../middleware/helperFunctionsMiddleware.js";
 import {
     createUser,
     loginUser,
@@ -10,9 +9,9 @@ import {
 
 const router = express.Router();
 
-router.route('/login').post(loginUser);
-router.route('/register').post(createUser);
-router.route('/:id').get(getUserInfoById);
-router.route('/:id').patch(updateUserInfoById);
+router.post('/login', loginUser);
+router.post('/register', upload.single('avatar'), createUser);
+router.get('/:id', getUserInfoById);
+router.patch('/:id', updateUserInfoById);
 
 export default router;

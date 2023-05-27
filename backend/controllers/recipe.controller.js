@@ -21,6 +21,8 @@ const require = createRequire(import.meta.url);
         instruction,
         photo,
         createdBy: user._id,
+        isGenerated: false
+
       });
       await recipe.save();
   
@@ -121,74 +123,126 @@ const require = createRequire(import.meta.url);
   const openai = new OpenAIApi(configuration);
 
   export const generateRecipe = asyncHandler(async (req,res) => {
-    const user = req.user;
-    const {ingredients, utensils, time, diet} = req.body;
-    const prompt = `
-    Generate me a recipe
-
-    Ingredients: ${ingredients.toString()},
-    Cooking Utensils: ${utensils.toString()},
-    Cooking Time: ${time.toString()},
-    Dietary Restrictions: ${diet.toString()}
-
-    generate it in the following json format:
-    {
-      "title": "Recipe Title",
-      "ingredients": [
-        {
-          "name": "Ingredient Name",
-          "quantity": "Ingredient Quantity"
-        }
-      ],
-      "instructions": {
-        "narrative": "Instruction Narrative",
-        "cookingTime": "Cooking Time",
-        "mealType": "Meal Type",
-        "dietaryRestrictions": "Dietary Restrictions",
-        "tenWordSummary": "10-Word Recipe Summary"
+    try {
+      const user = req.user;
+      const {ingredients, servingSize, utensils, time, diet, mealType, measurement} = req.body;
+      const prompt = `
+      Generate me a recipe
+  
+      Ingredients: ${ingredients.toString()},
+      Serving Size: ${servingSize.toString()},
+      Cooking Utensils: ${utensils.toString()},
+      Cooking Time: ${time.toString()},
+      Dietary Restrictions: ${diet.toString()},
+      Meal Type: ${mealType.toString()},
+      Measurement System: ${measurement.toString()}
+      Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan", otherwise leave it empty
+  
+      If one ingredient is "yoghurt", then 
+  
+      generate it in the following json format:
+      {
+        "title": "Recipe Title",
+        "ingredients": [
+          {
+            "name": "Ingredient Name",
+            "quantity": "Ingredient Quantity",
+            "brand": "Brand of the ingredient"
+          }
+        ],
+        "instruction": {
+          "narrative": "Instruction Narrative",
+          "cookingTime": "Cooking Time",
+          "servingSize": "Serving Size",
+          "mealType": "Meal Type",
+          "diet": "Dietary Restrictions"
+        },
+        "tenWordSummary": "10-Word Recipe Summary",
+        "measurementSystem": "Measurement System"
       }
+      `
+      const completion = await openai.createCompletion({
+        model: "text-davinci-003",
+        prompt: prompt,
+        max_tokens: 1000
+      });
+      
+      const response = JSON.parse(completion.data.choices[0].text);
+  
+      var recipeSummary = response.tenWordSummary.toString();
+      recipeSummary = recipeSummary.replaceAll(/ /g, "%20");
+  
+      const photoUrl = "https://image.pollinations.ai/prompt/" + recipeSummary;
+      
+      response.photoUrl = photoUrl;   
+      
+  /*
+      const instruction = new Recipe.instructionModel({
+        narrative: response.instruction.narrative,
+        cookingTime: response.instruction.cookingTime,
+        mealType: response.instruction.mealType,
+        diet: response.instruction.diet,
+      })
+      await instruction.save();
+  
+      const recipe = new Recipe.recipeModel({
+        title: response.title,
+        ingredients: response.ingredients,
+        instruction: response.instruction,
+        photo: response.photoUrl,
+        createdBy: user._id,
+        isGenerated: true
+  
+      });
+      await recipe.save();
+  
+      user.createdRecipes.push(recipe._id);
+      await user.save();
+  */
+  
+      res.status(201).json(response);
+  
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-    `
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: prompt,
-      max_tokens: 1000
-    });
-    
-    const response = JSON.parse(completion.data.choices[0].text);
-
-
-    var recipeSummary = response.instructions.tenWordSummary.toString();
-    recipeSummary.split(" ").join("%20");
-
-    const photoUrl = "https://image.pollinations.ai/prompt/" + recipeSummary;
-
-    //TODO: only save the recipe if user clicks on the "like" button
-
-    const instruction = new Recipe.instructionModel({
-      narrative: response.instructions.narrative,
-      cookingTime: response.instructions.cookingTime,
-      mealType: response.instructions.mealType,
-      diet: response.instructions.diet,
-    })
-    await instruction.save();
-    const recipe = new Recipe.recipeModel({
-      title: response.title,
-      ingredients: response.ingredients,
-      instruction: response.instruction,
-      photo: photoUrl,
-      createdBy: user._id,
-    });
-    await recipe.save();
-
-    user.createdRecipes.push(recipe._id);
-    await user.save();
-
-    res.status(201).json(recipe);
 
      
   })
 
-  export const modifyRecipe = asyncHandler(async (req,res) => {  });
+  //Can'a sor
+  export const saveRecipe = asyncHandler(async (req, res) => {
+   try {
+    const user = req.user;
+    const recipe = await Recipe.recipeModel.findById(req.params.id);
+
+    if (recipe.createdBy == user._id) {
+      user.createdRecipes.push(recipe._id);
+    } else {
+      user.savedRecipes.push(recipe._id);
+    }
+    await user.save();
+    
+    res.status(201).send("Recipe saved successfully!")
+   } catch (error) {
+    res.status(500).json({error: error.message});
+   }
+  });
+
+
+  //Can'a sor
+  export const modifyRecipe = asyncHandler(async (req,res) => {  
+
+    const user = req.user;
+    const {ingredients, servingSize, utensils, time, diet, mealType, measurement} = req.body;
+
+    Recipe.recipeModel.findById(req.params.id).then(res => {
+      const recipe = res.toJSON();
+    })
+    
+
+
+
+
+  });
 
   export default { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, modifyRecipe };
