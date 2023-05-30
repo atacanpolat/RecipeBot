@@ -17,9 +17,9 @@ const generateToken = (id) => {
 // @route   POST /api/v1/users/register
 // @access  Public
 const createUser = asyncHandler(async (req, res) => {
-    const { name, email, password} = req.body
+    const { firstName, lastName, email, password} = req.body
   
-    if (!name || !email || !password) {
+    if (!firstName || !email || !password) {
       res.status(400).json({status:400, message: 'Please add all fields.'});
       throw new Error('Please add all fields')
     }
@@ -45,7 +45,8 @@ const createUser = asyncHandler(async (req, res) => {
   
     // Create user
     const user = await User.create({
-      name,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       avatar: req.file ? req.file.path : null
@@ -54,7 +55,8 @@ const createUser = asyncHandler(async (req, res) => {
     if (user) {
       res.status(201).json({
         _id: user.id,
-        name: user.name,
+        firstName: user.firstName,
+        lastname: user.lastName,
         email: user.email,
         token: generateToken(user._id),
         status:201

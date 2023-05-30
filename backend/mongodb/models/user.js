@@ -4,7 +4,8 @@ const diet = ['none', 'gluten-free', 'lactose-free', 'kosher', 'seafood', 'halal
 
 
 const UserSchema = new mongoose.Schema({
-    name: { type: String, requried: true },
+    firstName: { type: String, requried: true },
+    lastName: {type: String},
     email: { type: String, requried: true },
     password: {type:String, required:true},
     avatar: { type: String, requried: true },
