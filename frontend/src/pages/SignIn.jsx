@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Header from '../components/Header';
 
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -34,7 +35,6 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
@@ -43,6 +43,8 @@ export default function SignIn() {
         email: '',
         password: '',
       })
+
+    const [errorMessage, setErrorMessage] = useState('');
     
       const { email, password } = formData
     
@@ -52,11 +54,20 @@ export default function SignIn() {
       const { user, isLoading, isError, isSuccess, message } = useSelector(
         (state) => state.auth
       )
-    
+
       useEffect(() => {
         if (isError) {
-          toast.error(message)
-        }
+          toast.error('🦄' + message, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            });
+        } 
     
         if (isSuccess || user) {
           navigate('/')
@@ -88,7 +99,9 @@ export default function SignIn() {
       }
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
+    <Header />
+      <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -116,7 +129,6 @@ export default function SignIn() {
               autoComplete="email"
               autoFocus
               onChange={onChange}
-
             />
             <TextField
               margin="normal"
@@ -148,7 +160,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
@@ -158,6 +170,7 @@ export default function SignIn() {
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
+    </>
   );
 }
 

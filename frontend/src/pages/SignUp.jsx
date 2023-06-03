@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Header from '../components/Header';
+import theme from '../components/helpers/themes';
 
 
 import { useState, useEffect } from 'react'
@@ -26,8 +28,8 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="http://localhost:3000/">
+        RecipeBot
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -57,7 +59,11 @@ export default function SignUp() {
     
       useEffect(() => {
         if(isError) {
-            toast.error(message)
+          toast.error('🦄' + message, {
+            position: "bottom-center",
+            theme: "dark",
+            });
+
         }
         if(isSuccess || user) {
             navigate('/')
@@ -77,7 +83,9 @@ export default function SignUp() {
         e.preventDefault()
     
         if (password !== password2) {
-            toast.error('Passwords do not match')
+            toast.error('Passwords do not match', 
+            {position: 'bottom-center',
+            theme:'dark'})
         } else {
             const userData = {
                 firstName,
@@ -95,7 +103,9 @@ export default function SignUp() {
       }
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
+    <Header />
+    <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -166,7 +176,7 @@ export default function SignUp() {
                   fullWidth
                   name="password2"
                   label="Password"
-                  type="password2"
+                  type="password"
                   id="password2"
                   autoComplete="new-password"
                   onChange={onChange}
@@ -184,6 +194,8 @@ export default function SignUp() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              style={{backgroundColor:theme.palette.violet.dark}}
+
             >
               Sign Up
             </Button>
@@ -199,5 +211,6 @@ export default function SignUp() {
         <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
+    </>
   );
 }

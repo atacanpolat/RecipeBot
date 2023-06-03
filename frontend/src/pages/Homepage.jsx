@@ -4,35 +4,19 @@ import { useSelector, useDispatch } from 'react-redux'
 import {Link} from 'react-router-dom'
 import logo from '../images/Vector.png'
 import landingImage from "../images/bnr-article-foodbeverage-ai.avif"
-import { GenerateRecipeButton } from '../components/GenerateRecipeButton'
-
+import Hero from '../components/Hero';
+import FeatureWithSteps from '../components/Steps'
+import tw from 'twin.macro'
+import HeroScreenshotImage from '../images/hero-screenshot-2.png'
 
 function Homepage() {
-  const navigate = useNavigate()
   
-  const onSubmit = (e) => {
-    e.preventDefault()
-
-    navigate('/generate')
-  }
-
   return (
-    <>
-      <section className='heading'>
-        <h1>Meet RecipeBot, AI in your kitchen</h1>
-        <p>Subtext</p>
-      </section>
-
-      <section className='content'>
-       <div>
-        <img className='landingImage' src={landingImage} />
-        <p>description text............................................................</p>
-       </div>
-       <div className="form-group">
-         <GenerateRecipeButton />
-      </div>
-      </section>
-    </>
+  <section>
+    <Hero />
+    <FeatureWithSteps/>
+  </section>
+    
   )
 }
 

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { login, reset } from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
+import Header from '../components/Header'
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ function Login() {
     }
 
     if (isSuccess || user) {
+      const userID = user._id;
       navigate('/')
     }
 
@@ -57,6 +59,7 @@ function Login() {
 
   return (
     <>
+      <Header />
       <section className='heading'>
         <h1>
           <FaSignInAlt /> Login
@@ -66,6 +69,7 @@ function Login() {
 
       <section className='form'>
         <form onSubmit={onSubmit}>
+        {isError && <p className='error'>{message}</p>} {/* Display the error message */message}
           <div className='form-group'>
             <input
               type='email'
