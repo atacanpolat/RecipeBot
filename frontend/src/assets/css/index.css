@@ -51,6 +51,37 @@ h3 {
   border-bottom: 1px solid #e6e6e6;
   margin-bottom: 60px;
 }
+.header-private-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: -93px;
+  background-color: #fff;
+}
+
+.header-private {
+  height: 100vh;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #e6e6e6;
+}
+.header-private ul {
+  list-style-type: none;
+  text-align: left;
+}
+.header-private ul li {
+  margin: 10px 0px;
+}
+.header-private a {
+  text-transform: none;
+  font-size: 18px;
+  font-weight: 500;
+}
+
 
 .header ul {
   display: flex;
