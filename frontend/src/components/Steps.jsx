@@ -1,15 +1,13 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Typography } from "@material-ui/core";
-import { SectionHeading, Subheading } from "./helpers/themes.jsx";
-import TeamIllustrationSrc from "../images/team-illustration-2.svg";
 import HeroScreenshot from '../images/Screenshot 2023-06-03 at 23-02-28 SEBA Master 2023 _ Team 31 _ deliverables · GitLab.png';
-import { ReactComponent as SvgDotPattern } from "../images/dot-pattern.svg";
 import theme from "./helpers/themes.jsx";
 
 const useStyles = makeStyles(() => ({
   container: {
     position: "relative",
+    width: "80%",
   },
   twoColumn: {
     flexWrap: "nowrap",
@@ -58,7 +56,7 @@ const useStyles = makeStyles(() => ({
     },
   },
   subheading: {
-    textAlign: "center",
+    textAlign: "left",
     marginBottom: theme.spacing(1),
     color: theme.palette.violet.dark
   },

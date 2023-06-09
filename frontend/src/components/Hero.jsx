@@ -8,8 +8,9 @@ import { theme } from "./helpers/themes";
 
 const useStyles = makeStyles(() => ({
   root: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
+   // paddingTop: theme.spacing(8),
+   // paddingBottom: theme.spacing(8),
+    width: "80%",
   },
   heading: {
     fontWeight: "bold",
