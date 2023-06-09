@@ -3,7 +3,7 @@ import './assets/css/App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Homepage from "./pages/Homepage";
-import Hero from './components/deprecated/Hero_tw';
+// import Hero from './components/deprecated/Hero_tw';
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Header from "./components/Header"
