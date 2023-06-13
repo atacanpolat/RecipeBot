@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import {ReviewSchema} from "./review.js";
 
 const mealType = ['breakfast','soup', 'starter', 'appetizer', 'main', 'salad', 'dessert']
 const diet = ['none', 'gluten-free', 'lactose-free', 'Kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
@@ -28,9 +29,10 @@ const RecipeSchema = new mongoose.Schema({
     ingredients: [IngredientSchema],
     instruction: InstructionSchema,
     photo: { type: String, required: true },
-    reviews: [{type: mongoose.Schema.Types.ObjectId, ref: "Review"}],
+    reviews: [ReviewSchema],
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true } ,
-    isGenerated: {type: Boolean}
+    isGenerated: {type: Boolean},
+    tags: [{type:String}]
 });
 
 const recipeModel = new mongoose.model("Recipe", RecipeSchema);

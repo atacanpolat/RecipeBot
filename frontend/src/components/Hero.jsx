@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Container, Grid, Typography, ThemeProvider } from "@material-ui/core";
+import { Button, Container, Grid, Typography } from "@material-ui/core";
 import { ReactComponent as SvgDecoratorBlob1 } from "../images/svg-decorator-blob-1.svg";
 import DesignIllustration from "../images/food_illustration_purple.jpg";
 import Header from "./Header";
@@ -10,13 +10,13 @@ const useStyles = makeStyles(() => ({
   root: {
    // paddingTop: theme.spacing(8),
    // paddingBottom: theme.spacing(8),
-    width: "80%",
+   // width: "80%",
   },
   heading: {
     fontWeight: "bold",
-    fontSize: "2rem",
+    fontSize: "3rem",
     [theme.breakpoints.up("lg")]: {
-      fontSize: "2.5rem",
+      fontSize: "3rem",
     },
   },
   violetText: {
@@ -31,7 +31,6 @@ const useStyles = makeStyles(() => ({
     },
   },
   actionButton: {
-    position: "relative",
     width: "100%",
     [theme.breakpoints.up("sm")]: {
       position: "relative",
@@ -58,6 +57,7 @@ const useStyles = makeStyles(() => ({
   illustration: {
     display: "flex",
     justifyContent: "center",
+    height: "%90",
     [theme.breakpoints.up("lg")]: {
       justifyContent: "flex-end",
     },
@@ -98,8 +98,8 @@ const HomePage = () => {
               Our templates are easy to setup, understand and customize. Fully modular components with a variety of
               pages and components.
             </Typography>
-            <div className={classes.actionButton}>
-              <Button variant="contained" className={classes.actionButton} disableElevation>
+            <div>
+              <Button variant="contained" href='/generate' className={classes.actionButton} style={{left:60}}>
                 Try generating a recipe!
               </Button>
             </div>

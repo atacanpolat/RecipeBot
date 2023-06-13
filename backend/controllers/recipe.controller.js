@@ -44,6 +44,17 @@ const require = createRequire(import.meta.url);
       res.status(500).json({ error: error.message });
     }
   });
+
+  export const getUserRecipes = asyncHandler(async (req,res) => {
+    try {
+      const user = req.user;
+      const createdRecipes = await Recipe.recipeModel.find({_id: {$in:user.createdRecipes}}).populate("reviews");
+      res.status(200).json(createdRecipes);
+
+    } catch (error) {
+      res.status(500).json({error: error.message})
+    }
+  })
   
   // Get a single recipe by ID
   export const getRecipeById = asyncHandler(async (req, res) => {
@@ -173,10 +184,10 @@ const require = createRequire(import.meta.url);
       recipeSummary = recipeSummary.replaceAll(/ /g, "%20");
   
       const photoUrl = "https://image.pollinations.ai/prompt/" + recipeSummary;
-      
       response.photoUrl = photoUrl;   
+      const tags = [response.instruction.cookingTime, response.instruction.mealType, response.instruction.diet];
       
-  /*
+  
       const instruction = new Recipe.instructionModel({
         narrative: response.instruction.narrative,
         cookingTime: response.instruction.cookingTime,
@@ -191,14 +202,15 @@ const require = createRequire(import.meta.url);
         instruction: response.instruction,
         photo: response.photoUrl,
         createdBy: user._id,
-        isGenerated: true
+        isGenerated: true,
+        tags: tags
   
       });
       await recipe.save();
   
       user.createdRecipes.push(recipe._id);
       await user.save();
-  */
+  
   
       res.status(201).json(response);
   

@@ -9,6 +9,7 @@ import { Server } from 'http';
 import connectDB from "./mongodb/connect.js";
 import userRouter from './routes/user.routes.js'
 import recipeRouter from './routes/recipe.routes.js';
+import reviewRouter from './routes/review.routes.js';
 import errorHandler from './middleware/errorMiddleware.js';
 
 import { createRequire } from 'module';
@@ -28,6 +29,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/recipes', recipeRouter);
+app.use('/api/v1/review', reviewRouter)
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
