@@ -45,6 +45,56 @@ const require = createRequire(import.meta.url);
     }
   });
 
+  export const filterRecipes = asyncHandler(async (req, res) => {
+    try {
+      const {
+        keyword,
+        includeIngredients,
+        excludeIngredients,
+        mealType,
+        dietaryRestrictions,
+        servingSize,
+        cookingUtensils,
+      } = req.body;
+  
+      const query = {};
+  
+      if (keyword) {
+        query.title = { $regex: keyword, $options: "i" };
+      }
+  
+      if (includeIngredients && includeIngredients.length > 0) {
+        query["ingredients.name"] = { $in: includeIngredients };
+      }
+  
+      if (excludeIngredients && excludeIngredients.length > 0) {
+        query["ingredients.name"] = { $nin: excludeIngredients };
+      }
+  
+      if (mealType) {
+        query["instruction.mealType"] = mealType;
+      }
+  
+      if (dietaryRestrictions && dietaryRestrictions.length > 0) {
+        query["instruction.diet"] = { $in: dietaryRestrictions };
+      }
+  
+      if (servingSize) {
+        query["instruction.servingSize"] = servingSize;
+      }
+  
+      if (cookingUtensils && cookingUtensils.length > 0) {
+        query["instruction.cookingUtensils"] = { $in: cookingUtensils };
+      }
+      const recipes = await Recipe.recipeModel.find(query);
+  
+      res.status(200).json(recipes);
+    } catch (error) {
+      console.error("Error filtering recipes:", error);
+      res.status(500).json({ message: "Failed to filter recipes" });
+    }
+  });
+
   export const getUserRecipes = asyncHandler(async (req,res) => {
     try {
       const user = req.user;
@@ -257,4 +307,4 @@ const require = createRequire(import.meta.url);
 
   });
 
-  export default { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, modifyRecipe };
+  export default { createRecipe, getAllRecipes, filterRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, modifyRecipe };

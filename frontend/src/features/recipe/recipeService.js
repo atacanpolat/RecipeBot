@@ -1,17 +1,21 @@
 import axios from 'axios'
 
 const API_URL_RECIPE = 'http://localhost:8000/api/v1/recipes/'
-const API_URL_USER = 'http://localhost:8000/api/v1/users/'
 
 //Register user
 const getAllRecipes = async () => {
-    const token = localStorage.getItem('jwt');
-    const response = await axios.get(API_URL_RECIPE, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-    return response.data
+    try{
+        const token = localStorage.getItem('jwt');
+        const response = await axios.get(API_URL_RECIPE, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+        })
+        return response.data
+    
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 //TODO: getUserCreatedRecipes
@@ -19,20 +23,36 @@ const getCreatedRecipes = async() => {
     try {
         const token = localStorage.getItem('jwt');
     
-        const response = await axios.get(API_URL_RECIPE + '/saved', {
+        const response = await axios.get(API_URL_RECIPE + '/created', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+        return response.data;
 
-    
-        // Handle the response data
-        console.log(response.data);
       } catch (error) {
-        // Handle any errors
         console.error(error);
       }
 }
+
+const getFilteredRecipes = async (filters) => {
+  try {
+    const token = localStorage.getItem('jwt');
+    
+    const response = await axios.patch(API_URL_RECIPE + '/filter', filters, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+    
+  } catch (error) {
+    // Handle the error
+    console.error(error);
+    throw new Error('Failed to fetch filtered recipes');
+  }
+}
+
 
 const calculateRecipeData = (responseData) => {
   const calculatedData = [];
@@ -72,6 +92,7 @@ const calculateRecipeData = (responseData) => {
 const recipeService = {
     getAllRecipes,
     getCreatedRecipes,
+    getFilteredRecipes,
     calculateRecipeData
 }
 

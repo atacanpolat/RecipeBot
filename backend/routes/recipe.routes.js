@@ -1,15 +1,15 @@
 import express from "express";
 
-import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, saveRecipe, modifyRecipe, getUserRecipes } from "../controllers/recipe.controller.js";
+import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, saveRecipe, modifyRecipe, getUserRecipes, filterRecipes } from "../controllers/recipe.controller.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { upload } from "../middleware/helperFunctionsMiddleware.js";
 
 const router = express.Router();
 
 router.get('/', protect, getAllRecipes);
-router.get('/saved', protect, getUserRecipes);
+router.get('/created', protect, getUserRecipes);
 router.get('/:id', protect, getRecipeById);
-
+router.patch('/filter', protect, filterRecipes);
 router.post('/create', protect, createRecipe);
 router.patch('/:id', protect, updateRecipe);
 router.delete('/:id', protect, deleteRecipe);

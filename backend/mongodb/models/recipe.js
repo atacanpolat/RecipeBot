@@ -14,6 +14,7 @@ const InstructionSchema = new mongoose.Schema({
     narrative: {type: String, required:true},
     cookingTime:{type:String, required:true},
     servingSize:{type:String, required:true, default:"2 people"},
+    cookingUtensils:[{type:String}],
     mealType: {
         type: String
     },

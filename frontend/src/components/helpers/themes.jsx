@@ -1,11 +1,10 @@
 import { createTheme } from "@mui/material";
 import { purple, deepPurple } from "@mui/material/colors";
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Typography, Button } from "@material-ui/core";
 
 export const theme = createTheme({
     palette: {
       violet: {
-        // Purple and green play nicely together.
         dark: deepPurple[700],
         main: deepPurple[500],
         light: deepPurple[200],
@@ -27,6 +26,20 @@ const useStyles = makeStyles(() => ({
       fontWeight: "bold",
       color: theme.palette.violet.main,
     },
+    primaryButton: {
+      padding: "8px 24px",
+      fontWeight: "bold",
+      borderRadius: theme.spacing(1),
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      "&:hover": {
+        backgroundColor: theme.palette.primary.dark,
+        color: theme.palette.grey[200],
+      },
+      "&:focus": {
+        boxShadow: `0 0 0 3px ${theme.palette.primary.light}`,
+      },
+    }
   }));
   
 const SectionHeading = (props) => {
@@ -46,8 +59,20 @@ const Subheading = (props) => {
       </Typography>
     );
   };
+
+  const PrimaryButton = (props) => {
+    const classes = useStyles();
+    return (
+      <Button
+        className={classes.primaryButton}
+        variant="contained"
+        color="primary"
+        {...props}
+      />
+    );
+    }
   
 
 
   export default theme;
-  export { SectionHeading, Subheading };
+  export { SectionHeading, Subheading, PrimaryButton };

@@ -7,6 +7,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Generate from "./pages/Generate";
 import PrivateHomePage from "./pages/PrivateHomepage"
+import SearchRecipesPage from "./pages/SearchRecipesPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/login" element={<SignIn />} />
             <Route path="/register" element={<SignUp />} />
             <Route path="/generate" element={<Generate />} />
+            <Route path="/inspiration" element={<SearchRecipesPage />}/>
             {/* <Route path='/generate' element={<Generate />}/> */}
           </Routes>
           <ToastContainer />

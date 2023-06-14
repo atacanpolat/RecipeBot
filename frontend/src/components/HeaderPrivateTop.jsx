@@ -1,10 +1,8 @@
 import React from "react";
-import EggAltIcon from "@mui/icons-material/EggAlt";
 import PersonIcon from '@mui/icons-material/Person';
 import Button from "@material-ui/core/Button";
 import logo from "../images/logo.png";
 import { makeStyles } from "@material-ui/core/styles";
-import { purple, red } from "@mui/material/colors";
 import theme from "./helpers/themes";
 import { Link } from "react-router-dom";
 
