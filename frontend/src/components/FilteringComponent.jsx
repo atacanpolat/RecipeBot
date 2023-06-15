@@ -31,7 +31,7 @@ const useStyles = makeStyles(() => ({
     },
     filterButton: {
       marginRight: theme.spacing(2),
-      backgroundColor: theme.palette.violet.main,
+      backgroundColor: theme.palette.violet.light,
       color: theme.palette.grey[100]
     },
     filterSelect: {
@@ -237,7 +237,7 @@ const handleMealTypeChange = (event) => {
           </FormGroup>
         </FormControl>
       </div>
-      <PrimaryButton variant="contained" onClick={handleFilterSubmit}>
+      <PrimaryButton variant="contained" onClick={handleFilterSubmit} style={{backgroundColor:theme.palette.violet.main}}>
         Apply Filters
       </PrimaryButton>
     </div>

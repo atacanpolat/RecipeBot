@@ -1,6 +1,6 @@
 import express from "express";
 
-import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, saveRecipe, modifyRecipe, getUserRecipes, filterRecipes, getSavedRecipes, getCreatedRecipes } from "../controllers/recipe.controller.js";
+import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, saveRecipe, modifyRecipe, filterRecipes, getSavedRecipes, getCreatedRecipes } from "../controllers/recipe.controller.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { upload } from "../middleware/helperFunctionsMiddleware.js";
 
@@ -16,7 +16,7 @@ router.patch('/:id', protect, updateRecipe);
 router.delete('/:id', protect, deleteRecipe);
 
 router.post('/generate', protect, generateRecipe);
-router.put('/:id', protect, saveRecipe)
+router.patch('/:id/save', protect, saveRecipe)
 router.post('/:id/generate', protect, modifyRecipe);
 
 export default router;

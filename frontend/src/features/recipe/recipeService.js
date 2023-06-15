@@ -33,12 +33,12 @@ const getCreatedRecipes = async() => {
         console.error(error);
       }
 }
-/*
+
 const getSavedRecipes = async() => {
   try {
       const token = localStorage.getItem('jwt');
   
-      const response = await axios.get(API_URL_RECIPE + 'saved', {
+      const response = await axios.get(API_URL_RECIPE + '/saved', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -49,7 +49,7 @@ const getSavedRecipes = async() => {
       console.error(error);
     }
 }
-*/
+
 
 const getFilteredRecipes = async (filters) => {
   try {
@@ -108,7 +108,7 @@ const calculateRecipeData = (responseData) => {
 const recipeService = {
     getAllRecipes,
     getCreatedRecipes,
-  //  getSavedRecipes,
+    getSavedRecipes,
     getFilteredRecipes,
     calculateRecipeData
 }

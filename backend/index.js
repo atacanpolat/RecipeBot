@@ -27,9 +27,16 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Replace with the URL of your React app
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/recipes', recipeRouter);
-app.use('/api/v1/review', reviewRouter)
+app.use('/api/v1/review', reviewRouter);
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
