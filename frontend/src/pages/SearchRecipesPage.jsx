@@ -32,10 +32,6 @@ const useStyles = makeStyles(() => ({
         width: '33.33%',
       },
     },
-    featured: {
-      width: '100%',
-      gridColumn: '1 / -1', // Span across all columns
-    },
     card: {
         height: 300,
         width: 400,
@@ -131,26 +127,14 @@ const useStyles = makeStyles(() => ({
         fontWeight: "bold",
         color: theme.palette.text.primary,
       },
-      primaryButton: {
-        ...theme.typography.button,
-        marginTop: "auto",
-        alignItems: "center",
-        borderRadius: "0",
-        backgroundColor: theme.palette.violet.light,
-        [theme.breakpoints.up("sm")]: {
-          borderTopRightRadius: "3xl",
-        },
-      },
       
   }));
 
 const SearchRecipesPage = () => {
 
 
-
-
   const classes = useStyles();
-  const [visible, setVisible] = useState(7);
+  const [visible, setVisible] = useState(6);
 
   const onLoadMoreClick = () => {
     setVisible((v) => v + 6);
