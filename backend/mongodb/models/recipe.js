@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import {ReviewSchema} from "./review.js";
 
 const mealType = ['breakfast','soup', 'starter', 'appetizer', 'main', 'salad', 'dessert']
-const diet = ['none', 'gluten-free', 'lactose-free', 'Kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
+const diet = ['none', 'Gluten-free', 'Lactose-free', 'Kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
 
 const IngredientSchema = new mongoose.Schema({
     name: String,

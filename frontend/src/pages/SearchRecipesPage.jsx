@@ -187,8 +187,9 @@ const SearchRecipesPage = () => {
   return (
     <div style={{ alignItems: "center", width: "100%", gap: "20px", flexDirection: "column"}}>
       <HeaderPrivateTop/>
-      <HeaderPrivate/>
-
+      <div style={{display:"flex"}}>
+        <HeaderPrivate className="sideNav" style={{flex: "0 0 auto", zIndex: "1"}}/>
+        <div style={{display:"flex", flexDirection: "column", flex: "1 1 auto"}}>
       <Container>
         <Grid container spacing={4}>
           <Grid item xs={12}>
@@ -244,6 +245,8 @@ const SearchRecipesPage = () => {
           )}
         </Grid>
       </Container>
+    </div>
+    </div>
     </div>
   );
 };

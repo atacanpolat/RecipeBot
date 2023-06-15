@@ -5,6 +5,8 @@ import asyncHandler from "express-async-handler";
 
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
+const { Configuration, OpenAIApi } = require("openai");
+
 
  // Create a new recipe
  export const createRecipe = asyncHandler(async (req, res) => {
@@ -52,7 +54,7 @@ const require = createRequire(import.meta.url);
         includeIngredients,
         excludeIngredients,
         mealType,
-        dietaryRestrictions,
+        dietaryRestriction,
         servingSize,
         cookingUtensils,
       } = req.body;
@@ -75,8 +77,8 @@ const require = createRequire(import.meta.url);
         query["instruction.mealType"] = mealType;
       }
   
-      if (dietaryRestrictions && dietaryRestrictions.length > 0) {
-        query["instruction.diet"] = { $in: dietaryRestrictions };
+      if (dietaryRestriction) {
+        query["instruction.diet"] = dietaryRestriction;
       }
   
       if (servingSize) {
@@ -176,7 +178,6 @@ const require = createRequire(import.meta.url);
     }
   });
 
-  const { Configuration, OpenAIApi } = require("openai");
 
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY
@@ -228,8 +229,8 @@ const require = createRequire(import.meta.url);
         max_tokens: 1000
       });
       
+      
       const response = JSON.parse(completion.data.choices[0].text);
-  
       var recipeSummary = response.tenWordSummary.toString();
       recipeSummary = recipeSummary.replaceAll(/ /g, "%20");
   

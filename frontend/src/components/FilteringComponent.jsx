@@ -62,7 +62,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
   const [excludeIngredients, setExcludeIngredients] = useState([]);
   const [newIngredient, setNewIngredient] = useState("");
   const [mealType, setMealType] = useState("");
-  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
+  const [dietaryRestriction, setDietaryRestriction] = useState("");
   const [servingSize, setServingSize] = useState("");
   const [cookingUtensils, setCookingUtensils] = useState([]);
 
@@ -93,20 +93,31 @@ const FilteringComponent = ({ onFilterSubmit }) => {
   };
 
 
-  const handleMealTypeChange = (event) => {
-    const selectedValue = event.target.value; // Value of the selected option
-    let selectedValues = [...mealType]; // Copy the existing selected values
-  
-    if (selectedValues.includes(selectedValue)) {
-      selectedValues = selectedValues.filter((value) => value !== selectedValue); 
-    } else {
-      selectedValues.push(selectedValue);
-    }
-  
-    setMealType(selectedValues);
-  };
+const handleMealTypeChange = (event) => {
+  const selectedValue = event.target.value; 
+  setMealType((prevMealType) => prevMealType == selectedValue ? "" : selectedValue);
+};
 
-  const handleDietaryRestrictionsChange = (event) => {
+
+
+  const handleDietaryRestrictionChange = (event) => {
+    const selectedValue = event.target.value; 
+    setDietaryRestriction((prevDietaryRestriction) => prevDietaryRestriction == selectedValue ? "" : selectedValue);
+  };
+  
+
+  const handleServingSizeChange = (event) => {
+    const selectedValue = event.target.value; 
+  
+    if (servingSize === selectedValue) {
+      setServingSize("");
+    } else {
+      setServingSize(selectedValue);
+    }
+    };
+
+  const handleCookingUtensilsChange = (event) => {
+
     const selectedValues = event.target.value; // Array of selected options
   
     if (
@@ -115,17 +126,8 @@ const FilteringComponent = ({ onFilterSubmit }) => {
     ) {
       selectedValues.pop();
     }
-  
-    setDietaryRestrictions(selectedValues); // Update the state with the selected options
-  };
-  
 
-  const handleServingSizeChange = (event) => {
-    setServingSize(event.target.value);
-  };
-
-  const handleCookingUtensilsChange = (event) => {
-    setCookingUtensils(event.target.value);
+    setCookingUtensils(selectedValues);
   };
   
   const handleFilterSubmit = (event) => {
@@ -136,7 +138,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
       includeIngredients,
       excludeIngredients,
       mealType,
-      dietaryRestrictions,
+      dietaryRestriction,
       servingSize,
       cookingUtensils,
     };
@@ -145,7 +147,8 @@ const FilteringComponent = ({ onFilterSubmit }) => {
 
 
   const mealTypeVals = ['breakfast','soup', 'starter', 'appetizer', 'main', 'salad', 'dessert']
-  const dietVals = ['none', 'gluten-free', 'lactose-free', 'Kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
+  const dietVals = ['gluten-free', 'lactose-free', 'Kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
+  const servingSizeVals = ['1 person', '2 people', '3 people', '4 people', '6 people', '8+ people', '12+ people']
 
   return (
     <div className={classes.container}>
@@ -187,7 +190,12 @@ const FilteringComponent = ({ onFilterSubmit }) => {
           <InputLabel>Meal Type</InputLabel>
           <Select value={mealType} onChange={handleMealTypeChange}>
             {mealTypeVals.map((type) => (
-            <MenuItem key={type} value={type.charAt(0).toUpperCase() + type.slice(1)}>
+            <MenuItem 
+            key={type} 
+            value={type.charAt(0).toUpperCase() + type.slice(1)}
+            onClick={() => {setMealType('');}}
+            selected={mealType === type}
+            >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
             </MenuItem>
             ))}
@@ -195,9 +203,14 @@ const FilteringComponent = ({ onFilterSubmit }) => {
         </FormControl>
         <FormControl className={classes.filterSelect}>
           <InputLabel>Dietary Restrictions</InputLabel>
-          <Select multiple value={dietaryRestrictions} onChange={handleDietaryRestrictionsChange}>
+          <Select value={dietaryRestriction} onChange={handleDietaryRestrictionChange}>
             {dietVals.map((type) => (
-            <MenuItem key={type} value={type.charAt(0).toUpperCase() + type.slice(1)}>
+            <MenuItem 
+            key={type} 
+            value={type.charAt(0).toUpperCase() + type.slice(1)}
+            onClick={() => {setDietaryRestriction('');}}
+            selected={dietaryRestriction === type}
+            >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
             </MenuItem>
             ))}
@@ -206,8 +219,16 @@ const FilteringComponent = ({ onFilterSubmit }) => {
         <FormControl className={classes.filterSelect}>
           <InputLabel>Serving Size</InputLabel>
           <Select value={servingSize} onChange={handleServingSizeChange}>
-            <MenuItem value="">All</MenuItem>
-            {/* Render serving size options */}
+            {servingSizeVals.map((type) => (
+            <MenuItem 
+            key={type} 
+            value={type}
+            onClick={() => {setServingSize('');}}
+            selected={servingSize === type}
+            >
+                {type}
+            </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl component="fieldset" className={classes.filterCheckboxGroup}>

@@ -21,8 +21,9 @@ const useStyles = makeStyles(() => ({
   container: {
   },
   content: {
-    maxWidth: "screen-xl",
     margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
     padding: theme.spacing(2),
     [theme.breakpoints.up("lg")]: {
       padding: theme.spacing(4),
@@ -30,7 +31,9 @@ const useStyles = makeStyles(() => ({
   },
   headingWithControl: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
+    width: "1400px",
+    maxWidth: "1524px",
     alignItems: "center",
     justifyContent: "space-between",
     [theme.breakpoints.up("sm")]: {
@@ -48,10 +51,9 @@ const useStyles = makeStyles(() => ({
   },
 
   controlButton: {
-    ...theme.typography.button,
     marginLeft: theme.spacing(2),
     borderRadius: "50%",
-    padding: theme.spacing(1),
+    padding: theme.spacing(1.5),
     backgroundColor: theme.palette.violet.main,
     color: theme.palette.common.white,
     "&:hover": {
@@ -60,6 +62,7 @@ const useStyles = makeStyles(() => ({
   },
   cardSlider: {
     marginTop: theme.spacing(4),
+    width: "100%",
     "& .slick-track": {
       display: "flex",
     },
@@ -88,7 +91,7 @@ const useStyles = makeStyles(() => ({
   },
   card: {
     height: 300,
-    width: 400,
+    width: 450,
     display: "flex",
     flexDirection: "column",
     borderRadius: "3xl",
@@ -234,7 +237,7 @@ function PopularRecipesSlider({style}) {
 
   return (
     <div className={classes.container} style={style}>
-      <div className={classes.content} style={style}>
+      <div className={classes.content}>
         <div className={classes.headingWithControl}>
           <Typography variant="h4" className={classes.heading}>
             Popular Recipes
@@ -248,7 +251,7 @@ function PopularRecipesSlider({style}) {
             </Button>
           </div>
         </div>
-
+        <div style={{width:"1450px", overflowX:"scroll"}}>
         <Slider ref={setSliderRef} {...sliderSettings} className={classes.cardSlider}>
           {cards.map((card, index) => (
             <div className={classes.cardContainer} key={index}>
@@ -283,6 +286,7 @@ function PopularRecipesSlider({style}) {
             </div>
           ))}   
         </Slider>
+        </div>
       </div>
     </div>
   );
