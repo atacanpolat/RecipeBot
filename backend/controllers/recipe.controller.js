@@ -57,8 +57,10 @@ const { Configuration, OpenAIApi } = require("openai");
         dietaryRestriction,
         servingSize,
         cookingUtensils,
+        activeTab
       } = req.body;
-  
+
+      const user = req.user;
       const query = {};
   
       if (keyword) {
@@ -88,8 +90,16 @@ const { Configuration, OpenAIApi } = require("openai");
       if (cookingUtensils && cookingUtensils.length > 0) {
         query["instruction.cookingUtensils"] = { $in: cookingUtensils };
       }
-      const recipes = await Recipe.recipeModel.find(query);
+      
+      if (activeTab == 'saved') {
+        query._id = {$in: user.savedRecipes};
+      } 
+      if (activeTab == 'created') {
+        query._id = {$in: user.createdRecipes}
+      }
   
+      const recipes = await Recipe.recipeModel.find(query);
+
       res.status(200).json(recipes);
     } catch (error) {
       console.error("Error filtering recipes:", error);

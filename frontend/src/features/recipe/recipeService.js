@@ -51,14 +51,15 @@ const getSavedRecipes = async() => {
 }
 
 
-const getFilteredRecipes = async (filters) => {
+const getFilteredRecipes = async (filters, activeTab) => {
   try {
     const token = localStorage.getItem('jwt');
+    
     
     const response = await axios.patch(API_URL_RECIPE + '/filter', filters, {
       headers: {
         Authorization: `Bearer ${token}`,
-      },
+      }
     });
     return response.data;
     

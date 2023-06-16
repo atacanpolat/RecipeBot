@@ -1,20 +1,16 @@
 import React from "react";
-import HeaderPrivate from "../components/HeaderPrivate";
-import HeaderPrivateTop from "../components/HeaderPrivateTop";
+import {HeaderPrivate, HeaderPrivateTop} from "../components/HeaderPrivate";
 import PopularRecipesSlider from "../components/PopularRecipesSlider";
 import "../assets/css/index.css";
 import CreatedRecipesSlider from "../components/CreatedRecipesSlider";
-
-
-
 
 function PrivateHomepage() {
   return (
     
     <div style={{ alignItems: "center", width: "100%", gap: "20px", flexDirection: "column"}}>
-      <HeaderPrivateTop style={{ marginBottom:'20px'}}/>
+      <HeaderPrivateTop/>
       <div style={{display:"flex", flexDirection:'row'}}>
-        <HeaderPrivate className="sideNav" style={{flex: "0 0 auto"}}/>
+        <HeaderPrivate className="sideNav"/>
         <div style={{display:'flex', flexDirection:'column', flex: "1 1 auto"}}>
         <PopularRecipesSlider />
         <CreatedRecipesSlider />

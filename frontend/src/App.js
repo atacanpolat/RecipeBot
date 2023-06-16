@@ -9,7 +9,6 @@ import Generate from "./pages/Generate";
 import PrivateHomePage from "./pages/PrivateHomepage"
 import SearchRecipesPage from "./pages/SearchRecipesPage";
 import SavedRecipesPage from "./pages/SavedRecipesPage";
-//import SavedRecipesPage from "./pages/SavedRecipesPage";
 
 function App() {
   return (

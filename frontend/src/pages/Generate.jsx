@@ -1,5 +1,4 @@
-import HeaderPrivate from "../components/HeaderPrivate";
-import HeaderPrivateTop from "../components/HeaderPrivateTop";
+import {HeaderPrivate, HeaderPrivateTop} from "../components/HeaderPrivate";
 
 function Generate() {
   return (

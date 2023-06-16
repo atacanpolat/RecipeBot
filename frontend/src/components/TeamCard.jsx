@@ -1,5 +1,4 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
   Typography,
@@ -9,61 +8,10 @@ import {
   CardMedia,
   Link,
 } from "@material-ui/core";
-import theme from "./helpers/themes";
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
-
-const useStyles = makeStyles(() => ({
-
-  heading: {
-    marginBottom: theme.spacing(3),
-    marginTop: theme.spacing(16)
-  },
-  subheading: {
-    marginBottom: theme.spacing(3),
-    textAlign: "center",
-  },
-  card: {
-    marginTop: theme.spacing(6),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  cardImage: {
-    width: 200,
-    height: 200,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    borderRadius: "50%",
-  },
-  cardContent: {
-    marginTop: theme.spacing(2),
-    textAlign: "center",
-  },
-  name: {
-    marginTop: theme.spacing(1),
-    fontWeight: "bold",
-    fontSize: "1.25rem",
-    color: theme.palette.text.main,
-  },
-  cardLinks: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-  },
-  link: {
-    marginRight: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    "&:hover": {
-      color: theme.palette.violet.dark,
-    },
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    fill: "currentColor",
-  },
-}));
+import { useTeamCardStyles } from "./helpers/styles/landingPageStyles";
 
 const TeamSection = ({
   heading = "Meet These Fine Folks.",
@@ -143,7 +91,7 @@ const TeamSection = ({
       }
   ],
 }) => {
-  const classes = useStyles();
+  const classes = useTeamCardStyles();
 
   return (
     <Container style={{paddingBottom:'80px'}}>

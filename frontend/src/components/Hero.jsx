@@ -1,89 +1,13 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { Button, Container, Grid, Typography } from "@material-ui/core";
 import { ReactComponent as SvgDecoratorBlob1 } from "../images/svg-decorator-blob-1.svg";
 import DesignIllustration from "../images/food_illustration_purple.jpg";
 import Header from "./Header";
-import { theme } from "./helpers/themes";
+import { useHeroStyles } from "./helpers/styles/landingPageStyles";
 
-const useStyles = makeStyles(() => ({
-  root: {
-   // paddingTop: theme.spacing(8),
-   // paddingBottom: theme.spacing(8),
-   // width: "80%",
-  },
-  heading: {
-    fontWeight: "bold",
-    fontSize: "3rem",
-    [theme.breakpoints.up("lg")]: {
-      fontSize: "3rem",
-    },
-  },
-  violetText: {
-    color: theme.palette.violet.light
-  },
-  paragraph: {
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(8),
-    fontSize: "1rem",
-    [theme.breakpoints.up("lg")]: {
-      fontSize: "1.125rem",
-    },
-  },
-  actionButton: {
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      position: "relative",
-      right: 0,
-      top: 0,
-      bottom: 0,
-      margin: "0.25rem",
-      width: "200%",
-      minWidth: "8rem",
-      maxWidth: "22rem",
-    },
-    backgroundColor: theme.palette.violet.light,
-    color: theme.palette.common.white,
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "9999px",
-    transition: "background-color 300ms",
-    "&:hover": {
-      backgroundColor: theme.palette.violet.dark,
-    },
-  },
-  illustration: {
-    display: "flex",
-    justifyContent: "center",
-    height: "%90",
-    [theme.breakpoints.up("lg")]: {
-      justifyContent: "flex-end",
-    },
-  },
-  illustrationImage: {
-    width: "100%",
-    maxWidth: "60rem",
-    [theme.breakpoints.up("xl")]: {
-      maxWidth: "50rem",
-    },
-  },
-  decoratorBlob1: {
-    pointerEvents: "none",
-    opacity: 0.5,
-    position: "absolute",
-    left: 0,
-    bottom: 0,
-    height: "16rem",
-    width: "16rem",
-    transform: "translateX(-66.66%)",
-    zIndex: -10,
-  },
-}));
 
 const HomePage = () => {
-  const classes = useStyles();
+  const classes = useHeroStyles();
 
   return (
     <>
@@ -95,8 +19,7 @@ const HomePage = () => {
               Meet RecipeBot, <span className={classes.violetText}>the AI in your kitchen</span>
             </Typography>
             <Typography variant="body1" className={classes.paragraph}>
-              Our templates are easy to setup, understand and customize. Fully modular components with a variety of
-              pages and components.
+              Description text here.
             </Typography>
             <div>
               <Button variant="contained" href='/generate' className={classes.actionButton} style={{left:60}}>

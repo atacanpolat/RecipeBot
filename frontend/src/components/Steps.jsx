@@ -1,112 +1,12 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Typography } from "@material-ui/core";
 import HeroScreenshot from '../images/Screenshot 2023-06-03 at 23-02-28 SEBA Master 2023 _ Team 31 _ deliverables · GitLab.png';
-import theme from "./helpers/themes.jsx";
+import { useStepsStyles } from "./helpers/styles/landingPageStyles";
 
-const useStyles = makeStyles(() => ({
-  container: {
-    position: "relative",
-    width: "80%",
-  },
-  twoColumn: {
-    flexWrap: "nowrap",
-    justifyContent: "space-between",
-    maxWidth: theme.breakpoints.values.xl,
-    margin: "auto",
-    padding: theme.spacing(10, 0),
-    [theme.breakpoints.down("md")]: {
-      flexDirection: "column",
-      alignItems: "center",
-    },
-  },
-  column: {
-    width: "100%",
-    maxWidth: theme.breakpoints.values.md,
-    margin: "auto",
-    [theme.breakpoints.down("md")]: {
-      textAlign: "center",
-      marginBottom: theme.spacing(4),
-    },
-  },
-  imageColumn: {
-    [theme.breakpoints.down("md")]: {
-      width: "100%",
-    },
-  },
-  textColumn: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    [theme.breakpoints.down("md")]: {
-      width: "80%",
-      textAlign: "center",
-      order: 1,
-    },
-  },
-  image: {
-    width: "100%",
-    height: "auto",
-  },
-  textContent: {
-    padding: theme.spacing(2),
-    textAlign: "left",
-    [theme.breakpoints.down("md")]: {
-      padding: theme.spacing(0),
-    },
-  },
-  subheading: {
-    textAlign: "left",
-    marginBottom: theme.spacing(1),
-    color: theme.palette.violet.dark
-  },
-  heading: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(4),
-    fontWeight: "bold",
-    fontSize: "2.25rem",
-    lineHeight: "1.2",
-    [theme.breakpoints.up("sm")]: {
-      fontSize: "3rem",
-    },
-    [theme.breakpoints.up("lg")]: {
-      fontSize: "4rem",
-    },
-  },
-  steps: {
-    marginTop: theme.spacing(6),
-    listStyle: "none",
-    padding: 0,
-  },
-  step: {
-    display: "flex",
-    alignItems: "flex-start",
-    marginTop: theme.spacing(4),
-  },
-  stepNumber: {
-    fontWeight: "bold",
-    fontSize: "2rem",
-    lineHeight: "1",
-    color: theme.palette.grey[400],
-  },
-  stepText: {
-    marginLeft: theme.spacing(2),
-  },
-  stepHeading: {
-    fontWeight: "bold",
-    fontSize: "1.5rem",
-    lineHeight: "1.2",
-  },
-  stepDescription: {
-    marginTop: theme.spacing(1),
-    fontSize: "0.875rem",
-    color: theme.palette.grey[600],
-    fontWeight: "medium",
-  },
-}));
+
 
 const StepsSection = () => {
-  const classes = useStyles();
+  const classes = useStepsStyles();
 
   const steps = [
     {

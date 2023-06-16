@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
   Button,
@@ -14,49 +13,13 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import theme from "./helpers/themes";
 import { PrimaryButton } from "./helpers/themes";
+import { useFilterStyles } from "./helpers/styles/recipesStyles";
 
-
-const useStyles = makeStyles(() => ({
-    container: {
-        display: "flex",
-        justifyContent: "center", // Center the filters horizontally
-        alignItems: "flex-start", // Align the filters at the top vertically
-      },
-    filterContainer: {
-      alignItems: "center",
-      marginBottom: theme.spacing(2),
-    },
-    filterInput: {
-      marginRight: theme.spacing(2),
-    },
-    filterButton: {
-      marginRight: theme.spacing(2),
-      backgroundColor: theme.palette.violet.light,
-      color: theme.palette.grey[100]
-    },
-    filterSelect: {
-      marginRight: theme.spacing(2),
-      minWidth: 150,
-    },
-    filterCheckboxGroup: {
-      display: "flex",
-      flexDirection: "column",
-    },
-
-    includedIngredient: {
-        marginRight: theme.spacing(1),
-        backgroundColor: "#00e676", // Green color for included ingredients
-        color: "#ffffff",
-      },
-      excludedIngredient: {
-        marginRight: theme.spacing(1),
-        backgroundColor: "#ff1744", // Red color for excluded ingredients
-        color: "#ffffff",
-      },
-  }));
 
 const FilteringComponent = ({ onFilterSubmit }) => {
-  const classes = useStyles();
+  
+  const classes = useFilterStyles();
+
   const [keyword, setKeyword] = useState("");
   const [includeIngredients, setIncludeIngredients] = useState([]);
   const [excludeIngredients, setExcludeIngredients] = useState([]);
@@ -93,12 +56,11 @@ const FilteringComponent = ({ onFilterSubmit }) => {
   };
 
 
-const handleMealTypeChange = (event) => {
+  const handleMealTypeChange = (event) => {
   const selectedValue = event.target.value; 
   setMealType((prevMealType) => prevMealType == selectedValue ? "" : selectedValue);
-};
-
-
+  };
+  
 
   const handleDietaryRestrictionChange = (event) => {
     const selectedValue = event.target.value; 

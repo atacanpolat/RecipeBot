@@ -1,139 +1,26 @@
 import React, { useState, useEffect } from "react";
 import recipeService from "../features/recipe/recipeService";
-import { Container, Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { theme, SectionHeading, PrimaryButton } from "../components/helpers/themes";
-import HeaderPrivateTop from "../components/HeaderPrivateTop";
+
+import { SectionHeading, PrimaryButton } from "../components/helpers/themes";
+import {HeaderPrivate, HeaderPrivateTop} from "../components/HeaderPrivate";
+import FilteringComponent from "../components/FilteringComponent";
+import { useRecipeContainerStyles } from "../components/helpers/styles/recipesStyles";
+
 import {
-    Button,
+    Container, 
+    Grid,
     Typography,
     Card,
     CardMedia,
     CardContent,
-    TextField,
-    Chip
   } from "@material-ui/core";
-  import StarIcon from '@mui/icons-material/Star';
-import HeaderPrivate from "../components/HeaderPrivate";
-import FilteringComponent from "../components/FilteringComponent";
-import { FormControl, FormGroup, FormControlLabel, Checkbox } from "@material-ui/core";
+import StarIcon from '@mui/icons-material/Star';
 
-
-
-const useStyles = makeStyles(() => ({
-    cardContainer: {
-      marginTop: theme.spacing(10),
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        width: '50%',
-        paddingRight: theme.spacing(8),
-      },
-      [theme.breakpoints.up('lg')]: {
-        width: '33.33%',
-      },
-    },
-    card: {
-        height: 300,
-        width: 400,
-        display: "flex",
-        flexDirection: "column",
-        borderRadius: theme.spacing(1),
-        backgroundColor: theme.palette.grey[100],
-        "&:focus": {
-          outline: "none",
-        },
-        "&:hover": {
-          opacity: 0.5,
-          transition: "0.3s",
-        }
-      },
-      cardImage: {
-        width: "100%",
-        height: "100%",
-        flex: 1,
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        padding: "80px",
-        [theme.breakpoints.up("sm")]: {
-          borderTopRightRadius: "3xl",
-        },
-      },
-      titleReviewContainer: {
-        display: "flex",
-        flexDirection: "column",
-        [theme.breakpoints.up("sm")]: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        },
-      },
-      title: {
-        ...theme.typography.h6,
-        marginBottom: theme.spacing(2),
-        whiteSpace: "pre-wrap", // Allow text to wrap to the next line
-        wordWrap: "break-word", // Break words if they exceed the width
-        textAlign: "center", // Center the text
-      },
-      ratingsInfo: {
-        display: "flex",
-        alignItems: "center",
-        marginLeft: theme.spacing(2),
-        marginTop: theme.spacing(1),
-        [theme.breakpoints.up("sm")]: {
-          marginTop: 0,
-        },
-      },
-      rating: {
-        marginLeft: theme.spacing(1),
-        fontWeight: "bold",
-      },
-      description: {
-        ...theme.typography.body2,
-        marginTop: theme.spacing(2),
-        opacity: "0.5",
-        [theme.breakpoints.up("sm")]: {
-          marginTop: theme.spacing(4),
-        },
-      },
-      secondaryInfoContainer: {
-        display: "flex",
-        flexDirection: "column",
-        [theme.breakpoints.up("sm")]: {
-          flexDirection: "row",
-        },
-      },
-      iconWithText: {
-        display: "flex",
-        alignItems: "center",
-        marginRight: theme.spacing(2),
-        marginTop: theme.spacing(2),
-        [theme.breakpoints.up("sm")]: {
-          marginTop: 0,
-        },
-      },
-      iconContainer: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 24,
-        height: 24,
-        borderRadius: "50%",
-        backgroundColor: theme.palette.grey[700],
-        color: theme.palette.common.white,
-      },
-      text: {
-        marginLeft: theme.spacing(1),
-        ...theme.typography.body2,
-        fontWeight: "bold",
-        color: theme.palette.text.primary,
-      },
-      
-  }));
 
 const SearchRecipesPage = () => {
 
 
-  const classes = useStyles();
+  const classes = useRecipeContainerStyles();
   const [visible, setVisible] = useState(6);
 
   const onLoadMoreClick = () => {
