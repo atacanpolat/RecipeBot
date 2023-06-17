@@ -31,8 +31,6 @@ const SavedRecipesPage = () => {
     setVisible((v) => v + 6);
   };
 
-  const [cards, setCards] = useState([]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -56,10 +54,14 @@ const SavedRecipesPage = () => {
     try {
       let recipesData = [];
       filters.activeTab = activeTab;
+      console.log(activeTab);
 
-      const savedRecipesData = await recipeService.getFilteredRecipes(filters);
-      recipesData = await recipeService.calculateRecipeData(savedRecipesData);
-      setSavedRecipes(recipesData);
+      const recipes = await recipeService.getFilteredRecipes(filters);
+      recipesData = await recipeService.calculateRecipeData(recipes);
+      
+      activeTab==="saved" ? setSavedRecipes(recipesData) : setCreatedRecipes(recipesData);
+
+      
 
     } catch (error) {
       console.error("Error fetching recipes:", error);
@@ -88,8 +90,7 @@ const SavedRecipesPage = () => {
             </button>
             <button
               onClick={() => handleTabClick("created")}
-              className={`${classes.tabButton} ${
-                activeTab === "created" ? classes.activeTabButton : ""}`}
+              className={`${classes.tabButton} ${activeTab === "created" ? classes.activeTabButton : ""}`}
             > Created Recipes
             </button>
           </div>
@@ -136,7 +137,7 @@ const SavedRecipesPage = () => {
 
            
         </Grid>
-        {visible < cards.length && (
+        {visible < (activeTab === "created" ? createdRecipes.length : savedRecipes.length) && (
             <Grid item xs={12} className={classes.buttonContainer}>
               <PrimaryButton
                 className={classes.loadMoreButton}

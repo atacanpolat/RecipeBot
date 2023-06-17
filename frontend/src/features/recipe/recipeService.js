@@ -51,7 +51,7 @@ const getSavedRecipes = async() => {
 }
 
 
-const getFilteredRecipes = async (filters, activeTab) => {
+const getFilteredRecipes = async (filters) => {
   try {
     const token = localStorage.getItem('jwt');
     

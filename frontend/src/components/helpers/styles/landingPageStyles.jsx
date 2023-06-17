@@ -2,11 +2,6 @@ import { makeStyles } from "@material-ui/core";
 import theme from "../themes";
 
 export const useHeroStyles = makeStyles(() => ({
-    root: {
-     // paddingTop: theme.spacing(8),
-     // paddingBottom: theme.spacing(8),
-     // width: "80%",
-    },
     heading: {
       fontWeight: "bold",
       fontSize: "3rem",
