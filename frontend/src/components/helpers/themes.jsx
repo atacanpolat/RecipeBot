@@ -1,5 +1,5 @@
-import { createTheme } from "@mui/material";
-import { purple, deepPurple } from "@mui/material/colors";
+import { createTheme, colors } from "@mui/material";
+import { green, deepPurple, red } from "@mui/material/colors";
 import { makeStyles, Typography, Button } from "@material-ui/core";
 
 export const theme = createTheme({
@@ -8,8 +8,28 @@ export const theme = createTheme({
         dark: deepPurple[700],
         main: deepPurple[500],
         light: deepPurple[200],
-      }
+      },
+      green : {
+        dark: green[900],
+        main: green[700],
+        light: green[300]
+      },
+      red: {
+        dark: red[900],
+        main: red[600],
+        light: red[400]
+      },
+      primary: {
+        main: '#556cd6',
+      },
+      secondary: {
+        main: '#19857b',
+      },
+      error: {
+        main: colors.red.A400,
+      },
     },
+
   });
 
 
@@ -30,7 +50,7 @@ const useStyles = makeStyles(() => ({
       padding: "8px 24px",
       fontWeight: "bold",
       borderRadius: theme.spacing(1),
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.violet.main,
       color: theme.palette.common.white,
       "&:hover": {
         backgroundColor: theme.palette.primary.dark,
@@ -66,7 +86,6 @@ const Subheading = (props) => {
       <Button
         className={classes.primaryButton}
         variant="contained"
-        color="primary"
         {...props}
       />
     );

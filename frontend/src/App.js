@@ -9,6 +9,7 @@ import Generate from "./pages/Generate";
 import PrivateHomePage from "./pages/PrivateHomepage"
 import SearchRecipesPage from "./pages/SearchRecipesPage";
 import SavedRecipesPage from "./pages/SavedRecipesPage";
+import SetAvatarPage from "./pages/SetAvatarPage";
 
 function App() {
   return (
@@ -19,9 +20,9 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<SignIn />} />
             <Route path="/register" element={<SignUp />} />
+            <Route path='/setAvatar' element={<SetAvatarPage/>}/>
             <Route path="/generate" element={<Generate />} />
             <Route path="/inspiration" element={<SearchRecipesPage />}/>
-            {/* <Route path='/generate' element={<Generate />}/> */}
           </Routes>
           <ToastContainer />
         </div>

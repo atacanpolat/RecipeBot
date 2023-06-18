@@ -6,13 +6,14 @@ import {
     loginUser,
     getUserInfoById,
     updateUserInfoById,
+    uploadAvatar,
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
 router.post('/login', loginUser);
-//router.post('/register', upload.single('avatar'), createUser);
-router.post('/register', createUser);
+router.post('/register',  createUser);
+router.post('/upload', protect, upload.single('file'), uploadAvatar);
 router.get('/:id', protect, getUserInfoById);
 router.patch('/:id', protect, updateUserInfoById);
 

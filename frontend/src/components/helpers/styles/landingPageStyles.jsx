@@ -4,10 +4,7 @@ import theme from "../themes";
 export const useHeroStyles = makeStyles(() => ({
     heading: {
       fontWeight: "bold",
-      fontSize: "3rem",
-      [theme.breakpoints.up("lg")]: {
-        fontSize: "3rem",
-      },
+      fontSize: "3rem"
     },
     violetText: {
       color: theme.palette.violet.light

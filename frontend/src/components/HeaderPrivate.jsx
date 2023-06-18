@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
-import logo from "../images/logo.png";
 import { useHeaderPrivateStyles, useHeaderPrivateTopStyles } from "./helpers/styles/headerStyles";
+import { Link } from "react-router-dom";
 
 // icons
 import EggAltIcon from "@mui/icons-material/EggAlt";
@@ -11,7 +11,8 @@ import LoyaltyIcon from "@mui/icons-material/Loyalty";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PersonIcon from '@mui/icons-material/Person';
-import { Link } from "react-router-dom";
+import logo from "../images/logo.png";
+import { PrimaryButton } from "./helpers/themes";
 
 
 
@@ -60,13 +61,10 @@ export const HeaderPrivate = () => {
   );
 };
 
-// TODO: implement
-function getUserInfo(user) {
-  return "Max Mustermann"
-}
 
 export const HeaderPrivateTop = () => {
   const classes = useHeaderPrivateTopStyles();
+  const user = JSON.parse(localStorage.getItem('user'));
 
   return (
     <header className="header-private-top" style={{marginBottom:'20px'}}>
@@ -77,12 +75,12 @@ export const HeaderPrivateTop = () => {
         </a>
       </div>
       <div className="user-info">
-      <Button
+      <PrimaryButton
             startIcon={<PersonIcon />}
             href="/settings"
           >
-            {getUserInfo()}
-          </Button>
+            {user.user.firstName + ' ' + user.user.lastName}
+          </PrimaryButton>
       </div>
     </header>
   );
