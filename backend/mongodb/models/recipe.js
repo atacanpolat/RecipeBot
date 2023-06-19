@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import {ReviewSchema} from "./review.js";
 
 const mealType = ['breakfast','soup', 'starter', 'appetizer', 'main', 'salad', 'dessert']
-const diet = ['none', 'gluten-free', 'lactose-free', 'Kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
+const diet = ['none', 'Gluten-free', 'Lactose-free', 'Kosher', 'Seafood', 'Halal', 'Vegetarian', 'Vegan', 'keto', 'low-calorie']
 
 const IngredientSchema = new mongoose.Schema({
     name: String,
@@ -13,6 +14,7 @@ const InstructionSchema = new mongoose.Schema({
     narrative: {type: String, required:true},
     cookingTime:{type:String, required:true},
     servingSize:{type:String, required:true, default:"2 people"},
+    cookingUtensils:[{type:String}],
     mealType: {
         type: String
     },
@@ -28,9 +30,10 @@ const RecipeSchema = new mongoose.Schema({
     ingredients: [IngredientSchema],
     instruction: InstructionSchema,
     photo: { type: String, required: true },
-    reviews: [{type: mongoose.Schema.Types.ObjectId, ref: "Review"}],
+    reviews: [ReviewSchema],
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true } ,
-    isGenerated: {type: Boolean}
+    isGenerated: {type: Boolean},
+    tags: [{type:String}]
 });
 
 const recipeModel = new mongoose.model("Recipe", RecipeSchema);

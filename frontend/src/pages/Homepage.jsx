@@ -1,20 +1,14 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import {Link} from 'react-router-dom'
-import logo from '../images/Vector.png'
-import landingImage from "../images/bnr-article-foodbeverage-ai.avif"
 import Hero from '../components/Hero';
 import FeatureWithSteps from '../components/Steps'
-import tw from 'twin.macro'
-import HeroScreenshotImage from '../images/hero-screenshot-2.png'
+import TeamSection from '../components/TeamCard';
 
 function Homepage() {
   
   return (
-  <section>
+  <section style={{display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems:"center", width: "100%", gap:"20px"}}>
     <Hero />
     <FeatureWithSteps/>
+    <TeamSection />
   </section>
     
   )

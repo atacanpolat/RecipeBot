@@ -5,6 +5,8 @@ import asyncHandler from "express-async-handler";
 
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
+const { Configuration, OpenAIApi } = require("openai");
+
 
  // Create a new recipe
  export const createRecipe = asyncHandler(async (req, res) => {
@@ -44,6 +46,88 @@ const require = createRequire(import.meta.url);
       res.status(500).json({ error: error.message });
     }
   });
+
+  export const filterRecipes = asyncHandler(async (req, res) => {
+    try {
+      const {
+        keyword,
+        includeIngredients,
+        excludeIngredients,
+        mealType,
+        dietaryRestriction,
+        servingSize,
+        cookingUtensils,
+        activeTab
+      } = req.body;
+
+      const user = req.user;
+      const query = {};
+  
+      if (keyword) {
+        query.title = { $regex: keyword, $options: "i" };
+      }
+  
+      if (includeIngredients && includeIngredients.length > 0) {
+        query["ingredients.name"] = { $in: includeIngredients };
+      }
+  
+      if (excludeIngredients && excludeIngredients.length > 0) {
+        query["ingredients.name"] = { $nin: excludeIngredients };
+      }
+  
+      if (mealType) {
+        query["instruction.mealType"] = mealType;
+      }
+  
+      if (dietaryRestriction) {
+        query["instruction.diet"] = dietaryRestriction;
+      }
+  
+      if (servingSize) {
+        query["instruction.servingSize"] = servingSize;
+      }
+  
+      if (cookingUtensils && cookingUtensils.length > 0) {
+        query["instruction.cookingUtensils"] = { $in: cookingUtensils };
+      }
+      
+      if (activeTab == 'saved') {
+        query._id = {$in: user.savedRecipes};
+      } 
+      if (activeTab == 'created') {
+        query._id = {$in: user.createdRecipes}
+      }
+  
+      const recipes = await Recipe.recipeModel.find(query);
+
+      res.status(200).json(recipes);
+    } catch (error) {
+      console.error("Error filtering recipes:", error);
+      res.status(500).json({ message: "Failed to filter recipes" });
+    }
+  });
+
+  export const getCreatedRecipes = asyncHandler(async (req,res) => {
+    try {
+      const user = req.user;
+      const createdRecipes = await Recipe.recipeModel.find({_id: {$in:user.createdRecipes}}).populate("reviews");
+      res.status(200).json(createdRecipes);
+
+    } catch (error) {
+      res.status(500).json({error: error.message})
+    }
+  })
+  
+  export const getSavedRecipes = asyncHandler(async (req,res) => {
+    try {
+      const user = req.user;
+      const savedRecipes = await Recipe.recipeModel.find({_id: {$in:user.savedRecipes}}).populate("reviews");
+      res.status(200).json(savedRecipes);
+
+    } catch (error) {
+      res.status(500).json({error: error.message})
+    }
+  })
   
   // Get a single recipe by ID
   export const getRecipeById = asyncHandler(async (req, res) => {
@@ -115,7 +199,6 @@ const require = createRequire(import.meta.url);
     }
   });
 
-  const { Configuration, OpenAIApi } = require("openai");
 
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY
@@ -125,24 +208,23 @@ const require = createRequire(import.meta.url);
   export const generateRecipe = asyncHandler(async (req,res) => {
     try {
       const user = req.user;
-      const {ingredients, servingSize, utensils, time, diet, mealType, measurement} = req.body;
+      const {ingredients, servingSize, utensils, cookingTime, diet, mealType, measurement} = req.body;
       const prompt = `
       Generate me a recipe
   
       Ingredients: ${ingredients.toString()},
       Serving Size: ${servingSize.toString()},
       Cooking Utensils: ${utensils.toString()},
-      Cooking Time: ${time.toString()},
+      Cooking Time: ${cookingTime.toString()},
       Dietary Restrictions: ${diet.toString()},
       Meal Type: ${mealType.toString()},
-      Measurement System: ${measurement.toString()}
-      Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan", otherwise leave it empty
-  
-      If one ingredient is "yoghurt", then 
+      Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan"; if ingredient is "cream cheese", then "Exquisia"; if ingredient is one of {"oat", "oats", "oatmeal"}, then "Köln"; otherwise leave it empty
+
   
       generate it in the following json format:
+
       {
-        "title": "Recipe Title",
+        "title": "Title",
         "ingredients": [
           {
             "name": "Ingredient Name",
@@ -160,23 +242,26 @@ const require = createRequire(import.meta.url);
         "tenWordSummary": "10-Word Recipe Summary",
         "measurementSystem": "Measurement System"
       }
+
+      Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
+      If there are any other ingrtedients that are used in the recipe other than the ingredients listed above, then add them to the JSON under ingredients as well.
       `
       const completion = await openai.createCompletion({
         model: "text-davinci-003",
         prompt: prompt,
         max_tokens: 1000
       });
-      
+
+      console.log(completion.data.choices[0].text);
       const response = JSON.parse(completion.data.choices[0].text);
-  
       var recipeSummary = response.tenWordSummary.toString();
       recipeSummary = recipeSummary.replaceAll(/ /g, "%20");
   
       const photoUrl = "https://image.pollinations.ai/prompt/" + recipeSummary;
-      
       response.photoUrl = photoUrl;   
+      const tags = [response.instruction.cookingTime, response.instruction.mealType, response.instruction.diet];
       
-  /*
+  
       const instruction = new Recipe.instructionModel({
         narrative: response.instruction.narrative,
         cookingTime: response.instruction.cookingTime,
@@ -191,14 +276,15 @@ const require = createRequire(import.meta.url);
         instruction: response.instruction,
         photo: response.photoUrl,
         createdBy: user._id,
-        isGenerated: true
+        isGenerated: true,
+        tags: tags
   
       });
       await recipe.save();
   
       user.createdRecipes.push(recipe._id);
       await user.save();
-  */
+  
   
       res.status(201).json(response);
   
@@ -213,7 +299,12 @@ const require = createRequire(import.meta.url);
   export const saveRecipe = asyncHandler(async (req, res) => {
    try {
     const user = req.user;
-    const recipe = await Recipe.recipeModel.findById(req.params.id);
+    const recipe = await Recipe.recipeModel.findById(req.params.id).populate("reviews");
+    console.log(recipe);
+
+    if (!recipe) {
+      return res.status(404).json({error: "recipe not found"});
+    }
 
     if (recipe.createdBy == user._id) {
       user.createdRecipes.push(recipe._id);
@@ -223,11 +314,11 @@ const require = createRequire(import.meta.url);
     await user.save();
     
     res.status(201).send("Recipe saved successfully!")
+   
    } catch (error) {
     res.status(500).json({error: error.message});
    }
   });
-
 
   //Can'a sor
   export const modifyRecipe = asyncHandler(async (req,res) => {  
@@ -245,4 +336,4 @@ const require = createRequire(import.meta.url);
 
   });
 
-  export default { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, modifyRecipe };
+  export default { createRecipe, getAllRecipes, getSavedRecipes, getCreatedRecipes, filterRecipes, getRecipeById, updateRecipe, deleteRecipe, generateRecipe, modifyRecipe, saveRecipe };

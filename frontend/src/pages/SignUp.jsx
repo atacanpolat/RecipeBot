@@ -14,8 +14,6 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Header from '../components/Header';
 import theme from '../components/helpers/themes';
-
-
 import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -60,7 +58,7 @@ export default function SignUp() {
       useEffect(() => {
         if(isError) {
           toast.error('🦄' + message, {
-            position: "bottom-center",
+            position: "top-center",
             theme: "dark",
             });
 
@@ -84,7 +82,7 @@ export default function SignUp() {
     
         if (password !== password2) {
             toast.error('Passwords do not match', 
-            {position: 'bottom-center',
+            {position: 'top-center',
             theme:'dark'})
         } else {
             const userData = {

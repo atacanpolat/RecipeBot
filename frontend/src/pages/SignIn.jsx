@@ -69,8 +69,9 @@ export default function SignIn() {
             });
         } 
     
-        if (isSuccess || user) {
-          navigate('/')
+        if (isSuccess && user.token || user) {
+          localStorage.setItem('jwt', user.token);
+          navigate('/home')
         }
     
         dispatch(reset())

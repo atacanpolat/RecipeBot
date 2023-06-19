@@ -37,11 +37,62 @@ h3 {
 
 .container {
   width: 100%;
-  max-width: 960px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
 }
+
+.header-private-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 50px;
+  background-color: #fff;
+}
+
+.header-private {
+  height: 100vh;
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #e6e6e6;
+}
+.header-private ul {
+  list-style-type: none;
+  text-align: left;
+}
+.header-private ul li {
+  margin: 10px 0px;
+}
+.header-private a {
+  text-transform: none;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; 
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  flex: "0 0 auto";
+}
+
+
 
 .header {
   display: flex;
@@ -49,7 +100,7 @@ h3 {
   align-items: center;
   padding: 20px 0;
   border-bottom: 1px solid #e6e6e6;
-  margin-bottom: 60px;
+  width: 100%;
 }
 .header-private-top {
   display: flex;

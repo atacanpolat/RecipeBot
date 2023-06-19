@@ -6,7 +6,8 @@ import asyncHandler from "express-async-handler";
 export const createReview = asyncHandler(async (req,res) => {
     try {
         const user = req.user;
-        const recipeId = req.params.id;
+        const {recipeId, text, rating} = req.body;
+        console.log(req.params);
         const recipe = await Recipe.recipeModel.findById(recipeId);
         
 
@@ -19,10 +20,13 @@ export const createReview = asyncHandler(async (req,res) => {
             rating,
             createdBy: user._id,
           });
-          await recipe.save();
+          await review.save();
       
           user.reviewsWritten.push(recipe._id);
           await user.save();
+          recipe.reviews.push(review);
+          await recipe.save();
+
       
           res.status(201).json(review);
 
@@ -34,8 +38,7 @@ export const createReview = asyncHandler(async (req,res) => {
   export const updateReview = asyncHandler(async (req, res) => {
     try {
       const user = req.user;
-      const { id } = req.params;
-      const { text, rating } = req.body;
+      const { id, text, rating } = req.body;
       
       const review = await Review.reviewModel.findById(id);
       if (!review) {
