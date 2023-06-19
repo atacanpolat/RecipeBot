@@ -339,7 +339,7 @@ export const useRecipeContainerStyles = makeStyles(() => ({
     },
     filterSelect: {
       marginRight: theme.spacing(2),
-      minWidth: 150,
+      minWidth: 200,
     },
     filterCheckboxGroup: {
       display: "flex",
