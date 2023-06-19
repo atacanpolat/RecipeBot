@@ -1,9 +1,11 @@
 import express from "express";
 import * as dotenv from "dotenv";
 import cors from "cors";
-import fileupload from "express-fileupload";
+//import fileupload from "express-fileupload";
 import bodyParser from "body-parser";
 import { Server } from 'http';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 
 import connectDB from "./mongodb/connect.js";
@@ -11,7 +13,7 @@ import userRouter from './routes/user.routes.js'
 import recipeRouter from './routes/recipe.routes.js';
 import reviewRouter from './routes/review.routes.js';
 import errorHandler from './middleware/errorMiddleware.js';
-
+import path from "path";
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import { fileURLToPath } from 'url';
@@ -25,7 +27,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(fileupload());
+app.use('/photos', express.static(path.join(__dirname, 'photos')));
+//app.use(fileupload());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));

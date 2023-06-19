@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import {register, reset} from '../features/auth/authSlice'
 import Spinner from '../components/Spinner'
+import UploadButton from '../components/UploadButton';
 
 
 function Copyright(props) {
@@ -64,7 +65,8 @@ export default function SignUp() {
 
         }
         if(isSuccess || user) {
-            navigate('/')
+            localStorage.setItem('jwt', user.token);
+            navigate('/setAvatar')
         }
         dispatch(reset())
     
@@ -193,7 +195,6 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               style={{backgroundColor:theme.palette.violet.dark}}
-
             >
               Sign Up
             </Button>

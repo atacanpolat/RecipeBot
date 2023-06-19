@@ -14,186 +14,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import PersonIcon from '@mui/icons-material/Person';
 import theme from "./helpers/themes";
 import recipeService from "../features/recipe/recipeService";
-
-
-
-const useStyles = makeStyles(() => ({
-  container: {
-  },
-  content: {
-    margin: "0 auto",
-    display: "flex",
-    flexDirection: "column",
-    padding: theme.spacing(2),
-    [theme.breakpoints.up("lg")]: {
-      padding: theme.spacing(4),
-    },
-  },
-  headingWithControl: {
-    display: "flex",
-    flexDirection: "row",
-    width: "1400px",
-    maxWidth: "1524px",
-    alignItems: "center",
-    justifyContent: "space-between",
-    [theme.breakpoints.up("sm")]: {
-      flexDirection: "row",
-      alignItems: "stretch",
-    },
-  },
-  heading: {
-    ...theme.typography.h4,
-    marginBottom: theme.spacing(4),
-    [theme.breakpoints.up("sm")]: {
-      ...theme.typography.h3,
-      marginBottom: 0,
-    },
-  },
-
-  controlButton: {
-    marginLeft: theme.spacing(2),
-    borderRadius: "50%",
-    padding: theme.spacing(1.5),
-    backgroundColor: theme.palette.violet.main,
-    color: theme.palette.common.white,
-    "&:hover": {
-      backgroundColor: theme.palette.violet.light,
-    },
-  },
-  cardSlider: {
-    marginTop: theme.spacing(4),
-    width: "100%",
-    "& .slick-track": {
-      display: "flex",
-    },
-    "& .slick-slide": {
-      height: "auto",
-      display: "flex",
-      justifyContent: "center",
-      marginBottom: theme.spacing(1),
-    },
-  },
-  cardContainer: {
-    marginTop: theme.spacing(3),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '50%',
-      paddingRight: theme.spacing(10),
-    },
-    [theme.breakpoints.up('md')]: {
-      width: '33.33%',
-      paddingRight: theme.spacing(6),
-    },
-    [theme.breakpoints.up('lg')]: {
-      width: '25%',
-      paddingRight: theme.spacing(12),
-    },
-  },
-  card: {
-    height: 300,
-    width: 450,
-    display: "flex",
-    flexDirection: "column",
-    borderRadius: "3xl",
-    "&:focus": {
-      outline: "none",
-    },
-    "&:hover": {
-      opacity: 0.5,
-      transition: "0.3s",
-    }
-  },
-  cardImage: {
-    width: "100%",
-    height: 1000,
-    flex: 1,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    padding: "80px",
-    [theme.breakpoints.up("sm")]: {
-      borderTopRightRadius: "3xl",
-    },
-  },
-  titleReviewContainer: {
-    display: "flex",
-    flexDirection: "column",
-    [theme.breakpoints.up("sm")]: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-  },
-  title: {
-    ...theme.typography.h6,
-    marginBottom: theme.spacing(2),
-    whiteSpace: "pre-wrap", // Allow text to wrap to the next line
-    wordWrap: "break-word", // Break words if they exceed the width
-    textAlign: "center", // Center the text
-  },
-  ratingsInfo: {
-    display: "flex",
-    alignItems: "center",
-    marginLeft: theme.spacing(2),
-    marginTop: theme.spacing(1),
-    [theme.breakpoints.up("sm")]: {
-      marginTop: 0,
-    },
-  },
-  rating: {
-    marginLeft: theme.spacing(1),
-    fontWeight: "bold",
-  },
-  description: {
-    ...theme.typography.body2,
-    marginTop: theme.spacing(2),
-    opacity: "0.5",
-    [theme.breakpoints.up("sm")]: {
-      marginTop: theme.spacing(4),
-    },
-  },
-  secondaryInfoContainer: {
-    display: "flex",
-    flexDirection: "column",
-    [theme.breakpoints.up("sm")]: {
-      flexDirection: "row",
-    },
-  },
-  iconWithText: {
-    display: "flex",
-    alignItems: "center",
-    marginRight: theme.spacing(2),
-    marginTop: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      marginTop: 0,
-    },
-  },
-  iconContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 24,
-    height: 24,
-    borderRadius: "50%",
-    backgroundColor: theme.palette.grey[700],
-    color: theme.palette.common.white,
-  },
-  text: {
-    marginLeft: theme.spacing(1),
-    ...theme.typography.body2,
-    fontWeight: "bold",
-    color: theme.palette.text.primary,
-  },
-  primaryButton: {
-    ...theme.typography.button,
-    marginTop: "auto",
-    alignItems: "center",
-    borderRadius: "0",
-    backgroundColor: theme.palette.violet.light,
-    [theme.breakpoints.up("sm")]: {
-      borderTopRightRadius: "3xl",
-    },
-  },
-}));
+import { useRecipeSliderStyles } from "./helpers/styles/recipesStyles";
 
 function CreatedRecipesSlider({style}) {
 
@@ -206,7 +27,6 @@ function CreatedRecipesSlider({style}) {
         const recipes = await recipeService.getCreatedRecipes();
         const recipesData = await recipeService.calculateRecipeData(recipes); 
         setCards(recipesData);
-        console.log(cards);
       } catch (error) {
         console.error('Error fetching recipes:', error);
       }
@@ -215,7 +35,7 @@ function CreatedRecipesSlider({style}) {
     fetchData();
   }, []);
   
-  const classes = useStyles();
+  const classes = useRecipeSliderStyles();
   const [sliderRef, setSliderRef] = useState(null);
   const slidesToShow = cards.length > 2 ? 3 : cards.length;
   const sliderSettings = {

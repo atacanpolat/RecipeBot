@@ -17,7 +17,7 @@ const generateToken = (id) => {
 // @route   POST /api/v1/users/register
 // @access  Public
 const createUser = asyncHandler(async (req, res) => {
-    const { firstName, lastName, email, password} = req.body
+    const { firstName, lastName, email, password, avatar} = req.body
   
     if (!firstName || !email || !password) {
       res.status(400).json({status:400, message: 'Please add all fields.'});
@@ -48,24 +48,40 @@ const createUser = asyncHandler(async (req, res) => {
       firstName,
       lastName,
       email,
-      password: hashedPassword,
-      avatar: req.file ? req.file.path : null
+      password: hashedPassword
     })
   
     if (user) {
       res.status(201).json({
-        _id: user.id,
-        firstName: user.firstName,
-        lastname: user.lastName,
-        email: user.email,
-        token: generateToken(user._id),
-        status:201
+          user,
+          token: generateToken(user._id)
       })
     } else {
       res.status(400).json({status:400});
       throw new Error('Invalid user data')
     }
   });
+
+  const uploadAvatar = asyncHandler(async (req, res) => {
+    try {
+      const user = req.user;
+
+      if (!user) {
+        // User not found
+        res.status(404).json({ error: "User not found" });
+        return;
+      }
+      console.log(req.file);
+      user.avatar = req.file ? req.file.path : null;
+  
+      await user.save(); // Wait for the user to be saved
+  
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+  
 
 
 // @desc    Authenticate a user
@@ -82,12 +98,9 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   
     const passwordCorrect = await bcrypt.compare(password, user.password)
-  
     if (user != null && passwordCorrect) {
       res.json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
+        user,
         token: generateToken(user._id),
       })
     } else {
@@ -116,6 +129,7 @@ const getUserInfoById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 //TODO: update of the default settings
 const updateUserInfoById = async (req, res) => {
     try {
@@ -144,4 +158,4 @@ const updateUserInfoById = async (req, res) => {
     }
 };
 
-export { createUser, loginUser, getUserInfoById, updateUserInfoById };
+export { createUser, loginUser, uploadAvatar, getUserInfoById, updateUserInfoById };

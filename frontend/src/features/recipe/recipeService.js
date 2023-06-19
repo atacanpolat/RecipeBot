@@ -21,7 +21,6 @@ const getAllRecipes = async () => {
 const getCreatedRecipes = async() => {
     try {
         const token = localStorage.getItem('jwt');
-    
         const response = await axios.get(API_URL_RECIPE + '/created', {
           headers: {
             Authorization: `Bearer ${token}`,

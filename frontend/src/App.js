@@ -9,18 +9,27 @@ import Generate from "./pages/Generate";
 import PrivateHomePage from "./pages/PrivateHomepage"
 import SearchRecipesPage from "./pages/SearchRecipesPage";
 import SavedRecipesPage from "./pages/SavedRecipesPage";
+import SetAvatarPage from "./pages/SetAvatarPage";
 
 function App() {
   return (
     <>
-    <Router>
-    <div className="container">
-      <Routes>
-        <Route path='/' element={<Homepage />}/>
-        <Route path='/login' element={<SignIn />}/>
-        <Route path='/register' element={<SignUp />}/>
-      </Routes>
-      <ToastContainer/>
+      <Router>
+        <div className="container">
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/login" element={<SignIn />} />
+            <Route path="/register" element={<SignUp />} />
+            <Route path='/setAvatar' element={<SetAvatarPage/>}/>
+            <Route path="/generate" element={<Generate />} />
+            <Route path="/inspiration" element={<SearchRecipesPage />}/>
+          </Routes>
+          <ToastContainer />
+        </div>
+        <div className="container-private">
+          <Routes>
+            <Route path="/home" element={<PrivateHomePage />} />
+            <Route path="/saved" element={<SavedRecipesPage />}/>
 
     </div>
     </Router>

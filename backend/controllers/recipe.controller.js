@@ -1,6 +1,4 @@
 import Recipe from "../mongodb/models/recipe.js";
-import User from "../mongodb/models/user.js";
-import Review from "../mongodb/models/review.js";
 import asyncHandler from "express-async-handler";
 
 import { createRequire } from 'module';
@@ -68,11 +66,11 @@ const { Configuration, OpenAIApi } = require("openai");
       }
   
       if (includeIngredients && includeIngredients.length > 0) {
-        query["ingredients.name"] = { $in: includeIngredients };
+        query["ingredients.name"] = { $regex: includeIngredients.join("|"), $options: "i" };
       }
   
       if (excludeIngredients && excludeIngredients.length > 0) {
-        query["ingredients.name"] = { $nin: excludeIngredients };
+        query["ingredients.name"] = { $regex: excludeIngredients.join("|"), $options: "i" };
       }
   
       if (mealType) {
@@ -256,10 +254,12 @@ const { Configuration, OpenAIApi } = require("openai");
       const response = JSON.parse(completion.data.choices[0].text);
       var recipeSummary = response.tenWordSummary.toString();
       recipeSummary = recipeSummary.replaceAll(/ /g, "%20");
+
+      response.ingredients.name = response.ingredients.name.charAt(0).toLowerCase();
   
       const photoUrl = "https://image.pollinations.ai/prompt/" + recipeSummary;
       response.photoUrl = photoUrl;   
-      const tags = [response.instruction.cookingTime, response.instruction.mealType, response.instruction.diet];
+      const tags = [ response.instruction.mealType, response.instruction.diet, response.instruction.cookingTime ];
       
   
       const instruction = new Recipe.instructionModel({

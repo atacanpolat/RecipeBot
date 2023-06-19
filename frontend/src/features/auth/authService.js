@@ -29,4 +29,4 @@ const authService = {
     login
 }
 
-export default authService
+export default authService;

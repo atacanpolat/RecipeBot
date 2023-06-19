@@ -334,7 +334,7 @@ export const useRecipeContainerStyles = makeStyles(() => ({
     },
     filterButton: {
       marginRight: theme.spacing(2),
-      backgroundColor: theme.palette.violet.light,
+      backgroundColor: theme.palette.violet.main,
       color: theme.palette.grey[100]
     },
     filterSelect: {
@@ -348,13 +348,13 @@ export const useRecipeContainerStyles = makeStyles(() => ({
 
     includedIngredient: {
         marginRight: theme.spacing(1),
-        backgroundColor: "#00e676", // Green color for included ingredients
-        color: "#ffffff",
+        backgroundColor: theme.palette.green.main, // Green color for included ingredients
+        color: theme.palette.grey[100],
       },
       excludedIngredient: {
         marginRight: theme.spacing(1),
-        backgroundColor: "#ff1744", // Red color for excluded ingredients
-        color: "#ffffff",
+        backgroundColor: theme.palette.red.main, // Red color for excluded ingredients
+        color: theme.palette.grey[100],
       },
   }));
 
