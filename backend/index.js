@@ -16,8 +16,6 @@ import errorHandler from './middleware/errorMiddleware.js';
 import path from "path";
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-import { fileURLToPath } from 'url';
-import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
