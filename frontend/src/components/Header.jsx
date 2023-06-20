@@ -1,27 +1,51 @@
-import React from 'react'
-import {FaSignInAlt, FaSignOutAlt, FaUser} from 'react-icons/fa';
-import {Link} from 'react-router-dom'
+// Header.js
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 
 function Header() {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  const logoutUser = () => {
+    dispatch(logout());
+  };
+
   return (
-    <header className='header'>
-        <div className='logo'>
-            <Link to='/'>RecipeBot</Link>
-        </div>
-        <ul>
+    <header className="header">
+      <NavLink exact to="/" activeClassName="active">
+        Home
+      </NavLink>
+      <ul>
+        {!user ? (
+          <>
             <li>
-                <Link to='/login'>
-                    <FaSignInAlt /> Login
-                </Link>
+              <NavLink to="/register" activeClassName="active">
+                Register
+              </NavLink>
             </li>
             <li>
-                <Link to='/register'>
-                    <FaUser /> Register
-                </Link>
+              <NavLink to="/login" activeClassName="active">
+                Login
+              </NavLink>
             </li>
-        </ul>
+          </>
+        ) : (
+          <>
+            <li>
+              <NavLink to="/profile" activeClassName="active">
+                <FaUser /> {user.name}
+              </NavLink>
+            </li>
+            <li>
+              <button onClick={logoutUser}>Logout</button>
+            </li>
+          </>
+        )}
+      </ul>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;

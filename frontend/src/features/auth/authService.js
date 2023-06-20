@@ -1,32 +1,35 @@
-import axios from 'axios'
+import axios from 'axios';
+const baseURL = 'http://localhost:3000';
 
-const API_URL = 'http://localhost:8000/api/v1/users/'
-
-//Register user
-const register = async (userData) => {
-    const response = await axios.post(API_URL + 'register', userData)
-
-    if(response.data) {
-        localStorage.setItem('user', JSON.stringify(response.data))
-    }
-    return response.data
-}
+// Register user
+export const register = async (userData) => {
+  const response = await axios.post(`${baseURL}/api/auth/register`, userData);
+  if (response.data) {
+    localStorage.setItem('user', JSON.stringify(response.data));
+  }
+  return response.data;
+};
 
 // Login user
-const login = async (userData) => {
-    const response = await axios.post(API_URL + 'login', userData)
-  
-    if (response.data) {
-      localStorage.setItem('user', JSON.stringify(response.data))
-    }
-  
-    return response.data
+export const login = async (userData) => {
+  const response = await axios.post(`${baseURL}/api/auth/login`, userData);
+  if (response.data) {
+    localStorage.setItem('user', JSON.stringify(response.data));
   }
-  
+  return response.data;
+};
+
+// Update user profile
+export const updateUserProfile = async (userData) => {
+  const response = await axios.put(`${baseURL}/api/user/profile`, userData);
+  return response.data;
+};
 
 const authService = {
-    register,
-    login
-}
+  register,
+  login,
+  updateUserProfile,
+};
 
-export default authService
+export default authService;
+

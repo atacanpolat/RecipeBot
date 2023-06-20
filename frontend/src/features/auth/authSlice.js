@@ -1,87 +1,80 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit'
-import authService from './authService';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { register, login, updateUserProfile  } from './authService';
 
-//Get user from localStorage
-const user = JSON.parse(localStorage.getItem('user'));
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: { user: null, status: 'idle', error: null },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Add user to state
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(registerUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Add user to state
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      });
+  },
+});
 
-const initialState = {
-    user: user ? user : null,
-    isError: false,
-    isSuccess: false,
-    isLoading: false,
-    message: ''
-}
-
-//Register user
-export const register = createAsyncThunk('auth/register', async (user, thunkAPI) => {
+export const loginUser = createAsyncThunk(
+  'auth/login',
+  async (userData, { rejectWithValue }) => {
     try {
-        return await authService.register(user);
-    } catch (error) {
-        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString()
-        return thunkAPI.rejectWithValue(message)
+      const user = await login(userData.email, userData.password);
+      return user;
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
-})
-
-// Login user
-export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
-  try {
-    return await authService.login(user)
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString()
-    return thunkAPI.rejectWithValue(message)
   }
-})
+);
 
-
-export const authSlice = createSlice({
-    name: 'auth',
-    initialState,
-    reducers: {
-     reset: (state) => {
-        state.isLoading = false
-        state.isSuccess = false
-        state.isError = false
-        state.message = ''
-     }
-
-    },
-    extraReducers: (builder) => {
-        builder
-          .addCase(register.pending, (state) => {
-            state.isLoading = true
-          })
-          .addCase(register.fulfilled, (state, action) => {
-            state.isLoading = false
-            state.isSuccess = true
-            state.user = action.payload
-          })
-          .addCase(register.rejected, (state, action) => {
-            state.isLoading = false
-            state.isError = true
-            state.message = action.payload
-            state.user = null
-          })
-          .addCase(login.pending, (state) => {
-            state.isLoading = true
-          })
-          .addCase(login.fulfilled, (state, action) => {
-            state.isLoading = false
-            state.isSuccess = true
-            state.user = action.payload
-          })
-          .addCase(login.rejected, (state, action) => {
-            state.isLoading = false
-            state.isError = true
-            state.message = action.payload
-            state.user = null
-          })
-    
-
+export const registerUser = createAsyncThunk(
+  'auth/register',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const user = await register(userData.name, userData.email, userData.password);
+      return user;
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
-})
+  }
+);
 
-export const {reset} = authSlice.actions
-export default authSlice.reducer
+export const updateUser = createAsyncThunk(
+  'auth/updateUser',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const updatedUser = await updateUserProfile(userData);
+      return updatedUser;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+
+
+
+export default authSlice.reducer;
+// Export loginUser and registerUser as login and register respectively
+export { loginUser as login, registerUser as register };
