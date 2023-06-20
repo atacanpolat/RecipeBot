@@ -145,7 +145,7 @@ const GenerateInputComponent = ({}) => {
         </Button>
 
         {/* CHIPS WITH INGREDIENT LISTS */}
-        <div>
+        <div style={{ margin: "20px 0" }}>
           {includeIngredients.map((ingredient) => (
             <Chip
               key={ingredient}
@@ -264,6 +264,7 @@ const GenerateInputComponent = ({}) => {
                 </FormControl>
               )}
             />
+            <div style={{ marginTop: "20px" }}></div>
             <FormControl>
               <Button type="submit" variant="contained" fullWidth>
                 GENERATE RECIPE
