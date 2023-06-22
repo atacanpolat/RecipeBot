@@ -1,5 +1,6 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
+import { useState } from "react";
+import { Button, Avatar } from '@mui/material';
 import { useHeaderPrivateStyles, useHeaderPrivateTopStyles } from "./helpers/styles/headerStyles";
 import { Link } from "react-router-dom";
 
@@ -12,7 +13,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PersonIcon from '@mui/icons-material/Person';
 import logo from "../images/logo.png";
-import { PrimaryButton } from "./helpers/themes";
+import { PrimaryButton, theme } from "./helpers/themes";
 
 
 
@@ -66,6 +67,12 @@ export const HeaderPrivateTop = () => {
   const classes = useHeaderPrivateTopStyles();
   const user = JSON.parse(localStorage.getItem('user'));
 
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleDropdownToggle = () => {
+    setDropdownOpen(!isDropdownOpen);
+  };
+
   return (
     <header className="header-private-top" style={{marginBottom:'20px'}}>
       <div className="logo">
@@ -75,15 +82,32 @@ export const HeaderPrivateTop = () => {
         </a>
       </div>
       <div className="user-info">
-      <PrimaryButton
-            startIcon={<PersonIcon />}
-            href="/settings"
-          >
-            {user.user.firstName + ' ' + user.user.lastName}
-          </PrimaryButton>
+        <PrimaryButton
+          startIcon={<Avatar src={'http://localhost:8000/' + user.avatar} style={{ border: `2px solid ${theme.palette.common.white}` }} />}
+          onClick={handleDropdownToggle}
+        >
+          {user.firstName + ' ' + user.lastName}
+        </PrimaryButton>
+        {isDropdownOpen && <DropdownMenu />}
       </div>
     </header>
   );
-}
+};
+
+const DropdownMenu = () => {
+
+  const handleLogOut = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('jwt');
+
+  }
+  return (
+    <ul className="dropdown-menu">
+      <li><a href="/settings">Settings</a></li>
+      <li><a href="/profile">Profile</a></li>
+      <li><a onClick={handleLogOut} href="/">Logout</a></li>
+    </ul>
+  );
+};
 
 export default {HeaderPrivate, HeaderPrivateTop};

@@ -66,6 +66,7 @@ export default function SignUp() {
         }
         if(isSuccess || user) {
             localStorage.setItem('jwt', user.token);
+            localStorage.setItem('user', JSON.stringify(user.user));
             navigate('/setAvatar')
         }
         dispatch(reset())

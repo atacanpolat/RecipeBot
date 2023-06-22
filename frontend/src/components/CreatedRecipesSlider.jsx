@@ -15,6 +15,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import theme from "./helpers/themes";
 import recipeService from "../features/recipe/recipeService";
 import { useRecipeSliderStyles } from "./helpers/styles/recipesStyles";
+import RecipeCard from "./RecipeCard";
 
 function CreatedRecipesSlider({style}) {
 
@@ -76,36 +77,7 @@ function CreatedRecipesSlider({style}) {
         <div style={{width:"1450px", overflowX:"scroll", paddingLeft:"40px"}}>
         <Slider ref={setSliderRef} {...sliderSettings} className={classes.cardSlider}>
           {cards.map((card, index) => (
-            <div className={classes.cardContainer} key={index}>
-              <Card className={classes.card} component='a' href={card.recipeUrl}>
-                <CardMedia className={classes.cardImage} image={card.imgSrc}/>
-                <CardContent className={classes.textInfo}>
-                <div className={classes.titleReviewContainer}>
-                  <Typography variant="h5" className={classes.title}>
-                    {card.title}
-                  </Typography>
-                  <div className={classes.ratingsInfo}>
-                      <StarIcon />
-                      <Typography variant="body2" className={classes.rating}>
-                        {card.meanRating}
-                        <a style={{opacity:'0.7', fontWeight:1}}>({card.reviewCount})</a>
-                      </Typography>
-                  </div>
-                </div>
-                <div className={classes.secondaryInfoContainer}>
-                  <div className={classes.iconWithText}>
-                    <Typography variant="body2" className={classes.text}>
-                      {card.tags}
-                    </Typography>
-                  </div>
-                </div>
-                <Typography variant="body2" className={classes.description}>
-                  {card.tags}
-                </Typography>
-              </CardContent>
-              <Button className={classes.primaryButton}>Book Now</Button>
-            </Card>
-            </div>
+            <RecipeCard card={card} key={index} isSlider={true}/>
           ))}   
         </Slider>
         </div>

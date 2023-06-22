@@ -71,6 +71,7 @@ export default function SignIn() {
     
         if (isSuccess && user.token || user) {
           localStorage.setItem('jwt', user.token);
+        //  localStorage.setItem('user', JSON.stringify(user))
           navigate('/home')
         }
     

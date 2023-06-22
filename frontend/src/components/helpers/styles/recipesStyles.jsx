@@ -4,7 +4,7 @@ import theme from "../themes";
 
 export const useRecipeContainerStyles = makeStyles(() => ({
     cardContainer: {
-      marginTop: theme.spacing(10),
+      marginTop: theme.spacing(2),
       width: '100%',
       [theme.breakpoints.up('sm')]: {
         width: '50%',
@@ -156,7 +156,7 @@ export const useRecipeContainerStyles = makeStyles(() => ({
     headingWithControl: {
       display: "flex",
       flexDirection: "row",
-      width: "1400px",
+      width: "78vw",
       maxWidth: "1524px",
       alignItems: "center",
       justifyContent: "space-between",

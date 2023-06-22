@@ -8,6 +8,7 @@ export const theme = createTheme({
         dark: deepPurple[700],
         main: deepPurple[500],
         light: deepPurple[200],
+        ultralight: deepPurple[100],
       },
       green : {
         dark: green[900],

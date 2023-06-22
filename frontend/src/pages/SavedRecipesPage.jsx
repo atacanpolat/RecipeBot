@@ -19,6 +19,7 @@ import {
 import { HeaderPrivate, HeaderPrivateTop } from "../components/HeaderPrivate";
 import FilteringComponent from "../components/FilteringComponent";
 import { useRecipeContainerStyles } from "../components/helpers/styles/recipesStyles";
+import RecipeCard from "../components/RecipeCard";
 
 const SavedRecipesPage = () => {
   const classes = useRecipeContainerStyles();
@@ -142,55 +143,8 @@ const SavedRecipesPage = () => {
                         lg={4}
                         className={classes.cardContainer}
                       >
-                        <Card
-                          className={classes.card}
-                          component="a"
-                          href={card.recipeUrl}
-                        >
-                          <CardMedia
-                            className={classes.cardImage}
-                            image={card.imgSrc}
-                          />
-                          <CardContent className={classes.textInfo}>
-                            <div className={classes.titleReviewContainer}>
-                              <Typography
-                                variant="h5"
-                                className={classes.title}
-                              >
-                                {card.title}
-                              </Typography>
-                              <div className={classes.ratingsInfo}>
-                                <StarIcon />
-                                <Typography
-                                  variant="body2"
-                                  className={classes.rating}
-                                >
-                                  {card.meanRating}
-                                  <a style={{ opacity: "0.7", fontWeight: 1 }}>
-                                    ({card.reviewCount})
-                                  </a>
-                                </Typography>
-                              </div>
-                            </div>
-                            <div className={classes.secondaryInfoContainer}>
-                              <div className={classes.iconWithText}>
-                                <Typography
-                                  variant="body2"
-                                  className={classes.text}
-                                >
-                                  {card.tags}
-                                </Typography>
-                              </div>
-                            </div>
-                            <Typography
-                              variant="body2"
-                              className={classes.description}
-                            >
-                              {card.tags}
-                            </Typography>
-                          </CardContent>
-                        </Card>
-                      </Grid>
+                        <RecipeCard card={card} key={index} isSlider={false}/>
+                     </Grid>
                     ))}
                 </Grid>
               </Grid>

@@ -17,7 +17,7 @@ const generateToken = (id) => {
 // @route   POST /api/v1/users/register
 // @access  Public
 const createUser = asyncHandler(async (req, res) => {
-    const { firstName, lastName, email, password, avatar} = req.body
+    const { firstName, lastName, email, password} = req.body
   
     if (!firstName || !email || !password) {
       res.status(400).json({status:400, message: 'Please add all fields.'});

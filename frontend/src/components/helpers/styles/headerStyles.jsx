@@ -141,4 +141,88 @@ export const useHeaderPrivateStyles = makeStyles(() => ({
         marginRight: "0.75rem",
       },
     },
+
+    dropdownContent: {
+      display: 'none',
+      position: 'absolute',
+      top: '100%',
+      left: 0,
+      backgroundColor: '#f9f9f9',
+      minWidth: '160px',
+      boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+      zIndex: 1,
+      '& ul': {
+        listStyleType: 'none',
+        margin: 0,
+        padding: 0,
+      },
+      '& li': {
+   //     padding: '12px 16px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s',
+        '&:hover': {
+          backgroundColor: '#ddd',
+        },
+        '& a': {
+          color: '#333333',
+          textDecoration: 'none',
+        },
+      },
+    },
+    dropdownOpen: {
+      display: 'block',
+    },
+  }));
+
+  export const dropdownMenuStyles = makeStyles(() => ({
+    dropdown: {
+      position: 'relative',
+      display: 'inline-block',
+    },
+    dropdownButton: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      border: 'none',
+      cursor: 'pointer',
+      outline: 'none',
+      padding: '8px',
+      fontSize: '16px',
+      color: '#555555',
+      transition: 'color 0.3s',
+      '&:hover': {
+        color: '#333333',
+      },
+    },
+    dropdownContent: {
+      display: 'none',
+      position: 'absolute',
+      top: '100%',
+      left: 0,
+      backgroundColor: '#f9f9f9',
+      minWidth: '160px',
+      boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+      zIndex: 1,
+      '& ul': {
+        listStyleType: 'none',
+        margin: 0,
+        padding: 0,
+      },
+      '& li': {
+        padding: '12px 16px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s',
+        '&:hover': {
+          backgroundColor: '#ddd',
+        },
+        '& a': {
+          color: '#333333',
+          textDecoration: 'none',
+        },
+      },
+    },
+    dropdownOpen: {
+      display: 'block',
+    },
   }));
