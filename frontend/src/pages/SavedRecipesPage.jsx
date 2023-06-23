@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
-import recipeService from "../features/recipe/recipeService";
-
 import {
   Container,
-  Grid,
-  Typography,
-  Card,
-  CardMedia,
-  CardContent,
+  Grid
 } from "@material-ui/core";
-import StarIcon from "@mui/icons-material/Star";
-
 import {
   theme,
   SectionHeading,
@@ -20,6 +12,8 @@ import { HeaderPrivate, HeaderPrivateTop } from "../components/HeaderPrivate";
 import FilteringComponent from "../components/FilteringComponent";
 import { useRecipeContainerStyles } from "../components/helpers/styles/recipesStyles";
 import RecipeCard from "../components/RecipeCard";
+import recipeService from "../features/recipe/recipeService";
+
 
 const SavedRecipesPage = () => {
   const classes = useRecipeContainerStyles();
@@ -127,9 +121,9 @@ const SavedRecipesPage = () => {
                   </button>
                 </div>
               </Grid>
-
-              <FilteringComponent onFilterSubmit={handleFilterSubmit} />
-
+              <Grid item xs={12}>
+                <FilteringComponent onFilterSubmit={handleFilterSubmit} />
+              </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={4} className={classes.cards}>
                   {(activeTab === "saved" ? savedRecipes : createdRecipes)

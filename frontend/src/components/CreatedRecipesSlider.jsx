@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   Button,
   Typography,
-  Card,
-  CardMedia,
-  CardContent,
 } from "@material-ui/core";
-import StarIcon from '@mui/icons-material/Star';
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import PersonIcon from '@mui/icons-material/Person';
-import theme from "./helpers/themes";
 import recipeService from "../features/recipe/recipeService";
 import { useRecipeSliderStyles } from "./helpers/styles/recipesStyles";
 import RecipeCard from "./RecipeCard";

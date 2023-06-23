@@ -148,7 +148,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.filterContainer}>
+      <div >
         <TextField
           label="Type Ingredient"
           value={newIngredient}
@@ -168,14 +168,13 @@ const FilteringComponent = ({ onFilterSubmit }) => {
         >
           Exclude
         </Button>
-        <div>
+        <div style={{margin: "20px 0"}}>
           {includeIngredients.map((ingredient) => (
             <Chip
               key={ingredient}
               label={ingredient}
               className={classes.includedIngredient}
               onDelete={() => handleRemoveIncludedIngredient(ingredient)}
-              deleteIcon={<AddIcon />}
             />
           ))}
           {excludeIngredients.map((ingredient) => (
@@ -252,7 +251,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
           <FormGroup>{/* Render cooking utensils checkboxes */}</FormGroup>
         </FormControl>
       </div>
-      
+      <div className={classes.filterContainer} >
       <PrimaryButton
         variant="contained"
         onClick={handleFilterSubmit}
@@ -260,6 +259,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
       >
         Apply Filters
       </PrimaryButton>
+      </div>
     </div>
   );
 };

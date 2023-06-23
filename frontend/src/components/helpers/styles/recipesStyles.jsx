@@ -109,6 +109,15 @@ export const useRecipeContainerStyles = makeStyles(() => ({
         fontWeight: "bold",
         color: theme.palette.text.primary,
       },
+      heading: {
+        ...theme.typography.h4,
+        marginBottom: theme.spacing(4),
+        alignItems: "center",
+        [theme.breakpoints.up("sm")]: {
+          ...theme.typography.h3,
+          marginBottom: 0,
+        },
+      },
       tabContainer: {
         display: "flex",
         flexDirection: "row",
@@ -250,9 +259,9 @@ export const useRecipeContainerStyles = makeStyles(() => ({
     title: {
       ...theme.typography.h6,
       marginBottom: theme.spacing(2),
-      whiteSpace: "pre-wrap", // Allow text to wrap to the next line
-      wordWrap: "break-word", // Break words if they exceed the width
-      textAlign: "center", // Center the text
+      whiteSpace: "pre-wrap", 
+      wordWrap: "break-word", 
+      textAlign: "center", 
     },
     ratingsInfo: {
       display: "flex",
@@ -322,10 +331,11 @@ export const useRecipeContainerStyles = makeStyles(() => ({
   export const useFilterStyles = makeStyles(() => ({
     container: {
         display: "flex",
-        justifyContent: "center", // Center the filters horizontally
-        alignItems: "flex-start", // Align the filters at the top vertically
+        justifyContent: "center", 
+        alignItems: "flex-start", 
       },
     filterContainer: {
+      display: "flex",
       alignItems: "center",
       marginBottom: theme.spacing(2),
     },
@@ -348,12 +358,12 @@ export const useRecipeContainerStyles = makeStyles(() => ({
 
     includedIngredient: {
         marginRight: theme.spacing(1),
-        backgroundColor: theme.palette.green.main, // Green color for included ingredients
+        backgroundColor: theme.palette.green.main, 
         color: theme.palette.grey[100],
       },
       excludedIngredient: {
         marginRight: theme.spacing(1),
-        backgroundColor: theme.palette.red.main, // Red color for excluded ingredients
+        backgroundColor: theme.palette.red.main, 
         color: theme.palette.grey[100],
       },
   }));

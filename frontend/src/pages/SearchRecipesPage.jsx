@@ -5,16 +5,8 @@ import { SectionHeading, PrimaryButton } from "../components/helpers/themes";
 import {HeaderPrivate, HeaderPrivateTop} from "../components/HeaderPrivate";
 import FilteringComponent from "../components/FilteringComponent";
 import { useRecipeContainerStyles } from "../components/helpers/styles/recipesStyles";
-
-import {
-    Container, 
-    Grid,
-    Typography,
-    Card,
-    CardMedia,
-    CardContent,
-  } from "@material-ui/core";
-import StarIcon from '@mui/icons-material/Star';
+import {Container, Grid} from "@material-ui/core";
+import RecipeCard from "../components/RecipeCard";
 
 
 const SearchRecipesPage = () => {
@@ -61,63 +53,28 @@ const SearchRecipesPage = () => {
       <div style={{display:"flex"}}>
         <HeaderPrivate className="sideNav" style={{flex: "0 0 auto", zIndex: "1"}}/>
         <div style={{display:"flex", flexDirection: "column", flex: "1 1 auto"}}>
-      <Container>
-        <Grid container spacing={4}>
-          <Grid item xs={12}>
+          <Container>
             <SectionHeading className={classes.heading}>Search for Recipes</SectionHeading>
-          </Grid>
-
-          <FilteringComponent onFilterSubmit={handleFilterSubmit}/>       
-
-          <Grid item xs={12}>
-            <Grid container spacing={4} className={classes.cards}>
+            <FilteringComponent onFilterSubmit={handleFilterSubmit}/>       
+            <Grid item xs={12}>
+              <Grid container spacing={4} className={classes.cards}>
                 {cards.slice(0, visible).map((card, index) => (
-                <Grid item key={index} xs={12} sm={6} lg={4} className={classes.cardContainer}>
-                  <Card className={classes.card} component='a' href={card.recipeUrl}>
-                    <CardMedia className={classes.cardImage} image={card.imgSrc}/>
-                    <CardContent className={classes.textInfo}>
-                        <div className={classes.titleReviewContainer}>
-                        <Typography variant="h5" className={classes.title}>
-                            {card.title}
-                        </Typography>
-                        <div className={classes.ratingsInfo}>
-                            <StarIcon />
-                            <Typography variant="body2" className={classes.rating}>
-                                {card.meanRating}
-                                <a style={{opacity:'0.7', fontWeight:1}}>({card.reviewCount})</a>
-                            </Typography>
-                        </div>
-                        </div>
-                        <div className={classes.secondaryInfoContainer}>
-                          <div className={classes.iconWithText}>
-                            <Typography variant="body2" className={classes.text}>
-                              {card.tags}
-                            </Typography>
-                          </div>
-                        </div>
-                        <Typography variant="body2" className={classes.description}>
-                              {card.tags}
-                        </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                  <Grid item key={index} xs={12} sm={6} lg={4} className={classes.cardContainer}>
+                    <RecipeCard card={card} key={index} isSlider={false} />
+                  </Grid>
                 ))}
+              </Grid>
             </Grid>
-        </Grid>
-        {visible < cards.length && (
-            <Grid item xs={12} className={classes.buttonContainer}>
-              <PrimaryButton
-                className={classes.loadMoreButton}
-                onClick={onLoadMoreClick}
-              >
-                Load More
-              </PrimaryButton>
-            </Grid>
-          )}
-        </Grid>
-      </Container>
-    </div>
-    </div>
+            {visible < cards.length && (
+                <Grid item xs={12} className={classes.buttonContainer}>
+                  <PrimaryButton className={classes.loadMoreButton} onClick={onLoadMoreClick}>
+                    Load More
+                  </PrimaryButton>
+                </Grid>
+              )}
+          </Container>
+        </div>
+      </div>
     </div>
   );
 };
