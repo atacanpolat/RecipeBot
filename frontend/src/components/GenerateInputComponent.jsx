@@ -14,6 +14,8 @@ import { Controller, useForm } from "react-hook-form";
 
 import { useState } from "react";
 import { useFilterStyles } from "./helpers/styles/recipesStyles";
+import Enums from "./enums/enums";
+
 
 const GenerateInputComponent = () => {
   const classes = useFilterStyles();
@@ -73,38 +75,6 @@ const GenerateInputComponent = () => {
     const selectedValue = event.target.value;
     setServingSize(() => selectedValue);
   };
-
-  const mealTypeVals = [
-    "breakfast",
-    "soup",
-    "starter",
-    "appetizer",
-    "main",
-    "salad",
-    "dessert",
-  ];
-
-  const dietVals = [
-    "gluten-free",
-    "lactose-free",
-    "Kosher",
-    "seafood",
-    "halal",
-    "vegetarian",
-    "vegan",
-    "keto",
-    "low-calorie",
-  ];
-
-  const servingSizeVals = [
-    "1 person",
-    "2 people",
-    "3 people",
-    "4 people",
-    "6 people",
-    "8+ people",
-    "12+ people",
-  ];
 
   const { control, handleSubmit } = useForm();
 
@@ -212,7 +182,7 @@ const GenerateInputComponent = () => {
                         .join(", ")
                     }
                   >
-                    {mealTypeVals.map((mealType) => (
+                    {Enums.MealTypes.map((mealType) => (
                       <MenuItem key={mealType} value={mealType}>
                         <Checkbox checked={mealTypes.indexOf(mealType) > -1} />
                         <ListItemText
@@ -245,7 +215,7 @@ const GenerateInputComponent = () => {
                       handleServingSizeChange(field);
                     }}
                   >
-                    {servingSizeVals.map((servSizeVal) => (
+                    {Enums.ServingSizes.map((servSizeVal) => (
                       <MenuItem value={servSizeVal} key={servSizeVal}>
                         {servSizeVal.charAt(0).toUpperCase() +
                           servSizeVal.slice(1)}
@@ -290,7 +260,7 @@ const GenerateInputComponent = () => {
                         .join(", ")
                     }
                   >
-                    {dietVals.map((dietVal) => (
+                    {Enums.DietaryRestrictions.map((dietVal) => (
                       <MenuItem key={dietVal} value={dietVal}>
                         <Checkbox
                           checked={dietaryRestrictions.indexOf(dietVal) > -1}
