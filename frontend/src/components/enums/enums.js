@@ -30,6 +30,21 @@ class Enums {
     "8+ people",
     "12+ people",
   ];
+
+  static CookingUtensils = [
+    "no oven", 
+    "no stove",
+    "no blender",
+    "no microwave"
+  ];
+
+  static Allergies = [
+    "nuts",
+    "milk",
+    "shellfish",
+    "egg",
+    "peanut"
+  ];
 }
 
 export default Enums;

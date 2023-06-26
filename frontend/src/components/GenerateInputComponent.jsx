@@ -16,16 +16,17 @@ import { useState } from "react";
 import { useFilterStyles } from "./helpers/styles/recipesStyles";
 import Enums from "./enums/enums";
 
-
 const GenerateInputComponent = () => {
   const classes = useFilterStyles();
 
   const [newIngredient, setNewIngredient] = useState("");
   const [includeIngredients, setIncludeIngredients] = useState([]);
   const [excludeIngredients, setExcludeIngredients] = useState([]);
-  const [mealTypes, setMealTypes] = useState([]);
-  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
+  const [mealType, setMealType] = useState("");
   const [servingSize, setServingSize] = useState("");
+  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
+  const [cookingUtensils, setCookingUtensils] = useState([]);
+  const [allergies, setAllergies] = useState([]);
 
   const addIngredientToList = (list, listName) => {
     // list and listName: either "includeIngredients" or "excludeIngredients"
@@ -36,7 +37,6 @@ const GenerateInputComponent = () => {
       } else if (listName === "excludeIngredients") {
         setExcludeIngredients(list);
       }
-      console.log(newIngredient, "added:", list);
     }
     setNewIngredient(""); // Make input field look empty
   };
@@ -52,14 +52,11 @@ const GenerateInputComponent = () => {
         prevIngredients.filter((item) => item !== ingredient)
       );
     }
-    console.log(ingredient, "removed:", list);
   };
 
-  const handleMealTypesChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setMealTypes(typeof value === "string" ? value.split(",") : value);
+  const handleMealTypeChange = (event) => {
+    const selectedValue = event.target.value;
+    setMealType(() => selectedValue);
   };
 
   const handleDietaryRestrictionsChange = (event) => {
@@ -69,6 +66,20 @@ const GenerateInputComponent = () => {
     setDietaryRestrictions(
       typeof value === "string" ? value.split(",") : value
     );
+  };
+
+  const handleCookingUtensilsChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setCookingUtensils(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const handleAllergiesChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setAllergies(typeof value === "string" ? value.split(",") : value);
   };
 
   const handleServingSizeChange = (event) => {
@@ -83,9 +94,11 @@ const GenerateInputComponent = () => {
     const generationParams = {
       includeIngredients,
       excludeIngredients,
-      mealTypes,
-      dietaryRestrictions,
+      mealType,
       servingSize,
+      dietaryRestrictions,
+      cookingUtensils,
+      allergies,
     };
     console.log(generationParams);
   };
@@ -168,28 +181,22 @@ const GenerateInputComponent = () => {
               name="meal-type"
               control={control}
               type="text"
-              defaultValue={[]}
+              defaultValue={mealType}
               render={({ field }) => (
                 <FormControl className={classes.filterSelect}>
                   <InputLabel id="meal-type">Meal Type</InputLabel>
                   <Select
-                    multiple
-                    value={mealTypes}
-                    onChange={handleMealTypesChange}
-                    renderValue={(selected) =>
-                      selected
-                        .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
-                        .join(", ")
-                    }
+                    {...field}
+                    labelId="meal-type"
+                    label="meal-type"
+                    value={mealType}
+                    onChange={(field) => {
+                      handleMealTypeChange(field);
+                    }}
                   >
-                    {Enums.MealTypes.map((mealType) => (
-                      <MenuItem key={mealType} value={mealType}>
-                        <Checkbox checked={mealTypes.indexOf(mealType) > -1} />
-                        <ListItemText
-                          primary={
-                            mealType.charAt(0).toUpperCase() + mealType.slice(1)
-                          }
-                        />
+                    {Enums.MealTypes.map((mealTypeVal) => (
+                      <MenuItem value={mealTypeVal} key={mealTypeVal}>
+                        {mealTypeVal.charAt(0).toUpperCase() + mealTypeVal.slice(1)}
                       </MenuItem>
                     ))}
                   </Select>
@@ -276,6 +283,79 @@ const GenerateInputComponent = () => {
                 </FormControl>
               )}
             />
+
+            {/* Cooking utensils */}
+            <Controller
+              name="cooking-utensils"
+              control={control}
+              type="text"
+              defaultValue={[]}
+              render={({ field }) => (
+                <FormControl className={classes.filterSelect}>
+                  <InputLabel id="cooking-utensils">
+                    Cooking Utensils
+                  </InputLabel>
+                  <Select
+                    multiple
+                    value={cookingUtensils}
+                    onChange={handleCookingUtensilsChange}
+                    renderValue={(selected) =>
+                      selected
+                        .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
+                        .join(", ")
+                    }
+                  >
+                    {Enums.CookingUtensils.map((utensil) => (
+                      <MenuItem key={utensil} value={utensil}>
+                        <Checkbox
+                          checked={cookingUtensils.indexOf(utensil) > -1}
+                        />
+                        <ListItemText
+                          primary={
+                            utensil.charAt(0).toUpperCase() + utensil.slice(1)
+                          }
+                        />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+
+            {/* Allergies */}
+            <Controller
+              name="allergies"
+              control={control}
+              type="text"
+              defaultValue={[]}
+              render={({ field }) => (
+                <FormControl className={classes.filterSelect}>
+                  <InputLabel id="allergies">Allergies</InputLabel>
+                  <Select
+                    multiple
+                    value={allergies}
+                    onChange={handleAllergiesChange}
+                    renderValue={(selected) =>
+                      selected
+                        .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
+                        .join(", ")
+                    }
+                  >
+                    {Enums.Allergies.map((allergy) => (
+                      <MenuItem key={allergy} value={allergy}>
+                        <Checkbox checked={allergies.indexOf(allergy) > -1} />
+                        <ListItemText
+                          primary={
+                            allergy.charAt(0).toUpperCase() + allergy.slice(1)
+                          }
+                        />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+
             <div style={{ marginBottom: "75px" }}></div>
             {/* SUBMIT BUTTON */}
             <FormControl>

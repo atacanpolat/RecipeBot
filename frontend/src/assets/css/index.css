@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
 * {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   height: 100vh;
 }
 
@@ -58,21 +58,7 @@ h3 {
   z-index: 999;
   padding-bottom: 110px;
 }
-/*
-.header-private-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e6e6e6;
-  background-color: #fff;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-}
-*/
+
 .header-private {
   height: 100vh;
   width: 300px;
@@ -96,7 +82,7 @@ h3 {
 
 .sidenav {
   height: 100%; /* 100% Full-height */
-  width: 0; 
+  width: 0;
   position: fixed; /* Stay in place */
   z-index: 1; /* Stay on top */
   top: 0; /* Stay at the top */
@@ -107,8 +93,6 @@ h3 {
   transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
   flex: "0 0 auto";
 }
-
-
 
 .header {
   display: flex;
@@ -149,7 +133,6 @@ h3 {
   font-weight: 500;
 }
 
-
 .header ul {
   display: flex;
   align-items: center;
@@ -157,7 +140,7 @@ h3 {
 }
 
 .header div.logo Link {
-  color: #3A00E5;
+  color: #3a00e5;
 }
 
 .header ul li {
@@ -178,46 +161,43 @@ h3 {
 }
 
 .header ul li.pills {
-display: flex;
-flex-direction: row;
-justify-content: center;
-align-items: center;
-padding: 7px 30px;
-gap: 12.16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 7px 30px;
+  gap: 12.16px;
 
-/* primary-subtle */
-background: #F7F5FF;
-border-radius: 40.5454px;
+  /* primary-subtle */
+  background: #f7f5ff;
+  border-radius: 40.5454px;
 }
 
-.header ul li.pills img{
-
+.header ul li.pills img {
   position: relative;
   width: 20px;
   height: 20px;
 }
 .header ul li.pills p {
-width: 80px;
-height: 40px;
+  width: 80px;
+  height: 40px;
 
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
 
-font-style: normal;
-font-weight: 500;
-font-size: 16px;
-line-height: 20px;
+  /* or 104% */
+  display: flex;
+  align-items: center;
 
-/* or 104% */
-display: flex;
-align-items: center;
+  /* primary */
+  color: #3a00e5;
 
-/* primary */
-color: #3A00E5;
-
-
-/* Inside auto layout */
-flex: none;
-order: 1;
-flex-grow: 0;
+  /* Inside auto layout */
+  flex: none;
+  order: 1;
+  flex-grow: 0;
 }
 
 .heading {
@@ -262,7 +242,6 @@ flex-grow: 0;
 .content img.landingImage {
   width: 100%;
   position: inherit;
-  
 }
 
 .form-group {
@@ -349,40 +328,37 @@ flex-grow: 0;
   align-items: center;
   padding: 7px 30px;
   gap: 12.16px;
-  
-  /* primary-subtle */
-  background: #F7F5FF;
-  border-radius: 40.5454px;
-  }
-  
-  .form-group button.pills img{
-  
-    position: relative;
-    width: 20px;
-    height: 20px;
-  }
-  .form-group button.pills p {
-    display: flex;
-    align-items: center;
-    width: 220px;
-    height: 40px;
-    font-family: 'Work Sans';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 20px;
-    /* or 104% */
 
-  
+  /* primary-subtle */
+  background: #f7f5ff;
+  border-radius: 40.5454px;
+}
+
+.form-group button.pills img {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.form-group button.pills p {
+  display: flex;
+  align-items: center;
+  width: 220px;
+  height: 40px;
+  font-family: "Work Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 20px;
+  /* or 104% */
+
   /* primary */
-  color: #3A00E5;
-  
-  
+  color: #3a00e5;
+
   /* Inside auto layout */
   flex: none;
   order: 1;
   flex-grow: 0;
-  }
+}
 
 @keyframes spin {
   0% {
