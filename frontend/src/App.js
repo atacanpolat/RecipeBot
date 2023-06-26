@@ -15,7 +15,8 @@ function App() {
   const jwt = localStorage.getItem('jwt');
   return (
     <>
-      {!jwt && (<Homepage/>)}
+    {/* // TODO: change/fix line below: app crashed if user is not logged in */}
+      {/* {!jwt && (<Homepage/>)} */}
       <Router>
         <div className="container">
           <Routes>
