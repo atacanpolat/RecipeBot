@@ -4,16 +4,18 @@ import {
   FormControl,
   InputLabel,
   Select,
-  FormGroup,
   MenuItem,
   Chip,
 } from "@material-ui/core";
+import ListItemText from "@mui/material/ListItemText";
+
+import Checkbox from "@mui/material/Checkbox";
 import { Controller, useForm } from "react-hook-form";
 
 import { useState } from "react";
 import { useFilterStyles } from "./helpers/styles/recipesStyles";
 
-const GenerateInputComponent = ({}) => {
+const GenerateInputComponent = () => {
   const classes = useFilterStyles();
 
   const [newIngredient, setNewIngredient] = useState("");
@@ -27,9 +29,9 @@ const GenerateInputComponent = ({}) => {
     // list and listName: either "includeIngredients" or "excludeIngredients"
     if (newIngredient !== "" && !list.includes(newIngredient)) {
       list.push(newIngredient);
-      if (listName == "includeIngredients") {
+      if (listName === "includeIngredients") {
         setIncludeIngredients(list);
-      } else if (listName == "excludeIngredients") {
+      } else if (listName === "excludeIngredients") {
         setExcludeIngredients(list);
       }
       console.log(newIngredient, "added:", list);
@@ -39,11 +41,11 @@ const GenerateInputComponent = ({}) => {
 
   const removeIngredientFromList = (ingredient, list, listName) => {
     // list and listName: either "includeIngredients" or "excludeIngredients"
-    if (listName == "includeIngredients") {
+    if (listName === "includeIngredients") {
       setIncludeIngredients((prevIngredients) =>
         prevIngredients.filter((item) => item !== ingredient)
       );
-    } else if (listName == "excludeIngredients") {
+    } else if (listName === "excludeIngredients") {
       setExcludeIngredients((prevIngredients) =>
         prevIngredients.filter((item) => item !== ingredient)
       );
@@ -52,21 +54,24 @@ const GenerateInputComponent = ({}) => {
   };
 
   const handleMealTypesChange = (event) => {
-    const selectedValues = event.target.value;
-    setMealTypes(() => selectedValues);
-    console.log("meal types:", selectedValues);
+    const {
+      target: { value },
+    } = event;
+    setMealTypes(typeof value === "string" ? value.split(",") : value);
   };
 
   const handleDietaryRestrictionsChange = (event) => {
-    const selectedValues = event.target.value;
-    setDietaryRestrictions(() => selectedValues);
-    console.log("dietary restrictions:", selectedValues);
+    const {
+      target: { value },
+    } = event;
+    setDietaryRestrictions(
+      typeof value === "string" ? value.split(",") : value
+    );
   };
 
   const handleServingSizeChange = (event) => {
     const selectedValue = event.target.value;
-    setDietaryRestrictions(() => selectedValue);
-    console.log("serving size:", selectedValue);
+    setServingSize(() => selectedValue);
   };
 
   const mealTypeVals = [
@@ -104,14 +109,23 @@ const GenerateInputComponent = ({}) => {
   const { control, handleSubmit } = useForm();
 
   const formSubmitHandler = (formData) => {
-    // TODO: implement
-    console.log("GENERATING RECIPE...");
-    console.log(formData);
+    // TODO: add also default values
+    const generationParams = {
+      includeIngredients,
+      excludeIngredients,
+      mealTypes,
+      dietaryRestrictions,
+      servingSize,
+    };
+    console.log(generationParams);
   };
 
   return (
     <div className={classes.container}>
-      <div className="generate-input">
+      <div style={{ flex: "1 0 100%", marginBottom: "20px" }}>
+        <h2>Required Fields</h2>
+      </div>
+      <div>
         {/* INGREDIENT INPUT FIELD */}
         <TextField
           label="Type ingredient..."
@@ -189,47 +203,23 @@ const GenerateInputComponent = ({}) => {
                 <FormControl className={classes.filterSelect}>
                   <InputLabel id="meal-type">Meal Type</InputLabel>
                   <Select
-                    {...field}
-                    labelId="meal-type"
-                    label="meal-type"
                     multiple
-                    onClick={(field) => {
-                      handleMealTypesChange(field);
-                    }}
+                    value={mealTypes}
+                    onChange={handleMealTypesChange}
+                    renderValue={(selected) =>
+                      selected
+                        .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
+                        .join(", ")
+                    }
                   >
                     {mealTypeVals.map((mealType) => (
-                      <MenuItem value={mealType} key={mealType}>
-                        {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-            />
-
-            {/* Dietary restrictions */}
-            <Controller
-              name="dietary-restrictions"
-              control={control}
-              type="text"
-              defaultValue={[]}
-              render={({ field }) => (
-                <FormControl className={classes.filterSelect}>
-                  <InputLabel id="dietary-restrictions">
-                    Dietary Restrictions
-                  </InputLabel>
-                  <Select
-                    {...field}
-                    labelId="dietary-restrictions"
-                    label="dietary-restrictions"
-                    multiple
-                    onClick={(field) => {
-                      handleDietaryRestrictionsChange(field);
-                    }}
-                  >
-                    {dietVals.map((dietRest) => (
-                      <MenuItem value={dietRest} key={dietRest}>
-                        {dietRest.charAt(0).toUpperCase() + dietRest.slice(1)}
+                      <MenuItem key={mealType} value={mealType}>
+                        <Checkbox checked={mealTypes.indexOf(mealType) > -1} />
+                        <ListItemText
+                          primary={
+                            mealType.charAt(0).toUpperCase() + mealType.slice(1)
+                          }
+                        />
                       </MenuItem>
                     ))}
                   </Select>
@@ -250,7 +240,8 @@ const GenerateInputComponent = ({}) => {
                     {...field}
                     labelId="serving-size"
                     label="serving-size"
-                    onClick={(field) => {
+                    value={servingSize}
+                    onChange={(field) => {
                       handleServingSizeChange(field);
                     }}
                   >
@@ -264,9 +255,70 @@ const GenerateInputComponent = ({}) => {
                 </FormControl>
               )}
             />
-            <div style={{ marginTop: "20px" }}></div>
+            <div
+              style={{
+                flex: "1 0 100%",
+                marginTop: "60px",
+                marginBottom: "20px",
+              }}
+            >
+              <h2>Optional Fields</h2>
+              <p>
+                Do not modify if you wish to use your profile's default values
+                for the following fields.
+              </p>
+            </div>
+
+            {/* Dietary restrictions */}
+            <Controller
+              name="dietary-restrictions"
+              control={control}
+              type="text"
+              defaultValue={[]}
+              render={({ field }) => (
+                <FormControl className={classes.filterSelect}>
+                  <InputLabel id="dietary-restrictions">
+                    Dietary Restrictions
+                  </InputLabel>
+                  <Select
+                    multiple
+                    value={dietaryRestrictions}
+                    onChange={handleDietaryRestrictionsChange}
+                    renderValue={(selected) =>
+                      selected
+                        .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
+                        .join(", ")
+                    }
+                  >
+                    {dietVals.map((dietVal) => (
+                      <MenuItem key={dietVal} value={dietVal}>
+                        <Checkbox
+                          checked={dietaryRestrictions.indexOf(dietVal) > -1}
+                        />
+                        <ListItemText
+                          primary={
+                            dietVal.charAt(0).toUpperCase() + dietVal.slice(1)
+                          }
+                        />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+            <div style={{ marginBottom: "75px" }}></div>
+            {/* SUBMIT BUTTON */}
             <FormControl>
-              <Button type="submit" variant="contained" fullWidth>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                style={{
+                  width: "300px",
+                  padding: "10px 30px",
+                  fontWeight: "bold",
+                }}
+              >
                 GENERATE RECIPE
               </Button>
             </FormControl>
