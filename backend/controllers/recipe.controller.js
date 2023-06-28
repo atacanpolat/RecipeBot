@@ -1,3 +1,4 @@
+import { exec } from "child_process";
 import Recipe from "../mongodb/models/recipe.js";
 import asyncHandler from "express-async-handler";
 
@@ -210,27 +211,49 @@ const openai = new OpenAIApi(configuration);
 export const generateRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    const {
-      ingredients,
-      servingSize,
-      utensils,
-      cookingTime,
-      diet,
-      mealType,
-      measurement,
-    } = req.body;
+    console.log(req.body);
+
+    // extract variables from request.body + handle default/empty values
+
+    // REQUIRED
+    // ingredients (include)
+    let ingredients = [];
+    if ("ingredients" in req.body) {
+      ingredients = req.body.ingredients;
+    } else {
+      throw new Error("ingredients not found in request body");
+    }
+
+    // servingSize
+    let servingSize = "";
+    if ("servingSize" in req.body) {
+      servingSize = req.body.servingSize;
+    } else {
+      throw new Error("servingSize not found in request body");
+    }
+
+    // OPTIONAL
+    const ingredientsExcl = req.body.ingredientsExcl || [];
+    const utensils = req.body.utensils || user.defaultRecipeSettings.utensils || [];
+    const cookingTime = req.body.cookingTime || "any";
+    const diet = req.body.diet || user.defaultRecipeSettings.dietaryRestriction || "none";
+    const mealType = req.body.mealType || "any";
+    const measurement = req.body.measurement || user.defaultRecipeSettings.measurementSystem || "metric";
+    const allergies = req.body.allergies || user.defaultRecipeSettings.allergies || [];
+
     const prompt = `
       Generate me a recipe
-  
+
       Ingredients: ${ingredients.toString()},
+      Ingredients NOT to include: ${ingredientsExcl.toString()},
       Serving Size: ${servingSize.toString()},
       Cooking Utensils: ${utensils.toString()},
       Cooking Time: ${cookingTime.toString()},
       Dietary Restrictions: ${diet.toString()},
+      Allergies: ${allergies.toString()},
       Meal Type: ${mealType.toString()},
       Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan"; if ingredient is "cream cheese", then "Exquisia"; if ingredient is one of {"oat", "oats", "oatmeal"}, then "Köln"; otherwise leave it empty
 
-  
       generate it in the following json format:
 
       {
@@ -254,24 +277,58 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       }
 
       Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
-      If there are any other ingrtedients that are used in the recipe other than the ingredients listed above, then add them to the JSON under ingredients as well.
-      `;
+      If there are any other ingrtedients that are used in the recipe other than the ingredients listed above, then add them to the JSON under ingredients as well.`;
+
+    // send prompt to ChatGPT
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: prompt,
       max_tokens: 1000,
     });
 
-    console.log(completion.data.choices[0].text);
     const response = JSON.parse(completion.data.choices[0].text);
-    var recipeSummary = response.tenWordSummary.toString();
-    recipeSummary = recipeSummary.replaceAll(/ /g, "%20");
 
-    response.ingredients.name = response.ingredients.name
-      .charAt(0)
-      .toLowerCase();
+    console.log("RESPONSE IS: ", response);
 
-    const photoUrl = "https://image.pollinations.ai/prompt/" + recipeSummary;
+    // const sampleResponse = {
+    //   title: "Tomato Rice Basil Milk",
+    //   ingredients: [
+    //     {
+    //       name: "Tomato",
+    //       quantity: "4 tomatoes",
+    //       brand: "",
+    //     },
+    //     {
+    //       name: "Rice",
+    //       quantity: "2 cups of uncooked rice",
+    //       brand: "",
+    //     },
+    //     {
+    //       name: "Basil",
+    //       quantity: "1/4 cup of fresh basil, diced",
+    //       brand: "",
+    //     },
+    //     {
+    //       name: "Milk",
+    //       quantity: "2 cups of milk",
+    //       brand: "Weihenstephan",
+    //     },
+    //   ],
+    //   instruction: {
+    //     narrative:
+    //       "In a large pan over medium heat, add tomatoes and cook until softened. Add the rice and basil and cook for 3 minutes, stirring occasionally. Reduce heat and add the milk and stir until the milk is absorbed. Cook for 5 more minutes and remove from heat. Serve warm. Enjoy!",
+    //     cookingTime: "Under 30 minutes",
+    //     servingSize: "4 people",
+    //     mealType: "main",
+    //     diet: "kosher",
+    //   },
+    //   tenWordSummary: "Tomato, Rice, Basil and Milk dish.",
+    //   measurementSystem: "Metric",
+    // };
+
+    const photoUrl =
+      "https://image.pollinations.ai/prompt/" +
+      encodeURIComponent(response.tenWordSummary);
     response.photoUrl = photoUrl;
     const tags = [
       response.instruction.mealType,

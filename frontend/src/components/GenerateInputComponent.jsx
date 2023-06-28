@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import {
   TextField,
   Button,
@@ -16,6 +18,8 @@ import { useState } from "react";
 import { useFilterStyles } from "./helpers/styles/recipesStyles";
 import Enums from "./enums/enums";
 
+const API_URL_RECIPE = "http://localhost:8000/api/v1/recipes/";
+
 const GenerateInputComponent = () => {
   const classes = useFilterStyles();
 
@@ -27,6 +31,7 @@ const GenerateInputComponent = () => {
   const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
   const [cookingUtensils, setCookingUtensils] = useState([]);
   const [allergies, setAllergies] = useState([]);
+  const [cookingTime, setCookingTime] = useState("");
 
   const addIngredientToList = (list, listName) => {
     // list and listName: either "includeIngredients" or "excludeIngredients"
@@ -87,20 +92,41 @@ const GenerateInputComponent = () => {
     setServingSize(() => selectedValue);
   };
 
+  const handleCookingTimeChange = (event) => {
+    const selectedValue = event.target.value;
+    setCookingTime(() => selectedValue);
+  };
+
   const { control, handleSubmit } = useForm();
 
   const formSubmitHandler = (formData) => {
-    // TODO: add also default values
     const generationParams = {
-      includeIngredients,
-      excludeIngredients,
-      mealType,
-      servingSize,
-      dietaryRestrictions,
-      cookingUtensils,
-      allergies,
+      ingredients: includeIngredients,
+      servingSize: servingSize,
+      ingredientsExcl: excludeIngredients,
+      utensils: cookingUtensils,
+      cookingTime: cookingTime,
+      diet: dietaryRestrictions,
+      mealType: mealType,
+      allergies: allergies,
     };
     console.log(generationParams);
+
+    const token = localStorage.getItem("jwt");
+    const response = axios
+      .post(API_URL_RECIPE + "generate", generationParams, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    return response;
   };
 
   return (
@@ -196,7 +222,8 @@ const GenerateInputComponent = () => {
                   >
                     {Enums.MealTypes.map((mealTypeVal) => (
                       <MenuItem value={mealTypeVal} key={mealTypeVal}>
-                        {mealTypeVal.charAt(0).toUpperCase() + mealTypeVal.slice(1)}
+                        {mealTypeVal.charAt(0).toUpperCase() +
+                          mealTypeVal.slice(1)}
                       </MenuItem>
                     ))}
                   </Select>
@@ -349,6 +376,34 @@ const GenerateInputComponent = () => {
                             allergy.charAt(0).toUpperCase() + allergy.slice(1)
                           }
                         />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            />
+
+            {/* Cooking time */}
+            <Controller
+              name="cooking-time"
+              control={control}
+              type="text"
+              defaultValue={[]}
+              render={({ field }) => (
+                <FormControl className={classes.filterSelect}>
+                  <InputLabel id="cooking-time">Cooking Time</InputLabel>
+                  <Select
+                    {...field}
+                    labelId="cooking-time"
+                    label="cooking-time"
+                    value={cookingTime}
+                    onChange={(field) => {
+                      handleCookingTimeChange(field);
+                    }}
+                  >
+                    {Enums.CookingTimes.map((cookTime) => (
+                      <MenuItem value={cookTime} key={cookTime}>
+                        {cookTime.charAt(0).toUpperCase() + cookTime.slice(1)}
                       </MenuItem>
                     ))}
                   </Select>

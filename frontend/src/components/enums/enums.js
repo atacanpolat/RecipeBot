@@ -32,18 +32,20 @@ class Enums {
   ];
 
   static CookingUtensils = [
-    "no oven", 
+    "no oven",
     "no stove",
     "no blender",
-    "no microwave"
+    "no microwave",
   ];
 
-  static Allergies = [
-    "nuts",
-    "milk",
-    "shellfish",
-    "egg",
-    "peanut"
+  static Allergies = ["nuts", "milk", "shellfish", "egg", "peanut"];
+
+  static CookingTimes = [
+    "under 10 minutes",
+    "10-20 minutes",
+    "under 30 minutes",
+    "under 1 hour",
+    "under 2 hours",
   ];
 }
 
