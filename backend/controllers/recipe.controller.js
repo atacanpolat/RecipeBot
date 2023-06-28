@@ -234,12 +234,18 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     // OPTIONAL
     const ingredientsExcl = req.body.ingredientsExcl || [];
-    const utensils = req.body.utensils || user.defaultRecipeSettings.utensils || [];
+    const utensils =
+      req.body.utensils || user.defaultRecipeSettings.utensils || [];
     const cookingTime = req.body.cookingTime || "any";
-    const diet = req.body.diet || user.defaultRecipeSettings.dietaryRestriction || "none";
+    const diet =
+      req.body.diet || user.defaultRecipeSettings.dietaryRestriction || "none";
     const mealType = req.body.mealType || "any";
-    const measurement = req.body.measurement || user.defaultRecipeSettings.measurementSystem || "metric";
-    const allergies = req.body.allergies || user.defaultRecipeSettings.allergies || [];
+    const measurement =
+      req.body.measurement ||
+      user.defaultRecipeSettings.measurementSystem ||
+      "metric";
+    const allergies =
+      req.body.allergies || user.defaultRecipeSettings.allergies || [];
 
     const prompt = `
       Generate me a recipe
@@ -287,8 +293,6 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     });
 
     const response = JSON.parse(completion.data.choices[0].text);
-
-    console.log("RESPONSE IS: ", response);
 
     // const sampleResponse = {
     //   title: "Tomato Rice Basil Milk",

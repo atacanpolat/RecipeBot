@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const diet = [
+const dietEnum = [
   "",
   "gluten-free",
   "lactose-free",
@@ -15,13 +15,7 @@ const diet = [
 
 const allegiesEnum = ["", "nuts", "milk", "shellfish", "egg", "peanut"];
 
-const utensilsEnum = [
-  "",
-  "no oven",
-  "no stove",
-  "no blender",
-  "no microwave",
-];
+const utensilsEnum = ["", "no oven", "no stove", "no blender", "no microwave"];
 
 const UserSchema = new mongoose.Schema({
   firstName: { type: String, requried: true },
@@ -41,18 +35,18 @@ const UserSchema = new mongoose.Schema({
     dietaryRestrictions: [
       {
         type: String,
-        // enum: diet,
+        enum: dietEnum,
         default: "",
       },
     ],
     allergies: {
       type: String,
-      // enum: allegiesEnum,
+      enum: allegiesEnum,
       default: "",
     },
     utensils: {
       type: String,
-      // enum: utensilsEnum,
+      enum: utensilsEnum,
       default: "",
     },
   },

@@ -20,6 +20,22 @@ import Enums from "./enums/enums";
 
 const API_URL_RECIPE = "http://localhost:8000/api/v1/recipes/";
 
+const makeStringLowercase = (string) => {
+  // if string is empty, return empty string
+  if (string.length === 0) {
+    return "";
+  }
+  return string.charAt(0).toLowerCase() + string.slice(1);
+};
+
+const makeStringsInListLowercase = (list) => {
+  // if list is empty, return empty list
+  if (list.length === 0) {
+    return [];
+  }
+  return list.map((item) => makeStringLowercase(item));
+};
+
 const GenerateInputComponent = () => {
   const classes = useFilterStyles();
 
@@ -101,14 +117,14 @@ const GenerateInputComponent = () => {
 
   const formSubmitHandler = (formData) => {
     const generationParams = {
-      ingredients: includeIngredients,
-      servingSize: servingSize,
-      ingredientsExcl: excludeIngredients,
-      utensils: cookingUtensils,
-      cookingTime: cookingTime,
-      diet: dietaryRestrictions,
-      mealType: mealType,
-      allergies: allergies,
+      ingredients: makeStringsInListLowercase(includeIngredients),
+      servingSize: makeStringLowercase(servingSize),
+      ingredientsExcl: makeStringsInListLowercase(excludeIngredients),
+      utensils: makeStringsInListLowercase(cookingUtensils),
+      cookingTime: makeStringLowercase(cookingTime),
+      diet: makeStringsInListLowercase(dietaryRestrictions),
+      mealType: makeStringLowercase(mealType),
+      allergies: makeStringsInListLowercase(allergies),
     };
     console.log(generationParams);
 

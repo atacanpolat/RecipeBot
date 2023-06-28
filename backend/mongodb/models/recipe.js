@@ -20,7 +20,7 @@ const InstructionSchema = new mongoose.Schema({
     },
     diet: {
         type:String,
-        enum:diet,
+        // enum:diet,
         default:'none',
     }
 })

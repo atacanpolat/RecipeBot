@@ -94,17 +94,12 @@ const calculateRecipeData = (responseData) => {
   return calculatedData;
 };
 
-const addRecipeToDatabase = async (recipeParameters) => {
-  // TODO: implement
-};
-
 const recipeService = {
   getAllRecipes,
   getCreatedRecipes,
   getSavedRecipes,
   getFilteredRecipes,
   calculateRecipeData,
-  addRecipeToDatabase,
 };
 
 export default recipeService;
