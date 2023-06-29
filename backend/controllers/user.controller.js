@@ -134,7 +134,7 @@ const getUserInfoById = async (req, res) => {
 const updateUserInfoById = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, avatar, createdRecipes, savedRecipes, metricSystem, diet} =
+        const { name, email, avatar, createdRecipes, savedRecipes, measurmentSystem, diet} =
             req.body;
 
         // console.log(req.body);

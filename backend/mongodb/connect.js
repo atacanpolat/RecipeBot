@@ -18,19 +18,21 @@ export default connectDB;
 
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
-import { MongoClient } from 'mongodb';
+import { MongoClient } from "mongodb";
 
 dotenv.config();
 const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect('mongodb+srv://user:user@cluster0.b6ip09o.mongodb.net/?retryWrites=true&w=majority',
-        { useNewUrlParser: true, useUnifiedTopology: true })
+  try {
+    const conn = await mongoose.connect(
+      "mongodb+srv://user:user@cluster0.b6ip09o.mongodb.net/?retryWrites=true&w=majority",
+      { useNewUrlParser: true, useUnifiedTopology: true }
+    );
 
-        console.log(`MongoDB connected: ${conn.connection.host}`)
-    } catch (error) {
-        console.log(error);
-        process.exit(1)        
-    }
-}
+    console.log(`MongoDB connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
 
 export default connectDB;

@@ -14,6 +14,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import theme from "./helpers/themes";
 import { PrimaryButton } from "./helpers/themes";
 import { useFilterStyles } from "./helpers/styles/recipesStyles";
+import Enums from "./enums/enums";
 
 const FilteringComponent = ({ onFilterSubmit }) => {
   const classes = useFilterStyles();
@@ -118,39 +119,9 @@ const FilteringComponent = ({ onFilterSubmit }) => {
     onFilterSubmit(filters);
   };
 
-  const mealTypeVals = [
-    "breakfast",
-    "soup",
-    "starter",
-    "appetizer",
-    "main",
-    "salad",
-    "dessert",
-  ];
-  const dietVals = [
-    "gluten-free",
-    "lactose-free",
-    "Kosher",
-    "seafood",
-    "halal",
-    "vegetarian",
-    "vegan",
-    "keto",
-    "low-calorie",
-  ];
-  const servingSizeVals = [
-    "1 person",
-    "2 people",
-    "3 people",
-    "4 people",
-    "6 people",
-    "8+ people",
-    "12+ people",
-  ];
-
   return (
     <div className={classes.container}>
-      <div >
+      <div>
         <TextField
           label="Type Ingredient"
           value={newIngredient}
@@ -170,7 +141,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
         >
           Exclude
         </Button>
-        <div style={{margin: "20px 0"}}>
+        <div style={{ margin: "20px 0" }}>
           {includeIngredients.map((ingredient) => (
             <Chip
               key={ingredient}
@@ -194,7 +165,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
         <FormControl className={classes.filterSelect}>
           <InputLabel>Meal Type</InputLabel>
           <Select value={mealType} onChange={handleMealTypeChange}>
-            {mealTypeVals.map((type) => (
+            {Enums.MealTypes.map((type) => (
               <MenuItem
                 key={type}
                 value={type.charAt(0).toUpperCase() + type.slice(1)}
@@ -214,7 +185,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
             value={dietaryRestriction}
             onChange={handleDietaryRestrictionChange}
           >
-            {dietVals.map((type) => (
+            {Enums.DietaryRestrictions.map((type) => (
               <MenuItem
                 key={type}
                 value={type.charAt(0).toUpperCase() + type.slice(1)}
@@ -231,7 +202,7 @@ const FilteringComponent = ({ onFilterSubmit }) => {
         <FormControl className={classes.filterSelect}>
           <InputLabel>Serving Size</InputLabel>
           <Select value={servingSize} onChange={handleServingSizeChange}>
-            {servingSizeVals.map((type) => (
+            {Enums.ServingSizes.map((type) => (
               <MenuItem
                 key={type}
                 value={type}
@@ -252,14 +223,14 @@ const FilteringComponent = ({ onFilterSubmit }) => {
           <FormGroup>{/* Render cooking utensils checkboxes */}</FormGroup>
         </FormControl>
       </div>
-      <div className={classes.filterContainer} >
-      <PrimaryButton
-        variant="contained"
-        onClick={handleFilterSubmit}
-        style={{ backgroundColor: theme.palette.violet.main }}
-      >
-        Apply Filters
-      </PrimaryButton>
+      <div className={classes.filterContainer}>
+        <PrimaryButton
+          variant="contained"
+          onClick={handleFilterSubmit}
+          style={{ backgroundColor: theme.palette.violet.main }}
+        >
+          Apply Filters
+        </PrimaryButton>
       </div>
     </div>
   );

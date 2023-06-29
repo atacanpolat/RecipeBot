@@ -1,7 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import theme from "../themes";
 
-
 export const useRecipeContainerStyles = makeStyles(() => ({
     cardContainer: {
       marginTop: theme.spacing(2),
@@ -337,44 +336,49 @@ export const useRecipeContainerStyles = makeStyles(() => ({
     },
   }));
 
-  export const useFilterStyles = makeStyles(() => ({
-    container: {
-        display: "flex",
-        justifyContent: "center", 
-        alignItems: "flex-start", 
-      },
-    filterContainer: {
-      display: "flex",
-      alignItems: "center",
-      marginBottom: theme.spacing(2),
-    },
-    filterInput: {
-      marginRight: theme.spacing(2),
-    },
-    filterButton: {
-      marginRight: theme.spacing(2),
-      backgroundColor: theme.palette.violet.main,
-      color: theme.palette.grey[100]
-    },
-    filterSelect: {
-      marginRight: theme.spacing(2),
-      minWidth: 200,
-    },
-    filterCheckboxGroup: {
-      display: "flex",
-      flexDirection: "column",
-    },
+export const useFilterStyles = makeStyles(() => ({
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap",
+  },
+  filterContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(2),
+  },
+  filterInput: {
+    marginRight: theme.spacing(2),
+  },
+  filterButton: {
+    marginRight: theme.spacing(2),
+    backgroundColor: theme.palette.violet.main,
+    color: theme.palette.grey[100],
+  },
+  filterSelect: {
+    marginRight: theme.spacing(2),
+    minWidth: 200,
+  },
+  filterCheckboxGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
 
-    includedIngredient: {
-        marginRight: theme.spacing(1),
-        backgroundColor: theme.palette.green.main, 
-        color: theme.palette.grey[100],
-      },
-      excludedIngredient: {
-        marginRight: theme.spacing(1),
-        backgroundColor: theme.palette.red.main, 
-        color: theme.palette.grey[100],
-      },
-  }));
+  includedIngredient: {
+    marginRight: theme.spacing(1),
+    backgroundColor: theme.palette.green.main,
+    color: theme.palette.grey[100],
+  },
+  excludedIngredient: {
+    marginRight: theme.spacing(1),
+    backgroundColor: theme.palette.red.main,
+    color: theme.palette.grey[100],
+  },
+}));
 
-  export default {useRecipeContainerStyles, useRecipeSliderStyles, useFilterStyles};
+export default {
+  useRecipeContainerStyles,
+  useRecipeSliderStyles,
+  useFilterStyles,
+};
