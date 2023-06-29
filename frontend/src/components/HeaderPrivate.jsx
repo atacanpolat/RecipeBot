@@ -81,7 +81,7 @@ export const HeaderPrivateTop = () => {
           <Link to="/">RecipeBot</Link>
         </a>
       </div>
-      <div className="user-info">
+      <div>
         <PrimaryButton
           startIcon={<Avatar src={'http://localhost:8000/' + user.avatar} style={{ border: `2px solid ${theme.palette.common.white}` }} />}
           onClick={handleDropdownToggle}

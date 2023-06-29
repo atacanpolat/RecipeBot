@@ -113,6 +113,8 @@ const FilteringComponent = ({ onFilterSubmit }) => {
       servingSize,
       cookingUtensils,
     };
+    console.log(excludeIngredients)
+    console.log(includeIngredients)
     onFilterSubmit(filters);
   };
 
@@ -183,7 +185,6 @@ const FilteringComponent = ({ onFilterSubmit }) => {
               label={ingredient}
               className={classes.excludedIngredient}
               onDelete={() => handleRemoveExcludedIngredient(ingredient)}
-              deleteIcon={<RemoveIcon />}
             />
           ))}
         </div>

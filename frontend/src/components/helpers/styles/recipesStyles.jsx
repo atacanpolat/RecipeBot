@@ -52,9 +52,10 @@ export const useRecipeContainerStyles = makeStyles(() => ({
       title: {
         ...theme.typography.h6,
         marginBottom: theme.spacing(2),
-        whiteSpace: "pre-wrap", // Allow text to wrap to the next line
-        wordWrap: "break-word", // Break words if they exceed the width
-        textAlign: "center", // Center the text
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        textAlign: "center",
       },
       ratingsInfo: {
         display: "flex",
@@ -72,6 +73,7 @@ export const useRecipeContainerStyles = makeStyles(() => ({
       description: {
         ...theme.typography.body2,
         marginTop: theme.spacing(2),
+        textAlign: "left", 
         opacity: "0.5",
         [theme.breakpoints.up("sm")]: {
           marginTop: theme.spacing(4),
@@ -104,10 +106,10 @@ export const useRecipeContainerStyles = makeStyles(() => ({
         color: theme.palette.common.white,
       },
       text: {
-        marginLeft: theme.spacing(1),
         ...theme.typography.body2,
         fontWeight: "bold",
         color: theme.palette.text.primary,
+        textAlign: "left",
       },
       heading: {
         ...theme.typography.h4,
@@ -117,6 +119,11 @@ export const useRecipeContainerStyles = makeStyles(() => ({
           ...theme.typography.h3,
           marginBottom: 0,
         },
+      },
+      loadMoreButton: {
+        backgroundColor: theme.palette.violet.dark,
+        marginTop: theme.spacing(2),
+        color: theme.palette.grey[100]
       },
       tabContainer: {
         display: "flex",
@@ -259,9 +266,10 @@ export const useRecipeContainerStyles = makeStyles(() => ({
     title: {
       ...theme.typography.h6,
       marginBottom: theme.spacing(2),
-      whiteSpace: "pre-wrap", 
-      wordWrap: "break-word", 
-      textAlign: "center", 
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      textAlign: "center",
     },
     ratingsInfo: {
       display: "flex",
@@ -279,6 +287,7 @@ export const useRecipeContainerStyles = makeStyles(() => ({
     description: {
       ...theme.typography.body2,
       marginTop: theme.spacing(2),
+      textAlign: "left", 
       opacity: "0.5",
       [theme.breakpoints.up("sm")]: {
         marginTop: theme.spacing(4),
@@ -311,10 +320,10 @@ export const useRecipeContainerStyles = makeStyles(() => ({
       color: theme.palette.common.white,
     },
     text: {
-      marginLeft: theme.spacing(1),
       ...theme.typography.body2,
       fontWeight: "bold",
       color: theme.palette.text.primary,
+      textalign: "left"
     },
     primaryButton: {
       ...theme.typography.button,

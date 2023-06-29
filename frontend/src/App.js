@@ -12,10 +12,8 @@ import SavedRecipesPage from "./pages/SavedRecipesPage";
 import SetAvatarPage from "./pages/SetAvatarPage";
 
 function App() {
-  const jwt = localStorage.getItem('jwt');
   return (
     <>
-      {!jwt && (<Homepage/>)}
       <Router>
         <div className="container">
           <Routes>

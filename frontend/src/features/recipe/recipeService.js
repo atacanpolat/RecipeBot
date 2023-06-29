@@ -52,8 +52,7 @@ const getSavedRecipes = async() => {
 
 const getFilteredRecipes = async (filters) => {
   try {
-    const token = localStorage.getItem('jwt');
-    
+    const token = localStorage.getItem('jwt');   
     
     const response = await axios.patch(API_URL_RECIPE + '/filter', filters, {
       headers: {
@@ -63,8 +62,8 @@ const getFilteredRecipes = async (filters) => {
     return response.data;
     
   } catch (error) {
-    // Handle the error
     console.error(error);
+    
     throw new Error('Failed to fetch filtered recipes');
   }
 }
@@ -74,7 +73,7 @@ const calculateRecipeData = (responseData) => {
   const calculatedData = [];
 
   for (const recipeData of responseData) {
-    const { _id, title, photo, tags, reviews } = recipeData;
+    const { _id, title, photo, tags, reviews, createdBy } = recipeData;
     const recipeId = _id;
     const imgSrc = photo;
     const tagList = tags.join(', ');
@@ -86,6 +85,7 @@ const calculateRecipeData = (responseData) => {
       totalRating += review.rating;
     });
     const meanRating = reviewCount > 0 ? totalRating / reviewCount : 0;
+    console.log(createdBy);
 
     calculatedData.push({
       recipeId,
@@ -94,7 +94,8 @@ const calculateRecipeData = (responseData) => {
       tags: tagList,
       reviewCount,
       meanRating,
-      recipeUrl
+      recipeUrl,
+      createdBy
     });
   }
 

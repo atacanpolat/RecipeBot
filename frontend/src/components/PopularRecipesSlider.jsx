@@ -13,6 +13,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import recipeService from "../features/recipe/recipeService";
 import {useRecipeSliderStyles} from './helpers/styles/recipesStyles';
 import RecipeCard from "./RecipeCard";
+import userService from "../features/user/userService";
 
 function PopularRecipesSlider({style}) {
 
@@ -23,6 +24,7 @@ function PopularRecipesSlider({style}) {
     const fetchData = async () => {
       try {
         const recipes = await recipeService.getAllRecipes();
+        console.log(recipes);
         const recipesData = await recipeService.calculateRecipeData(recipes); 
         setCards(recipesData);
       } catch (error) {

@@ -54,8 +54,10 @@ const useStyles = makeStyles(() => ({
       backgroundColor: theme.palette.violet.main,
       color: theme.palette.common.white,
       "&:hover": {
-        backgroundColor: theme.palette.primary.dark,
+        backgroundColor: theme.palette.violet.main,
         color: theme.palette.grey[200],
+        opacity: 0.6,
+        transition: "0.3s"
       },
       "&:focus": {
         boxShadow: `0 0 0 3px ${theme.palette.primary.light}`,

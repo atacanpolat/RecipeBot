@@ -124,7 +124,7 @@ export const useHeaderPrivateStyles = makeStyles(() => ({
       paddingBottom: "0.25rem",
       borderBottom: "2px solid transparent",
       "&:hover": {
-        color: theme.palette.primary.main,
+        color: theme.palette.grey[200]
       },
     },
     logoLink: {
@@ -140,8 +140,17 @@ export const useHeaderPrivateStyles = makeStyles(() => ({
         width: "2.5rem",
         marginRight: "0.75rem",
       },
+      "&:hover": {
+        color: theme.palette.grey[200]
+      },
     },
 
+    userInfoLink: {
+      "&:hover": {
+        opacity: 0.5,
+        backgroundColor: theme.palette.violet.main,
+      }
+    },
     dropdownContent: {
       display: 'none',
       position: 'absolute',
@@ -204,6 +213,7 @@ export const useHeaderPrivateStyles = makeStyles(() => ({
       minWidth: '160px',
       boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
       zIndex: 1,
+      transform: 'translateY(calc(-100% - 4px))',
       '& ul': {
         listStyleType: 'none',
         margin: 0,

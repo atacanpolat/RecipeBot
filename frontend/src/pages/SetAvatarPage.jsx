@@ -7,7 +7,6 @@ import { makeStyles } from "@material-ui/core";
 import theme from '../components/helpers/themes';
 import { HeaderPrivateTop } from '../components/HeaderPrivate';
 import silhouettePP from "../images/silhoutte_pp.png";
-import PersonIcon from '@mui/icons-material/Person';
 
 
 const usePreviousLocation = () => {
@@ -46,10 +45,9 @@ const useStyles = makeStyles(() => ({
   title: {
     marginBottom: theme.spacing(2),
     paddingBottom: theme.spacing(6),
-   // padding: theme.spacing(6),
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: '100%',
+    fontSize: theme.typography.h3.fontSize,
     color: '#333',
   },
   profileWrapper: {
@@ -178,7 +176,7 @@ const SetAvatarPage = () => {
           <ArrowForwardIcon />
         </Button>
       </div>
-      <Typography variant="h6" component="h2" className={classes.title}>
+      <Typography variant="h6" component="h6">
           You can always change this from Settings
         </Typography>
     </div>

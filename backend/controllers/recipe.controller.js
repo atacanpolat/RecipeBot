@@ -70,7 +70,8 @@ const { Configuration, OpenAIApi } = require("openai");
       }
   
       if (excludeIngredients && excludeIngredients.length > 0) {
-        query["ingredients.name"] = { $regex: excludeIngredients.join("|"), $options: "i" };
+        const excludedIngredientNames = excludeIngredients.map(ingredient => ingredient.toLowerCase());
+        query["ingredients.name"] = { $not: { $in: excludedIngredientNames } };
       }
   
       if (mealType) {
@@ -97,7 +98,6 @@ const { Configuration, OpenAIApi } = require("openai");
       }
   
       const recipes = await Recipe.recipeModel.find(query);
-
       res.status(200).json(recipes);
     } catch (error) {
       console.error("Error filtering recipes:", error);
