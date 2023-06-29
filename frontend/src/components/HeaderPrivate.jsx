@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button, Avatar } from '@mui/material';
 import { useHeaderPrivateStyles, useHeaderPrivateTopStyles } from "./helpers/styles/headerStyles";
 import { Link } from "react-router-dom";
+import { PrimaryButton, theme } from "./helpers/themes";
 
 // icons
 import EggAltIcon from "@mui/icons-material/EggAlt";
@@ -11,14 +12,18 @@ import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates";
 import LoyaltyIcon from "@mui/icons-material/Loyalty";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import PersonIcon from '@mui/icons-material/Person';
+import LogoutIcon from '@mui/icons-material/Logout';
 import logo from "../images/logo.png";
-import { PrimaryButton, theme } from "./helpers/themes";
 
 
 
 export const HeaderPrivate = () => {
   const classes = useHeaderPrivateStyles();
+
+  const handleLogOut = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("jwt");
+  };
 
   return (
     <header className="header-private" style={{flex: "0 0 auto"}}>
@@ -57,6 +62,18 @@ export const HeaderPrivate = () => {
         >
           Generate Recipe
         </Button>
+        <li>
+        <Button 
+            startIcon={<LogoutIcon/>} 
+            href="/"
+            variant="outlined"
+            style={{marginTop:"50px"}}
+            onClick={handleLogOut}
+
+        > 
+        Logout
+        </Button>
+        </li>
       </ul>
     </header>
   );
@@ -84,16 +101,15 @@ export const HeaderPrivateTop = () => {
       <div>
         <PrimaryButton
           startIcon={<Avatar src={'http://localhost:8000/' + user.avatar} style={{ border: `2px solid ${theme.palette.common.white}` }} />}
-          onClick={handleDropdownToggle}
+          href="/settings"
         >
           {user.firstName + ' ' + user.lastName}
         </PrimaryButton>
-        {isDropdownOpen && <DropdownMenu />}
       </div>
     </header>
   );
 };
-
+/*
 const DropdownMenu = () => {
 
   const handleLogOut = () => {
@@ -109,5 +125,5 @@ const DropdownMenu = () => {
     </ul>
   );
 };
-
+*/
 export default {HeaderPrivate, HeaderPrivateTop};
