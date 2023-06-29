@@ -4,7 +4,6 @@ import {
   Grid
 } from "@material-ui/core";
 import {
-  theme,
   SectionHeading,
   PrimaryButton,
 } from "../components/helpers/themes";
@@ -13,11 +12,13 @@ import FilteringComponent from "../components/FilteringComponent";
 import { useRecipeContainerStyles } from "../components/helpers/styles/recipesStyles";
 import RecipeCard from "../components/RecipeCard";
 import recipeService from "../features/recipe/recipeService";
+import SortingComponent from "../components/SortingComponent";
 
 
 const SavedRecipesPage = () => {
   const classes = useRecipeContainerStyles();
   const [visible, setVisible] = useState(6);
+  const [criterion, setCriterion] = useState('');
 
   const [activeTab, setActiveTab] = useState("saved");
   const [savedRecipes, setSavedRecipes] = useState([]);
@@ -54,17 +55,36 @@ const SavedRecipesPage = () => {
       let recipesData = [];
       filters.activeTab = activeTab;
       console.log(activeTab);
-
+  
       const recipes = await recipeService.getFilteredRecipes(filters);
       recipesData = await recipeService.calculateRecipeData(recipes);
-
-      activeTab === "saved"
-        ? setSavedRecipes(recipesData)
-        : setCreatedRecipes(recipesData);
+  
+      if (activeTab === "saved") {
+        const sortedRecipesData = await recipeService.sortRecipes(recipesData, criterion);
+        setSavedRecipes(sortedRecipesData);
+      } else {
+        const sortedRecipesData = await recipeService.sortRecipes(recipesData, criterion);
+        setCreatedRecipes(sortedRecipesData);
+      }
     } catch (error) {
       console.error("Error fetching recipes:", error);
     }
   };
+
+  const handleSortSubmit = async (criterion) => {
+    try {
+       const sortedSavedRecipesData = await recipeService.sortRecipes(savedRecipes, criterion)
+       const sortedCreatedRecipesData = await recipeService.sortRecipes(createdRecipes, criterion);
+       
+      activeTab === "saved" 
+      ? setSavedRecipes(sortedSavedRecipesData)
+      : setCreatedRecipes(sortedCreatedRecipesData);
+
+      setCriterion(criterion);
+    } catch (error) {
+      console.error('Error sorting recipes:', error);
+    }
+  }
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -86,20 +106,19 @@ const SavedRecipesPage = () => {
           style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
         >
           <Container>
-            <Grid container spacing={4}>
-              <Grid
-                item
-                xs={12}
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingBottom: theme.spacing(16),
-                }}
-              >
+            <Grid 
+              container 
+              spacing={2}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="flex-start"
+              style={{marginBottom: "80px", marginTop: "40px"}}
+            >
+                <SortingComponent onSortSubmit={handleSortSubmit} />
                 <SectionHeading className={classes.heading}>
                   Your Recipes
                 </SectionHeading>
+              
                 <div className={classes.tabContainer}>
                   <button
                     onClick={() => handleTabClick("saved")}
@@ -108,7 +127,7 @@ const SavedRecipesPage = () => {
                     }`}
                   >
                     {" "}
-                    Saved Recipes
+                    Saved
                   </button>
                   <button
                     onClick={() => handleTabClick("created")}
@@ -117,12 +136,14 @@ const SavedRecipesPage = () => {
                     }`}
                   >
                     {" "}
-                    Created Recipes
+                    Created
                   </button>
                 </div>
-              </Grid>
-              <Grid item xs={12}>
+            </Grid>
+              <Grid container spacing={8} >
+               <Grid item xs={12}>
                 <FilteringComponent onFilterSubmit={handleFilterSubmit} />
+               </Grid>  
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={4} className={classes.cards}>
@@ -155,7 +176,6 @@ const SavedRecipesPage = () => {
                   </PrimaryButton>
                 </Grid>
               )}
-            </Grid>
           </Container>
         </div>
       </div>

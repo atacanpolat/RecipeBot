@@ -252,7 +252,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       Dietary Restrictions: ${diet.toString()},
       Allergies: ${allergies.toString()},
       Meal Type: ${mealType.toString()},
-      Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan"; if ingredient is "cream cheese", then "Exquisia"; if ingredient is one of {"oat", "oats", "oatmeal"}, then "Köln"; otherwise leave it empty
+      Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan"; if ingredient is "cream cheese", then "Exquisia"; if ingredient is one of {"oat", "oats", "oatmeal"}, then "Köln"; if ingredient is "beer", then "Augustiner"; if ingredient is "protein powder" or any other supplementary bodybuilding product, then "ProteinWorks" otherwise leave it empty
 
 
       generate it in the following json format:

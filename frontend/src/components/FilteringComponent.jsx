@@ -9,8 +9,7 @@ import {
   MenuItem,
   Chip,
 } from "@material-ui/core";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+
 import theme from "./helpers/themes";
 import { PrimaryButton } from "./helpers/themes";
 import { useFilterStyles } from "./helpers/styles/recipesStyles";
@@ -120,7 +119,9 @@ const FilteringComponent = ({ onFilterSubmit }) => {
   };
 
   return (
+    
     <div className={classes.container}>
+      
       <div>
         <TextField
           label="Type Ingredient"

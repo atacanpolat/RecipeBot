@@ -96,12 +96,51 @@ const calculateRecipeData = (responseData) => {
   return calculatedData;
 };
 
+const sortRecipes = (recipes, criterion) => {
+  const sortedRecipes = [...recipes]; 
+
+  switch (criterion) {
+    case "":
+      return recipes;
+    case "title":
+      sortedRecipes.sort((a, b) => {
+        const titleA = a.title;
+        const titleB = b.title;
+        return titleA.localeCompare(titleB);
+      });
+      break;
+    case "popularity":
+      sortedRecipes.sort((a, b) => {
+        const popularityA = (a.meanRating + a.reviewCount) / 2;
+        const popularityB = (b.meanRating + b.reviewCount) / 2;
+        return popularityB - popularityA; 
+      });
+      break;
+    case "highest-ranking":
+      sortedRecipes.sort((a, b) => {
+        return b.meanRating - a.meanRating; 
+      });
+      break;
+    case "most-commented":
+      sortedRecipes.sort((a, b) => {
+        return b.reviewCount - a.reviewCount; 
+      });
+      break;
+    default:
+      return recipes;
+  }
+
+  return sortedRecipes;
+};
+
+
 const recipeService = {
   getAllRecipes,
   getCreatedRecipes,
   getSavedRecipes,
   getFilteredRecipes,
   calculateRecipeData,
+  sortRecipes
 };
 
 export default recipeService;

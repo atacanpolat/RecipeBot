@@ -7,19 +7,20 @@ import FilteringComponent from "../components/FilteringComponent";
 import { useRecipeContainerStyles } from "../components/helpers/styles/recipesStyles";
 import {Container, Grid} from "@material-ui/core";
 import RecipeCard from "../components/RecipeCard";
+import SortingComponent from "../components/SortingComponent";
 
 
 const SearchRecipesPage = () => {
 
 
   const classes = useRecipeContainerStyles();
+  const [cards, setCards] = useState([]);
   const [visible, setVisible] = useState(6);
 
   const onLoadMoreClick = () => {
     setVisible((v) => v + 6);
   };
 
-  const [cards, setCards] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,9 +43,18 @@ const SearchRecipesPage = () => {
           setCards(recipesData);
 
         } catch (error) {
-          console.error("Error getching recipes:", error);
+          console.error("Error fetching recipes:", error);
         }
   };
+
+  const handleSortSubmit = async (criterion) => {
+    try {
+      const sortedRecipesData = await recipeService.sortRecipes(cards, criterion);
+      setCards(sortedRecipesData);
+    } catch (error) {
+      console.error('Error sorting recipes:', error);
+    }
+  }
 
 
   return (
@@ -54,8 +64,22 @@ const SearchRecipesPage = () => {
         <HeaderPrivate className="sideNav" style={{flex: "0 0 auto", zIndex: "1"}}/>
         <div style={{display:"flex", flexDirection: "column", flex: "1 1 auto"}}>
           <Container>
-            <SectionHeading className={classes.heading}>Search for Recipes</SectionHeading>
-            <FilteringComponent onFilterSubmit={handleFilterSubmit}/>       
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="flex-start"
+              style={{marginBottom: "60px"}}
+              >
+              <Grid item xs={2}>
+              <SortingComponent onSortSubmit={handleSortSubmit} />
+              </Grid>    
+              <Grid item xs={8}>
+              <SectionHeading className={classes.heading}>Search for Recipes</SectionHeading>
+              </Grid>
+              <Grid item xs={2}></Grid>
+            </Grid>
+            <FilteringComponent onFilterSubmit={handleFilterSubmit}/>
             <Grid item xs={12}>
               <Grid container spacing={4} className={classes.cards}>
                 {cards.slice(0, visible).map((card, index) => (

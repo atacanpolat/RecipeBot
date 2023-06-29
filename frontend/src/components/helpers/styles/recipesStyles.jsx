@@ -342,6 +342,7 @@ export const useFilterStyles = makeStyles(() => ({
     justifyContent: "center",
     alignItems: "center",
     flexWrap: "wrap",
+    direction: "column",
   },
   filterContainer: {
     display: "flex",
@@ -377,8 +378,16 @@ export const useFilterStyles = makeStyles(() => ({
   },
 }));
 
+
+export const useSortStyles = makeStyles(() => ({
+  menuItem: {
+    minWidth: 150,
+  },
+}));
+
 export default {
   useRecipeContainerStyles,
   useRecipeSliderStyles,
   useFilterStyles,
+  useSortStyles
 };

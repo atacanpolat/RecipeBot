@@ -1,6 +1,6 @@
 import "./assets/css/App.css";
 import "react-toastify/dist/ReactToastify.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import { ToastContainer } from "react-toastify";
 import SignIn from "./pages/SignIn";
@@ -12,12 +12,19 @@ import SavedRecipesPage from "./pages/SavedRecipesPage";
 import SetAvatarPage from "./pages/SetAvatarPage";
 
 function App() {
+
+  const isLoggedIn = !!localStorage.getItem("jwt"); // Check if the JWT is stored in localStorage
+
   return (
     <>
       <Router>
         <div className="container">
           <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route
+              path="/"
+              element={
+                isLoggedIn ? <Navigate to="/home" /> : <Homepage />
+              } />
             <Route path="/login" element={<SignIn />} />
             <Route path="/register" element={<SignUp />} />
             <Route path="/setAvatar" element={<SetAvatarPage />} />
