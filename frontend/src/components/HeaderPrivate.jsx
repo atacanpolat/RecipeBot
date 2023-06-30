@@ -1,11 +1,9 @@
 import React from "react";
-import { useState } from "react";
 import { Button, Avatar } from '@mui/material';
 import { useHeaderPrivateStyles, useHeaderPrivateTopStyles } from "./helpers/styles/headerStyles";
 import { Link } from "react-router-dom";
 import { PrimaryButton, theme } from "./helpers/themes";
 
-// icons
 import EggAltIcon from "@mui/icons-material/EggAlt";
 import HomeIcon from "@mui/icons-material/Home";
 import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates";
@@ -83,12 +81,6 @@ export const HeaderPrivate = () => {
 export const HeaderPrivateTop = () => {
   const classes = useHeaderPrivateTopStyles();
   const user = JSON.parse(localStorage.getItem('user'));
-
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-
-  const handleDropdownToggle = () => {
-    setDropdownOpen(!isDropdownOpen);
-  };
 
   return (
     <header className="header-private-top" style={{marginBottom:'20px'}}>

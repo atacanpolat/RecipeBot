@@ -331,10 +331,11 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     response.photoUrl = photoUrl;
     const tags = [
       response.instruction.mealType,
-      response.instruction.diet,
+      response.instruction.diet ? response.instruction.diet : 'Not diet specific',
       response.instruction.cookingTime,
     ];
 
+    //TODO: remove the save recipe part and display the recipe from local storage after generating the recipe
     const instruction = new Recipe.instructionModel({
       narrative: response.instruction.narrative,
       cookingTime: response.instruction.cookingTime,
@@ -347,7 +348,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       title: response.title,
       ingredients: response.ingredients,
       instruction: response.instruction,
-      photo: response.photoUrl,
+      photoUrl: response.photoUrl,
       createdBy: user._id,
       isGenerated: true,
       tags: tags,
@@ -367,16 +368,33 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 export const saveRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    const recipe = await Recipe.recipeModel
-      .findById(req.params.id)
-      .populate("reviews");
+    const recipe = req.body;
     console.log(recipe);
 
     if (!recipe) {
       return res.status(404).json({ error: "recipe not found" });
     }
 
-    if (recipe.createdBy == user._id) {
+    const instruction = new Recipe.instructionModel({
+      narrative: recipe.instruction.narrative,
+      cookingTime: recipe.instruction.cookingTime,
+      mealType: recipe.instruction.mealType,
+      diet: recipe.instruction.diet,
+    });
+    await instruction.save();
+
+    const recipeToSave = new Recipe.recipeModel({
+      title: recipe.title,
+      ingredients: recipe.ingredients,
+      instruction: recipe.instruction,
+      photoUrl: recipe.photoUrl,
+      createdBy: recipe.createdBy,
+      isGenerated: recipe.isGenerated,
+      tags: recipe.tags,
+    });
+    await recipeToSave.save();
+
+    if (recipeToSave.createdBy == user._id) {
       user.createdRecipes.push(recipe._id);
     } else {
       user.savedRecipes.push(recipe._id);
