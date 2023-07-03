@@ -64,14 +64,13 @@ const createUser = asyncHandler(async (req, res) => {
       const user = req.user;
 
       if (!user) {
-        // User not found
         res.status(404).json({ error: "User not found" });
         return;
       }
       console.log(req.file);
       user.avatar = req.file ? req.file.path : null;
   
-      await user.save(); // Wait for the user to be saved
+      await user.save();
   
       res.status(200).json(user);
     } catch (error) {
@@ -122,17 +121,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error('User not found');
   }
 
-  // Generate password reset token
   const resetToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-  // Save the reset token in the user document
   user.resetToken = resetToken;
   user.save();
 
-  // Send the reset password email with the reset token
   const transporter = nodemailer.createTransport({
-    // Configure your email provider settings here
-    // Example for Gmail:
     service: 'Gmail',
     auth: {
       user: 'ataycanpolat@gmail.com',
@@ -142,8 +136,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   const resetPasswordEmail = `
   <p>You have requested to reset your password. Please click on the following link to reset your password:</p>
-  <a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a>
-`;
+  <a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a>`;
 
 
   const mailOptions = {
@@ -216,9 +209,6 @@ const updateUserInfoById = async (req, res) => {
         const { id } = req.params;
         const { name, email, avatar, createdRecipes, savedRecipes, measurmentSystem, diet} =
             req.body;
-
-        // console.log(req.body);
-        // console.log(savedRecipes.map(({ _id }) => _id));
 
         await User.findByIdAndUpdate(
             { _id: id },

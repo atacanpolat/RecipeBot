@@ -28,7 +28,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} /> 
             <Route path="/setAvatar" element={isLoggedIn ? <SetAvatarPage /> : <Homepage />} />
-            <Route path="/home" element={isLoggedIn ? <PrivateHomePage /> : <Homepage />} />
+            <Route path="/home" element={<PrivateHomePage />} />
             <Route path="/saved" element={isLoggedIn ? <SavedRecipesPage /> : <Homepage />} />
             <Route path="/generate" element={<Generate />} />
             <Route path="/inspiration" element={isLoggedIn ? <SearchRecipesPage /> : <Homepage />} />

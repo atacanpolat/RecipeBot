@@ -65,12 +65,29 @@ export const filterRecipes = asyncHandler(async (req, res) => {
       }
   
       if (includeIngredients && includeIngredients.length > 0) {
-        query["ingredients.name"] = { $regex: includeIngredients.join("|"), $options: "i" };
+        query.$and = [
+          {
+            "ingredients.name": {
+              $regex: includeIngredients.join("|"),
+              $options: "i"
+            }
+          }
+        ];
       }
-  
+      
       if (excludeIngredients && excludeIngredients.length > 0) {
-        query["ingredients.name"] = { $regex: excludeIngredients.join("|"), $options: "i" };
-      }
+        const excludeQuery = {
+          "ingredients.name": {
+            $nin: excludeIngredients.map(ingredient => new RegExp(ingredient, "i"))
+          }
+        };
+      
+        if (query.$and) {
+          query.$and.push(excludeQuery);
+        } else {
+          query.$and = [excludeQuery];
+        }
+      }    
   
       if (mealType) {
         query["instruction.mealType"] = mealType;
