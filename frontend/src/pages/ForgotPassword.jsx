@@ -4,8 +4,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from '../components/helpers/themes';
 import React, { useState } from 'react';
 import authService from '../features/auth/authService';
-import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
+import Header from '../components/Header';
 
 
 const ForgotPassword = () => {
@@ -28,6 +28,8 @@ const ForgotPassword = () => {
   };
 
   return (
+    <>
+    <Header />
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -39,7 +41,7 @@ const ForgotPassword = () => {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: theme.palette.violet.main }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -62,6 +64,7 @@ const ForgotPassword = () => {
               type="submit"
               fullWidth
               variant="contained"
+              style={{backgroundColor:theme.palette.violet.main}}
               sx={{ mt: 3, mb: 2 }}
             >
               Reset Password
@@ -69,7 +72,7 @@ const ForgotPassword = () => {
             {message && <Typography variant="body2">{message}</Typography>}
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2" style={{color: theme.palette.violet.main}}>
                   Back to Sign In
                 </Link>
               </Grid>
@@ -78,6 +81,7 @@ const ForgotPassword = () => {
         </Box>
       </Container>
     </ThemeProvider>
+    </>
   );
 };
 

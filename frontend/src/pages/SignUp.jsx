@@ -36,9 +36,6 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
-const defaultTheme = createTheme();
 
 export default function SignUp() {
     const [formData, setFormData] = useState({
@@ -201,7 +198,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item xs={12}>
-                <Link href="/login" variant="body2">
+                <Link href="/login" variant="body2" style={{color:theme.palette.violet.main}}>
                   Already have an account? Sign in
                 </Link>
               </Grid>

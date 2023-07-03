@@ -152,18 +152,19 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="contained"
+              style={{backgroundColor:theme.palette.violet.dark}}
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/forgot-password" variant="body2">
+                <Link href="/forgot-password" variant="body2" style={{color:theme.palette.violet.main}}>
                   Forgot password?
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/register" variant="body2">
+                <Link href="/register" variant="body2" style={{color:theme.palette.violet.main}}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
