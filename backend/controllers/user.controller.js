@@ -1,5 +1,6 @@
 import User from "../mongodb/models/user.js";
 import asyncHandler from "express-async-handler";
+import nodemailer from 'nodemailer';
 
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
@@ -109,6 +110,89 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   })
 
+
+// @desc    Forgot Password
+// @route   POST /api/v1/users/forgot-password
+// @access  Public
+const forgotPassword = asyncHandler(async (req, res) => {
+  
+  const { email } = req.body;
+
+  // Check if user exists
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404).json({ status: 404, message: 'User not found' });
+    throw new Error('User not found');
+  }
+
+  // Generate password reset token
+  const resetToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+  // Save the reset token in the user document
+  user.resetToken = resetToken;
+  user.save();
+
+  // Send the reset password email with the reset token
+  const transporter = nodemailer.createTransport({
+    // Configure your email provider settings here
+    // Example for Gmail:
+    service: 'Gmail',
+    auth: {
+      user: 'ataycanpolat@gmail.com',
+      pass: 'zingvjtfvhkufzul',
+    },
+  });
+
+  const resetPasswordEmail = `
+  <p>You have requested to reset your password. Please click on the following link to reset your password:</p>
+  <a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a>
+`;
+
+
+  const mailOptions = {
+    from: 'team.recipebot@gmail.com',
+    to: email,
+    subject: 'Password Reset',
+    html: resetPasswordEmail,
+    };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Error sending email:', error);
+      res.status(500).json({ status: 500, message: 'Failed to send password reset email' });
+    } else {
+      console.log('Password reset email sent:', info.response);
+      res.status(200).json({ status: 200, message: 'Password reset email sent successfully' });
+    }
+  });
+});
+
+// @desc    Reset Password
+// @route   POST /api/v1/users/reset-password/:token
+// @access  Public
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+
+
+  // Find the user by the reset token
+  const user = await User.findOne({ resetToken: token });
+  console.log(user.resetToken);
+  console.log(token);
+  console.log(user.resetToken===token)
+
+
+  // Set the new password and clear the reset token
+  user.password = password;
+  user.resetToken = undefined;
+  await user.save();
+
+  res.status(200).json({ status: 200, message: 'Password reset successful' });
+});
+
+
 // @desc    Get user profile by id
 // @route   GET /api/users/:id
 // @access  Private
@@ -158,4 +242,4 @@ const updateUserInfoById = async (req, res) => {
     }
 };
 
-export { createUser, loginUser, uploadAvatar, getUserInfoById, updateUserInfoById };
+export { createUser, loginUser, forgotPassword, resetPassword, uploadAvatar, getUserInfoById, updateUserInfoById };

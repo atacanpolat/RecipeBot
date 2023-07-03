@@ -22,11 +22,36 @@ const login = async (userData) => {
   
     return response.data
   }
+
+const forgotPassword = async (email) => {
+  try {
+    const response = await axios.post(API_URL + 'forgot-password', {email})
+    return response.data
+
+  } catch (error) {
+    return error
+  }
+}
+
+const resetPassword = async (token, password) => {
+
+  try{
+  const response = await axios.post(API_URL + `reset-password/${token}`, { password });
+  console.log(API_URL + `reset-password/${token}`)
+  return response.data;
+  }
+  catch (error) {
+    return error;
+  }
+};
+
   
 
 const authService = {
     register,
-    login
+    login,
+    forgotPassword,
+    resetPassword
 }
 
 export default authService;

@@ -26,6 +26,7 @@ const UserSchema = new mongoose.Schema({
   createdRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   savedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   reviewsWritten: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+  resetToken: {type: String},
   defaultRecipeSettings: {
     measurementSystem: {
       type: String,
