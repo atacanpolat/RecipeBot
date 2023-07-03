@@ -7,7 +7,6 @@ const require = createRequire(import.meta.url);
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// Generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
       expiresIn: '30d',
@@ -32,7 +31,6 @@ const createUser = asyncHandler(async (req, res) => {
       })
     }
   
-    // Check if user exists
     const userExists = await User.findOne({ email })
   
     if (userExists) {
@@ -40,11 +38,9 @@ const createUser = asyncHandler(async (req, res) => {
       throw new Error('User already exists')
     }
   
-    // Hash password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
   
-    // Create user
     const user = await User.create({
       firstName,
       lastName,
@@ -176,16 +172,16 @@ const resetPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
 
 
-
-  // Find the user by the reset token
   const user = await User.findOne({ resetToken: token });
   console.log(user.resetToken);
   console.log(token);
   console.log(user.resetToken===token)
 
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(password, salt)
 
-  // Set the new password and clear the reset token
-  user.password = password;
+
+  user.password = hashedPassword;
   user.resetToken = undefined;
   await user.save();
 
