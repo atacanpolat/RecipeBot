@@ -7,6 +7,7 @@ import '../assets/css/star.css';
 import { FaClock, FaConciergeBell, FaPizzaSlice, FaSeedling } from 'react-icons/fa';
 import Rating from '../components/Rating';
 import Heart from '../components/Heart';
+import { HeaderPrivateTop,HeaderPrivate } from '../components/HeaderPrivate';
 
 function Recipe() {
   const API_URL = 'http://localhost:8000/api/v1/recipes/';
@@ -121,13 +122,28 @@ function Recipe() {
   }
 
   return (
+    <div
+    style={{
+      alignItems: "center",
+      width: "100%",
+      gap: "20px",
+      flexDirection: "column",
+    }}
+    >
+      <HeaderPrivateTop />
+      
+
     <DetailWrapper>
       
       <PhotoWrapper>
         <BackgroundImage style={{ backgroundImage: `url(${details.photo})` }} />
         <PhotoImage src={details.photo} alt="" />
       </PhotoWrapper>
-      
+      <div style={{ display: "flex" }}>
+        <HeaderPrivate />
+      <div
+          style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
+        >
        <PageWrapper>
       <ContentWrapper>
         <RecipeContainer>
@@ -195,8 +211,11 @@ function Recipe() {
       </CookingMethod>
 </ContentWrapper>
 </PageWrapper>
+</div>
+</div>
 
     </DetailWrapper>
+    </div>
   );
 }
 const PageWrapper = styled.div`
@@ -209,15 +228,12 @@ const PageWrapper = styled.div`
 const DetailWrapper = styled.div`
 scrollbar-gutter: stable both-edges;
   margin-top: 1rem;
-  margin-bottom: 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   margin: 0;
   padding: 0;
-  display: flex;
-  align: center;
   
 .info-row{
     display: flex;
@@ -250,6 +266,7 @@ gap: 5px;
 
 const PhotoWrapper = styled.div`
   position: relative;
+  align-items:center;
 `;
 
 const BackgroundImage = styled.div`
