@@ -26,6 +26,7 @@ function Recipe() {
         },
       });
       const recipeData = response.data;
+      console.log(recipeData);
       setDetails(recipeData);
     } catch (error) {
       console.log(params.name);
@@ -114,6 +115,11 @@ function Recipe() {
     return "/"; // Change "Default Value" to the desired default value
   };
 
+  const formatCookingMethod = (cookingMethod) => {
+    const cookingMethodList = cookingMethod.split(/\d+\.\s/).filter(Boolean);
+    return cookingMethodList;
+  }
+
   return (
     <DetailWrapper>
       
@@ -179,10 +185,14 @@ function Recipe() {
       <IngredientsList>
           <ul>{formatIngredients()}</ul>
         </IngredientsList>
-        <CookingMethod>
+      <CookingMethod>
         <h4>Cooking method:</h4>
-        <ol>{displayInfo(0)}</ol>
-        </CookingMethod>
+        <ol>
+          {formatCookingMethod(displayInfo(0)).map((step, index) => (
+            <li key={index}>{step}</li>
+          ))}
+        </ol>
+      </CookingMethod>
 </ContentWrapper>
 </PageWrapper>
 
