@@ -1,4 +1,3 @@
-import { exec } from "child_process";
 import Recipe from "../mongodb/models/recipe.js";
 import asyncHandler from "express-async-handler";
 
@@ -222,7 +221,6 @@ const openai = new OpenAIApi(configuration);
 export const generateRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    console.log(req.body);
 
     // extract variables from request.body + handle default/empty values
 
@@ -365,7 +363,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       title: response.title,
       ingredients: response.ingredients,
       instruction: response.instruction,
-      photoUrl: response.photoUrl,
+      photo: response.photoUrl,
       createdBy: user._id,
       isGenerated: true,
       tags: tags,

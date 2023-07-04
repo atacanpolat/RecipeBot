@@ -72,7 +72,7 @@ const calculateRecipeData = (responseData) => {
     const imgSrc = photo;
     const tagList = tags.join(", ");
     const reviewCount = reviews.length;
-    const recipeUrl = "http://localhost:3000/recipes/:" + _id;
+    const recipeUrl = "http://localhost:3000/recipes/" + _id;
 
     let totalRating = 0;
     reviews.forEach((review) => {
@@ -133,6 +133,65 @@ const sortRecipes = (recipes, criterion) => {
   return sortedRecipes;
 };
 
+const getRecipeById = async (id, token) => {
+  try {
+    const response = await axios.get(`${API_URL_RECIPE}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to retrieve recipe:', error);
+    throw error; // Rethrow the error to be caught by the caller
+  }
+};
+const getInstructionById = async (id, token) => {
+  try {
+    const response = await axios.get(`${API_URL_RECIPE}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to retrieve recipe:', error);
+    throw error; // Rethrow the error to be caught by the caller
+  }
+};
+// Fetch user information based on ID
+const fetchUser = async (userId, token) => {
+  try {
+    const response = await axios.get(`http://localhost:8000/api/v1/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    // Handle error
+    console.error('Failed to retrieve user:', error);
+  }
+};
+const createReview = async (recipeId, reviewData, token) => {
+  try {
+    const response = await axios.post(
+      `${API_URL_RECIPE}/${recipeId}/reviews/create`,
+      reviewData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    // Handle error
+    console.error('Failed to create review:', error);
+    throw error; // Rethrow the error to be caught by the caller
+  }
+};
+
 
 const recipeService = {
   getAllRecipes,
@@ -140,7 +199,11 @@ const recipeService = {
   getSavedRecipes,
   getFilteredRecipes,
   calculateRecipeData,
-  sortRecipes
+  sortRecipes, 
+  getRecipeById, 
+  getInstructionById, 
+  fetchUser, 
+  createReview
 };
 
 export default recipeService;

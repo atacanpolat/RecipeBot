@@ -19,7 +19,9 @@ const HomePage = () => {
               Meet RecipeBot, <span className={classes.violetText}>the AI in your kitchen</span>
             </Typography>
             <Typography variant="body1" className={classes.paragraph}>
-              Description text here.
+            Generate AI-powered personalized recipes using ingredients in your fridge, set dietary preferences, 
+            save and share recipes, and even make ingredient substitutions. 
+            Start cooking delicious meals while reducing food waste today.
             </Typography>
             <div>
               <Button variant="contained" href='/generate' className={classes.actionButton} style={{left:60}}>

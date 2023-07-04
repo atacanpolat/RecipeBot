@@ -6,8 +6,8 @@ import asyncHandler from "express-async-handler";
 export const createReview = asyncHandler(async (req,res) => {
     try {
         const user = req.user;
-        const { id, text, rating } = req.body;
-        const recipe = await Recipe.recipeModel.findById(id);
+        const { recipeId, text, rating } = req.body;
+        const recipe = await Recipe.recipeModel.findById(recipeId);
 
        if (!recipe) {
             return res.status(404).json({ error: "Recipe not found" });
@@ -53,9 +53,9 @@ export const createReview = asyncHandler(async (req,res) => {
   export const updateReview = asyncHandler(async (req, res) => {
     try {
       const user = req.user;
-      const { id, text, rating } = req.body;
+      const { recipeId, text, rating } = req.body;
       
-      const review = await Review.reviewModel.findById(id);
+      const review = await Review.reviewModel.findById(recipeId);
       if (!review) {
         return res.status(404).json({ error: "Review not found" });
       }
