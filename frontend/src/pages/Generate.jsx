@@ -3,11 +3,6 @@ import { Container } from "@material-ui/core";
 
 import GenerateInputComponent from "../components/GenerateInputComponent";
 
-const handleRecipeGeneration = async (recipeParameters) => {
-  console.log("Generating recipe...");
-  // TODO: impement
-};
-
 function Generate() {
   return (
     <div

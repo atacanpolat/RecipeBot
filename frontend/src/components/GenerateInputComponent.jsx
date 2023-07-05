@@ -129,6 +129,8 @@ const GenerateInputComponent = () => {
     console.log(generationParams);
 
     const token = localStorage.getItem("jwt");
+
+    // generate recipe and get its data back
     const response = axios
       .post(API_URL_RECIPE + "generate", generationParams, {
         headers: {
@@ -136,12 +138,14 @@ const GenerateInputComponent = () => {
         },
       })
       .then(function (response) {
+        // if the generation process worked, set the recipe data in the local storage
         console.log(response);
+        localStorage.setItem("recipe", JSON.stringify(response.data.recipe));
+        localStorage.setItem("instruction", JSON.stringify(response.data.instruction));
       })
       .catch(function (error) {
         console.log(error);
       });
-
     return response;
   };
 
