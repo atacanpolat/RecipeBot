@@ -17,7 +17,6 @@ function CreatedByComponent({ card, classes }) {
   useEffect(() => {
     const fetchUser = async () => {
       const userData = await userService.getUserbyId(card.createdBy)
-      console.log(userData);
       setUser(userData);
     };
     fetchUser();

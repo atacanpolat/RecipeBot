@@ -11,22 +11,29 @@ import StarIcon from '@mui/icons-material/Star';
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import recipeService from "../features/recipe/recipeService";
-import {useRecipeSliderStyles} from './helpers/styles/recipesStyles';
+import { useRecipeSliderStyles } from './helpers/styles/recipesStyles';
 import RecipeCard from "./RecipeCard";
 import userService from "../features/user/userService";
 
-function PopularRecipesSlider({style}) {
-
-
+function PopularRecipesSlider({ style }) {
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const recipes = await recipeService.getAllRecipes();
-        console.log(recipes);
-        const recipesData = await recipeService.calculateRecipeData(recipes); 
-        setCards(recipesData);
+        const [recipes, createdRecipes, savedRecipes] = await Promise.all([
+          recipeService.getAllRecipes(),
+          recipeService.getCreatedRecipes(),
+          recipeService.getSavedRecipes(),
+        ]);
+        
+        const userRecipes = createdRecipes.concat(savedRecipes);
+
+        const recommendedRecipes = recipeService.recommendRecipes(recipes, userRecipes);
+        console.log(recommendedRecipes);
+        const recommendedRecipesData = recipeService.calculateRecipeData(recommendedRecipes);
+        console.log(recommendedRecipesData);
+        setCards(recommendedRecipesData);
       } catch (error) {
         console.error('Error fetching recipes:', error);
       }
@@ -61,7 +68,7 @@ function PopularRecipesSlider({style}) {
       <div className={classes.content}>
         <div className={classes.headingWithControl}>
           <Typography variant="h4" className={classes.heading}>
-            Popular Recipes
+            Recommended Recipes For You
           </Typography>
           <div className={classes.controls}>
             <Button className={classes.controlButton} onClick={sliderRef?.slickPrev} >
