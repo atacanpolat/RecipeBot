@@ -2,7 +2,6 @@ import axios from "axios";
 
 const API_URL_RECIPE = "http://localhost:8000/api/v1/recipes/";
 
-//Register user
 const getAllRecipes = async () => {
   try {
     const token = localStorage.getItem("jwt");
@@ -79,7 +78,6 @@ const calculateRecipeData = (responseData) => {
       totalRating += review.rating;
     });
     const meanRating = reviewCount > 0 ? totalRating / reviewCount : 0;
-    console.log(createdBy);
 
     calculatedData.push({
       recipeId,
@@ -132,6 +130,71 @@ const sortRecipes = (recipes, criterion) => {
 
   return sortedRecipes;
 };
+
+
+const recommendRecipes = (recipesData, userRecipes) => {
+  const ingredientCounts = {};
+  const tagCounts = {};
+
+  // Count ingredient occurrences in user recipes
+  for (const userRecipe of userRecipes) {
+      for (const ingredient of userRecipe.ingredients) {
+        const ingredientName = ingredient.name.toLowerCase();
+        ingredientCounts[ingredientName] =
+          (ingredientCounts[ingredientName] || 0) + 1;
+      }
+      for (const tag of userRecipe.tags) {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      }
+  }
+  //TODO: filter out the recipes from recipeData that are user recipe (i.e., are in userrecipes)
+  const recipes = recipesData.filter((recipe) => {
+      return !userRecipes.some(
+        (userRecipe) => userRecipe._id === recipe._id
+      );
+    });
+
+  const similarityScores = recipes.map((recipe) => {
+    const recipeTags = recipe.tags;
+    const recipeIngredients = recipe.ingredients;
+
+    let ingredientScore = 0;
+    let tagScore = 0;
+
+    // Calculate ingredient score
+    for (const ingredient of recipeIngredients) {
+      const ingredientName = ingredient.name.toLowerCase();
+      if (ingredientCounts[ingredientName]) {
+        ingredientScore += ingredientCounts[ingredientName];
+      }
+    }
+
+    // Calculate tag score
+    for (const tag of recipeTags) {
+      if (tagCounts[tag]) {
+        tagScore += tagCounts[tag];
+      }
+    }
+
+    const similarityScore = ingredientScore + tagScore;
+    return { recipe, similarityScore };
+  });
+
+  similarityScores.sort((a, b) => b.similarityScore - a.similarityScore);
+  console.log(similarityScores);
+  const recommendedRecipes = similarityScores.map((entry) => entry.recipe);
+  
+
+  return recommendedRecipes.slice(0, 5);
+};
+
+
+
+
+
+
+
+
 
 const getRecipeById = async (id, token) => {
   try {
@@ -200,6 +263,7 @@ const recipeService = {
   getFilteredRecipes,
   calculateRecipeData,
   sortRecipes, 
+  recommendRecipes,  
   getRecipeById, 
   getInstructionById, 
   fetchUser, 
