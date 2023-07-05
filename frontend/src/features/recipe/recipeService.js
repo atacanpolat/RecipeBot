@@ -147,7 +147,6 @@ const recommendRecipes = (recipesData, userRecipes) => {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
       }
   }
-  //TODO: filter out the recipes from recipeData that are user recipe (i.e., are in userrecipes)
   const recipes = recipesData.filter((recipe) => {
       return !userRecipes.some(
         (userRecipe) => userRecipe._id === recipe._id

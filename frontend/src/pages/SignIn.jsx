@@ -37,8 +37,6 @@ function Copyright(props) {
 }
 
 
-const defaultTheme = createTheme();
-
 export default function SignIn() {
     const [formData, setFormData] = useState({
         email: '',
@@ -69,10 +67,15 @@ export default function SignIn() {
             theme: "dark",
             });
         } 
+
+        const token = localStorage.getItem('jwt');
+        
+        if (token) {
+          navigate('/home')
+        }
     
-        if (isSuccess && user.token || user) {
+        else if (isSuccess && user.token || user) {
           localStorage.setItem('jwt', user.token);
-        //  localStorage.setItem('user', JSON.stringify(user))
           navigate('/home')
         }
     
