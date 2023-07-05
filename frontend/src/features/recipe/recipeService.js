@@ -133,10 +133,10 @@ const sortRecipes = (recipes, criterion) => {
 
 
 const recommendRecipes = (recipesData, userRecipes) => {
-  const ingredientCounts = {};
-  const tagCounts = {};
+  let ingredientCounts = {};
+  let tagCounts = {};
 
-  // Count ingredient occurrences in user recipes
+  // Count ingredient and tag occurrences in user recipes
   for (const userRecipe of userRecipes) {
       for (const ingredient of userRecipe.ingredients) {
         const ingredientName = ingredient.name.toLowerCase();
@@ -147,6 +147,23 @@ const recommendRecipes = (recipesData, userRecipes) => {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
       }
   }
+
+  //Standardize each attribute
+  for (const key in ingredientCounts) {
+    if (Object.prototype.hasOwnProperty.call(ingredientCounts, key)) {
+      ingredientCounts[key] = ingredientCounts[key] / Object.keys(ingredientCounts).length;
+    }
+  }
+  for (const key in tagCounts) {
+    if (Object.prototype.hasOwnProperty.call(tagCounts, key)) {
+      tagCounts[key] = tagCounts[key] / Object.keys(tagCounts).length;
+    }
+  }
+
+  console.log('Updated ingredientCounts:', ingredientCounts);
+  console.log('Updated Tag counts:', tagCounts);
+
+
   const recipes = recipesData.filter((recipe) => {
       return !userRecipes.some(
         (userRecipe) => userRecipe._id === recipe._id
@@ -184,7 +201,7 @@ const recommendRecipes = (recipesData, userRecipes) => {
   const recommendedRecipes = similarityScores.map((entry) => entry.recipe);
   
 
-  return recommendedRecipes.slice(0, 5);
+  return recommendedRecipes;
 };
 
 

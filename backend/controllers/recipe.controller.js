@@ -282,7 +282,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
           }
         ],
         "instruction": {
-          "narrative": "Instruction Narrative",
+          "narrative": "Enumerated Instruction Narrative",
           "cookingTime": "Cooking Time",
           "servingSize": "Serving Size",
           "mealType": "Meal Type",

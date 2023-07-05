@@ -12,13 +12,14 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useTeamCardStyles } from "./helpers/styles/landingPageStyles";
+import AtaPic from "../images/canpolat_photo.jpeg";
 
 const TeamSection = ({
   heading = "Meet These Fine Folks.",
   subheading = "Our Team",
   cards = [
     {
-        imageSrc: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&fit=facearea&facepad=2.95&w=512&h=512&q=80",
+        imageSrc: AtaPic,
         name: "Ata Canpolat",
         links: [
           {
