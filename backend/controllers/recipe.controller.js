@@ -193,18 +193,19 @@ export const updateRecipe = asyncHandler(async (req, res) => {
 export const deleteRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    const userId = user.id; // Assuming user ID is stored in req.user.id after authentication
+    const userId = user.id;
+    const {recipeId} = req.body;
 
-    const recipe = await Recipe.recipeModel.findById(req.params.id);
+    const recipe = await Recipe.recipeModel.findById(recipeId);
     if (!recipe) {
       return res.status(404).json({ error: "Recipe not found" });
     }
-
+    
     if (recipe.createdBy.toString() !== userId) {
-      return res.status(401).json({ error: "Unauthorized access" });
+      return res.status(401).json({ error: "Unauthorized access jj" });
     }
 
-    await recipe.remove();
+    await recipe.deleteOne();
 
     user.createdRecipes.pull(recipe._id);
     await user.save();

@@ -25,7 +25,7 @@ router.get("/:id", protect, getRecipeById);
 router.patch("/filter", protect, filterRecipes);
 router.post("/create", protect, createRecipe);
 router.patch("/:id", protect, updateRecipe);
-router.delete("/:id", protect, deleteRecipe);
+router.delete("/delete", protect, deleteRecipe);
 
 router.post("/generate", protect, generateRecipe);
 router.post("/save", protect, saveRecipe);

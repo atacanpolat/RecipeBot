@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../assets/css/star.css";
 import {
@@ -8,6 +8,7 @@ import {
   FaConciergeBell,
   FaPizzaSlice,
   FaSeedling,
+  FaTrash,
 } from "react-icons/fa";
 import Rating from "../components/Rating";
 import Heart from "../components/Heart";
@@ -17,12 +18,15 @@ function Recipe() {
   const API_URL = "http://localhost:8000/api/v1/recipes/";
 
   const token = localStorage.getItem("jwt");
+  const user = JSON.parse(localStorage.getItem("user"));
   let params = useParams();
+  const navigate = useNavigate();
   const [details, setDetails] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [updatedIngredients, setUpdatedIngredients] = useState([]);
   const [updatedCookingMethod, setUpdatedCookingMethod] = useState("");
   const [recipeInDatabase, setRecipeInDatabase] = useState(false);
+  const [isUserRecipe, setIsUserRecipe] = useState(false); 
 
   let recipeData = {};
 
@@ -37,11 +41,13 @@ function Recipe() {
       .then((response) => {
         recipeData = response.data;
         setRecipeInDatabase(true);
+        setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
       })
       .catch((error) => {
         if (error.response.status === 404 && localStorage.getItem("recipe")) {
           recipeData = JSON.parse(localStorage.getItem("recipe"));
           setRecipeInDatabase(false);
+          setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
         } else {
           throw error;
         }
@@ -169,6 +175,29 @@ function Recipe() {
     return cookingMethodList;
   };
 
+
+  const handleDeleteRecipe = () => {
+    const confirmed = window.confirm("Are you sure you want to delete this recipe?");
+    if (confirmed) {
+      axios
+        .delete(API_URL + 'delete', {
+          data: { recipeId: details._id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log("RECIPE DELETED");
+          console.log(response);
+          navigate("/saved");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+  
+
   return (
     <div
       style={{
@@ -209,6 +238,11 @@ function Recipe() {
                   <Rating />
                   <Heart />
                   <Button>Edit</Button>
+                  {isUserRecipe && recipeInDatabase && (
+          <ButtonDelete onClick={handleDeleteRecipe}>
+            <FaTrash /> Delete Recipe
+          </ButtonDelete>
+        )}
                 </RecipeContainer>
                 <InfoContainer>
                   <div className="info-row">
@@ -437,6 +471,17 @@ const ButtonFlink = styled.div`
   width: 160px;
   background-color: #c91383;
 `;
+
+const ButtonDelete = styled.button`
+  /* Add your desired button styles here */
+  background-color: red;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
 const IngredientsList = styled.div`
   margin-top: 1rem;
 
