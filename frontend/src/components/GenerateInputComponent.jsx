@@ -27,7 +27,7 @@ const makeStringLowercase = (string) => {
     return "";
   }
   // remove all special characters from string
-  const noSpecialChars = string.replace(/[^a-zA-Z0-9 ]/g, '');
+  const noSpecialChars = string.replace(/[^a-zA-Z0-9 ]/g, "");
 
   return noSpecialChars.charAt(0).toLowerCase() + noSpecialChars.slice(1);
 };
