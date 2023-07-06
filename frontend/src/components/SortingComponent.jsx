@@ -22,7 +22,7 @@ const SortingComponent = ({ onSortSubmit }) => {
   };
 
   const handleCriterionSelect = (criterion) => {
-    setSelectedCriterion(criterion);
+    setSelectedCriterion(criterion === "" ? "" : criterion); 
     onSortSubmit(criterion);
     handleMenuClose();
   };
@@ -50,6 +50,7 @@ const SortingComponent = ({ onSortSubmit }) => {
         >
           <ListItemText primary="Default" />
         </MenuItem>
+
         <MenuItem
           className={classes.menuItem}
           onClick={() => handleCriterionSelect("author")}
@@ -78,7 +79,7 @@ const SortingComponent = ({ onSortSubmit }) => {
           <ListItemIcon>
             <SortIcon />
           </ListItemIcon>
-          <ListItemText primary="Popularity" />
+          <ListItemText primary="Most Popular" />
         </MenuItem>
         <MenuItem
           className={classes.menuItem}

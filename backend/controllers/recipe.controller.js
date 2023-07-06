@@ -379,7 +379,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
   }
 });
 
-//Can'a sor
+
 export const saveRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
@@ -390,6 +390,9 @@ export const saveRecipe = asyncHandler(async (req, res) => {
       return res.status(404).json({ error: "recipe not found" });
     }
 
+    if (recipe.createdBy == user._id) {
+
+    }
     const instruction = new Recipe.instructionModel({
       narrative: recipe.instruction.narrative,
       cookingTime: recipe.instruction.cookingTime,

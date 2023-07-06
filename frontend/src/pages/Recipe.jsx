@@ -98,7 +98,7 @@ function Recipe() {
     if (details.ingredients && details.ingredients.length > 0) {
       return details.ingredients.map((ingredient, index) => (
         <li key={index}>
-          Ingredient {index + 1}: {ingredient.name} - {ingredient.quantity} {ingredient.brand}
+          Ingredient {index + 1}: {ingredient.brand} {ingredient.name} - {ingredient.quantity} 
         </li>
       ));
     }
@@ -171,7 +171,7 @@ function Recipe() {
   </div>
   </InfoContainer> 
       <IngredientsHeading>
-        <h4>Ingredients:</h4>
+        <h3>Ingredients:</h3>
         {isEditing ? (
           <div className="edit-container">
             {updatedIngredients.map((ingredient, index) => (

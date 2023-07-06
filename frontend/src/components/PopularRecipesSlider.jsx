@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
-import {
-  Button,
-  Typography,
-  Card,
-  CardMedia,
-  CardContent,
-} from "@material-ui/core";
-import StarIcon from '@mui/icons-material/Star';
+import {Button,Typography} from "@material-ui/core";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import recipeService from "../features/recipe/recipeService";
 import { useRecipeSliderStyles } from './helpers/styles/recipesStyles';
 import RecipeCard from "./RecipeCard";
-import userService from "../features/user/userService";
+
 
 function PopularRecipesSlider({ style }) {
   const [cards, setCards] = useState([]);
@@ -80,7 +73,7 @@ function PopularRecipesSlider({ style }) {
           </div>
         </div>
         <div style={{width:"1450px", overflowX:"scroll", paddingLeft:"40px"}}>
-        <Slider ref={setSliderRef} {...sliderSettings} className={classes.cardSlider}>
+        <Slider ref={setSliderRef} {...sliderSettings} className={classes.cardSlider} infinite={false}>
           {cards.map((card, index) => (
           <RecipeCard card={card} key={index} isSlider={true}/>
           ))}    
