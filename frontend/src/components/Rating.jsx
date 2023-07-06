@@ -7,27 +7,35 @@ import { useParams } from "react-router-dom";
 const Rate = () => {
   const [details, setDetails] = useState({});
   let params = useParams();
-  const token = localStorage.getItem('jwt');
-  const user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem("jwt");
+  const user = JSON.parse(localStorage.getItem("user"));
   const API_URL = `http://localhost:8000/api/v1`; // Updated API URL
-  const API1_URL = 'http://localhost:8000/api/v1/recipes';
   const [rate, setRate] = useState(0);
   const [userRating, setUserRating] = useState(null);
-  const [review, setReview] = useState([]);
+
+  let recipeData = {};
 
   const getInformation = async () => {
-    try {
-      const response = await axios.get(`${API1_URL}/${params.name}`, {
+    // try retreiving recipe from the database
+    await axios
+      .get(API_URL + params.name, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      })
+      .then((response) => {
+        recipeData = response.data;
+      })
+      .catch((error) => {
+        if (error.response.status === 404 && localStorage.getItem("recipe")) {
+          recipeData = JSON.parse(localStorage.getItem("recipe"));
+        } else {
+          throw error;
+        }
       });
-      const recipeData = response.data;
-      setDetails(recipeData);
-    } catch (error) {
-      console.error('Failed to retrieve recipes:', error);
-      throw error;
-    }
+
+    console.log(recipeData);
+    setDetails(recipeData);
   };
 
   useEffect(() => {
@@ -38,16 +46,20 @@ const Rate = () => {
 
   const postReview = async (recipeId, reviewData) => {
     try {
-      const response = await axios.post(`${API_URL}/review/create`, reviewData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
+      const response = await axios.post(
+        `${API_URL}/review/create`,
+        reviewData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       return response.data;
     } catch (error) {
       console.log(reviewData);
-      console.error('Failed to create review:', error);
+      console.error("Failed to create review:", error);
       throw error;
     }
   };
@@ -58,8 +70,6 @@ const Rate = () => {
       postReview(recipeID, revData);
     }
   }, [rate, recipeID]);
-
-
 
   const checkUserReview = () => {
     const userReviews = user.reviews;
@@ -83,11 +93,10 @@ const Rate = () => {
     return {
       recipeId: recipeID,
       text: "",
-      rating: rating
+      rating: rating,
       // Add any other properties you need for the review data
     };
   };
-
 
   const handleRatingChange = (givenRating) => {
     const userReviewRating = checkUserReview(token, recipeID);
@@ -98,7 +107,7 @@ const Rate = () => {
       setUserRating(givenRating); // Update the userRating state
     }
   };
-  
+
   return (
     <Container>
       {[...Array(5)].map((item, index) => {
@@ -114,7 +123,11 @@ const Rate = () => {
             <Rating>
               <FaStar
                 size={35} // Adjust the size value as per your requirement
-                color={givenRating <= (userRating || rate) ? "000" : "rgb(192,192,192)"}
+                color={
+                  givenRating <= (userRating || rate)
+                    ? "000"
+                    : "rgb(192,192,192)"
+                }
               />
             </Rating>
           </label>

@@ -1,39 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import RatingStars from '../components/RatingStars';
-import '../assets/css/star.css';
-import { FaClock, FaConciergeBell, FaPizzaSlice, FaSeedling } from 'react-icons/fa';
-import Rating from '../components/Rating';
-import Heart from '../components/Heart';
-import { HeaderPrivateTop,HeaderPrivate } from '../components/HeaderPrivate';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import "../assets/css/star.css";
+import {
+  FaClock,
+  FaConciergeBell,
+  FaPizzaSlice,
+  FaSeedling,
+} from "react-icons/fa";
+import Rating from "../components/Rating";
+import Heart from "../components/Heart";
+import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
 
 function Recipe() {
-  const API_URL = 'http://localhost:8000/api/v1/recipes/';
+  const API_URL = "http://localhost:8000/api/v1/recipes/";
 
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem("jwt");
   let params = useParams();
   const [details, setDetails] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [updatedIngredients, setUpdatedIngredients] = useState([]);
-  const [updatedCookingMethod, setUpdatedCookingMethod] = useState('');
+  const [updatedCookingMethod, setUpdatedCookingMethod] = useState("");
+  const [recipeInDatabase, setRecipeInDatabase] = useState(false);
+
+  let recipeData = {};
 
   const getInformation = async () => {
-    try {
-      const response = await axios.get(API_URL+params.name, {
+    // try retreiving recipe from the databas
+    await axios
+      .get(API_URL + params.name, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      })
+      .then((response) => {
+        recipeData = response.data;
+        setRecipeInDatabase(true);
+      })
+      .catch((error) => {
+        if (error.response.status === 404 && localStorage.getItem("recipe")) {
+          recipeData = JSON.parse(localStorage.getItem("recipe"));
+          setRecipeInDatabase(false);
+        } else {
+          throw error;
+        }
       });
-      const recipeData = response.data;
-      console.log(recipeData);
-      setDetails(recipeData);
-    } catch (error) {
-      console.log(params.name);
-      console.error('Failed to retrieve recipes:', error);
-      throw error;
-    }
+    console.log("is recipe in database?", recipeInDatabase);
+    console.log(recipeData);
+    setDetails(recipeData);
   };
 
   useEffect(() => {
@@ -42,11 +57,16 @@ function Recipe() {
 
   const handleEditIngredients = () => {
     setIsEditing(true);
-    setUpdatedIngredients(details.ingredients.map((ingredient) => ({ ...ingredient })));
+    setUpdatedIngredients(
+      details.ingredients.map((ingredient) => ({ ...ingredient }))
+    );
   };
 
   const handleAddIngredient = () => {
-    setUpdatedIngredients([...updatedIngredients, { name: '', quantity: '', brand: '' }]);
+    setUpdatedIngredients([
+      ...updatedIngredients,
+      { name: "", quantity: "", brand: "" },
+    ]);
   };
 
   const handleIngredientChange = (index, field, value) => {
@@ -55,9 +75,39 @@ function Recipe() {
     setUpdatedIngredients(updatedIngredientsCopy);
   };
 
-  const handleCookingMethodChange = (e) => {
-    setUpdatedCookingMethod(e.target.value);
+  // const handleCookingMethodChange = (e) => {
+  //   setUpdatedCookingMethod(e.target.value);
+  // };
+
+  const addRecipeToDatabase = () => {
+    const recipeParams = {
+      title: details.title,
+      ingredients: details.ingredients,
+      instruction: details.instruction,
+      photo: details.photo,
+    };
+    axios
+      .post(API_URL + "/create", recipeParams, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log("RECIPE ADDED TO THE DATABASE");
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
+  // const displayAddToDatabaseButton = () => {
+  //   if (recipeInDatabase) {
+  //     return "none";
+  //   } else {
+  //     return "inline-block";
+  //   }
+  // };
 
   const handleCreateNewRecipe = () => {
     // Save the updatedIngredients and updatedCookingMethod as a new recipe
@@ -66,30 +116,31 @@ function Recipe() {
     // After successfully saving the new recipe, redirect or display a success message
 
     // Example API call:
-    axios.post(
-      API_URL,
-      {
-        title: details.title,
-        ingredients: updatedIngredients,
-        instruction: {
-          0: updatedCookingMethod,
+    axios
+      .post(
+        API_URL,
+        {
+          title: details.title,
+          ingredients: updatedIngredients,
+          instruction: {
+            0: updatedCookingMethod,
+          },
+          // Other recipe properties
         },
-        // Other recipe properties
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         // Handle successful response
-        console.log('New recipe saved:', response.data);
+        console.log("New recipe saved:", response.data);
         // Redirect or display success message
       })
       .catch((error) => {
         // Handle error
-        console.error('Failed to save new recipe:', error);
+        console.error("Failed to save new recipe:", error);
         // Display error message or handle the error in an appropriate way
       });
   };
@@ -119,114 +170,139 @@ function Recipe() {
   const formatCookingMethod = (cookingMethod) => {
     const cookingMethodList = cookingMethod.split(/\d+\.\s/).filter(Boolean);
     return cookingMethodList;
-  }
+  };
 
   return (
     <div
-    style={{
-      alignItems: "center",
-      width: "100%",
-      gap: "20px",
-      flexDirection: "column",
-    }}
+      style={{
+        alignItems: "center",
+        width: "100%",
+        gap: "20px",
+        flexDirection: "column",
+      }}
     >
       <HeaderPrivateTop />
-      
 
-    <DetailWrapper>
-      
-      <PhotoWrapper>
-        <BackgroundImage style={{ backgroundImage: `url(${details.photo})` }} />
-        <PhotoImage src={details.photo} alt="" />
-      </PhotoWrapper>
-      <div style={{ display: "flex" }}>
-        <HeaderPrivate />
-      <div
-          style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
-        >
-       <PageWrapper>
-      <ContentWrapper>
-        <RecipeContainer>
-          <RecipeName>{details.title}</RecipeName>
-          <Rating />
-          <Heart/>
-          <Button>Edit</Button>
-        </RecipeContainer>
-            <InfoContainer>
-  <div className="info-row">
-    <span className="info-label"><FaClock></FaClock> Cooking time:</span>
-    <span className="info-value">{displayInfo(1)}</span>
-  </div>
-  <div className="info-row">
-    <span className="info-label"><FaPizzaSlice></FaPizzaSlice> Meal type:</span>
-    <span className="info-value">{displayInfo(4)}</span>
-  </div>
-  <div className="info-row">
-    <span className="info-label"><FaConciergeBell></FaConciergeBell> Serving size:</span>
-    <span className="info-value">{displayInfo(2)}</span>
-  </div>
-  <div className="info-row">
-    <span className="info-label"><FaSeedling></FaSeedling>Diet:</span>
-    <span className="info-value">{displayInfo(5)}</span>
-  </div>
-  </InfoContainer> 
-      <IngredientsHeading>
-        <h3>Ingredients:</h3>
-        {isEditing ? (
-          <div className="edit-container">
-            {updatedIngredients.map((ingredient, index) => (
-              <div className="input-container" key={index}>
-                <input
-                  type="text"
-                  placeholder="Enter ingredient"
-                  value={ingredient.name}
-                  onChange={(e) => handleIngredientChange(index, 'name', e.target.value)}
-                />
-                {/* Add other input fields for quantity, brand, etc. as needed */}
-              </div>
-            ))}
-            <div className="add-ingredient-container">
-            <button onClick={handleAddIngredient}>Add</button>
-            </div>
-            <Button onClick={handleCreateNewRecipe}>Save as New Recipe</Button>
-            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+      <DetailWrapper>
+        <PhotoWrapper>
+          <BackgroundImage
+            style={{ backgroundImage: `url(${details.photo})` }}
+          />
+          <PhotoImage src={details.photo} alt="" />
+        </PhotoWrapper>
+        <div style={{ display: "flex" }}>
+          <HeaderPrivate />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flex: "1 1 auto",
+            }}
+          >
+            <PageWrapper>
+              <ContentWrapper>
+                {!recipeInDatabase ? (
+                  <Button onClick={addRecipeToDatabase}>
+                    Save recipe to database
+                  </Button>
+                ) : null}
+
+                <RecipeContainer>
+                  <RecipeName>{details.title}</RecipeName>
+                  <Rating />
+                  <Heart />
+                  <Button>Edit</Button>
+                </RecipeContainer>
+                <InfoContainer>
+                  <div className="info-row">
+                    <span className="info-label">
+                      <FaClock></FaClock> Cooking time:
+                    </span>
+                    <span className="info-value">{displayInfo(1)}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">
+                      <FaPizzaSlice></FaPizzaSlice> Meal type:
+                    </span>
+                    <span className="info-value">{displayInfo(4)}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">
+                      <FaConciergeBell></FaConciergeBell> Serving size:
+                    </span>
+                    <span className="info-value">{displayInfo(2)}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">
+                      <FaSeedling></FaSeedling>Diet:
+                    </span>
+                    <span className="info-value">{displayInfo(5)}</span>
+                  </div>
+                </InfoContainer>
+                <IngredientsHeading>
+                  <h4>Ingredients:</h4>
+                  {isEditing ? (
+                    <div className="edit-container">
+                      {updatedIngredients.map((ingredient, index) => (
+                        <div className="input-container" key={index}>
+                          <input
+                            type="text"
+                            placeholder="Enter ingredient"
+                            value={ingredient.name}
+                            onChange={(e) =>
+                              handleIngredientChange(
+                                index,
+                                "name",
+                                e.target.value
+                              )
+                            }
+                          />
+                          {/* Add other input fields for quantity, brand, etc. as needed */}
+                        </div>
+                      ))}
+                      <div className="add-ingredient-container">
+                        <button onClick={handleAddIngredient}>Add</button>
+                      </div>
+                      <Button onClick={handleCreateNewRecipe}>
+                        Save as New Recipe
+                      </Button>
+                      <Button onClick={() => setIsEditing(false)}>
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button onClick={handleEditIngredients}>Edit</Button>
+                  )}
+                  <a href="https://www.goflink.com/de-DE/">
+                    <ButtonFlink>Order on Flink</ButtonFlink>
+                  </a>
+                </IngredientsHeading>
+                <IngredientsList>
+                  <ul>{formatIngredients()}</ul>
+                </IngredientsList>
+                <CookingMethod>
+                  <h4>Cooking method:</h4>
+                  <ol>
+                    {formatCookingMethod(displayInfo(0)).map((step, index) => (
+                      <li key={index}>{step}</li>
+                    ))}
+                  </ol>
+                </CookingMethod>
+              </ContentWrapper>
+            </PageWrapper>
           </div>
-        ) : (
-          <Button onClick={handleEditIngredients}>Edit</Button>
-        )}
-        <a href="https://www.goflink.com/de-DE/">
-          <ButtonFlink>Order on Flink</ButtonFlink>
-        </a>
-      </IngredientsHeading>
-      <IngredientsList>
-          <ul>{formatIngredients()}</ul>
-        </IngredientsList>
-      <CookingMethod>
-        <h4>Cooking method:</h4>
-        <ol>
-          {formatCookingMethod(displayInfo(0)).map((step, index) => (
-            <li key={index}>{step}</li>
-          ))}
-        </ol>
-      </CookingMethod>
-</ContentWrapper>
-</PageWrapper>
-</div>
-</div>
-
-    </DetailWrapper>
+        </div>
+      </DetailWrapper>
     </div>
   );
 }
 const PageWrapper = styled.div`
   display: flex;
   justify-content: center;
- 
 `;
 
-
 const DetailWrapper = styled.div`
-scrollbar-gutter: stable both-edges;
+  scrollbar-gutter: stable both-edges;
   margin-top: 1rem;
   display: flex;
   flex-direction: column;
@@ -234,53 +310,52 @@ scrollbar-gutter: stable both-edges;
   position: relative;
   margin: 0;
   padding: 0;
-  
-.info-row{
+
+  .info-row {
     display: flex;
-  align-items: flex-start;
-}
-.info-label{
+    align-items: flex-start;
+  }
+  .info-label {
     font-weight: bold;
-  width: 150px;
-  text-align: left;
-}
-.info-value{
- display: inline-block;
-  width: 150px;
-  height: 25px;
-  background-color: #d3d3d3; /* Light gray color */
-  border-radius: 10px; /* Adjust the value for desired roundness */
-  margin-bottom: 10px; /* Adjust the value for desired spacing */
-}
-
-
+    width: 150px;
+    text-align: left;
+  }
+  .info-value {
+    display: inline-block;
+    width: 150px;
+    height: 25px;
+    background-color: #d3d3d3; /* Light gray color */
+    border-radius: 10px; /* Adjust the value for desired roundness */
+    margin-bottom: 10px; /* Adjust the value for desired spacing */
+  }
 `;
 const InfoContainer = styled.div`
-margin-top: 1rem;
-margin-left: 1rem;
-display: flex;
-flex-direction: column;
-gap: 5px;
-
+  margin-top: 1rem;
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 `;
 
 const PhotoWrapper = styled.div`
   position: relative;
-  align-items:center;
+  align-items: center;
 `;
 
 const BackgroundImage = styled.div`
-position: absolute;
-top: 0;
-left: 50%; /* Align the left edge of the image to the center of the container */
-transform: translateX(-50%); /* Adjust the image position to center it horizontally */
-width: 100vw; /* Use 100vw to stretch the image to the full width of the viewport */
-height: 100%;
-background-image: url(${props => props.src});
-background-repeat: no-repeat;
-background-size: cover;
-filter: blur(10px); /* Add blur effect */
-z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 50%; /* Align the left edge of the image to the center of the container */
+  transform: translateX(
+    -50%
+  ); /* Adjust the image position to center it horizontally */
+  width: 100vw; /* Use 100vw to stretch the image to the full width of the viewport */
+  height: 100%;
+  background-image: url(${(props) => props.src});
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(10px); /* Add blur effect */
+  z-index: -1;
 `;
 
 const PhotoImage = styled.img`
@@ -310,20 +385,19 @@ const Button = styled.button`
   min-width: 120px;
 `;
 
-
 const RecipeContainer = styled.div`
   display: flex;
-  margin-right:1rem;
+  margin-right: 1rem;
   align-items: center;
   margin-top: 1rem;
   margin-bottom: 1rem;
 `;
 
 const RecipeName = styled.h1`
-margin-right: 1rem;
-font-size: 1.5rem; /* Adjust the font size as desired */
-margin-right: 10rem;
-white-space: nowrap; /* Prevent title from wrapping */
+  margin-right: 1rem;
+  font-size: 1.5rem; /* Adjust the font size as desired */
+  margin-right: 10rem;
+  white-space: nowrap; /* Prevent title from wrapping */
 `;
 const IngredientsHeading = styled.div`
   display: flex;
@@ -335,8 +409,7 @@ const IngredientsHeading = styled.div`
     margin-right: 26rem; /* Add right margin for spacing */
   }
   Button {
-        margin-right: 13rem; /* Add right margin for spacing */
-      
+    margin-right: 13rem; /* Add right margin for spacing */
   }
   .edit-container {
     display: flex;
@@ -344,29 +417,28 @@ const IngredientsHeading = styled.div`
     align-items: flex-start;
     margin-bottom: 1rem;
   }
-  
-    input[type="text"] {
-      flex-grow: 1;
-      margin-bottom: 1rem; /* Add margin-bottom to create spacing between input fields */
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-   
+
+  input[type="text"] {
+    flex-grow: 1;
+    margin-bottom: 1rem; /* Add margin-bottom to create spacing between input fields */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 `;
 const ButtonFlink = styled.div`
-padding: 1rem 2rem;
-border: 2px solid black;
-font-weight: 600;
-font-size: 13px;
-top: 50%;
-color: #fff;
-border: none;
-border-radius: 10px;
-padding: 15px;
-height: 50px;
-width: 160px;
-background-color: #c91383;
+  padding: 1rem 2rem;
+  border: 2px solid black;
+  font-weight: 600;
+  font-size: 13px;
+  top: 50%;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  height: 50px;
+  width: 160px;
+  background-color: #c91383;
 `;
 const IngredientsList = styled.div`
   margin-top: 1rem;
@@ -390,31 +462,27 @@ const IngredientsList = styled.div`
   margin-bottom: 5rem;
 `;
 const CookingMethod = styled.div`
-h4 {
+  h4 {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
   }
   text-align: justify;
 `;
 
-const InputContainer = styled.div`
-  display: flex;
-  margin-bottom: 0.5rem;
-`;
+// const InputContainer = styled.div`
+//   display: flex;
+//   margin-bottom: 0.5rem;
+// `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
+// const Input = styled.input`
+//   width: 100%;
+//   padding: 0.5rem;
+//   border: 1px solid #ccc;
+//   border-radius: 4px;
+// `;
 
-const AddIngredientContainer = styled.div`
-  margin-top: 0.5rem;
-`;
-
-
-
-
+// const AddIngredientContainer = styled.div`
+//   margin-top: 0.5rem;
+// `;
 
 export default Recipe;

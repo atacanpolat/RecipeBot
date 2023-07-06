@@ -15,7 +15,7 @@ export const useRecipeContainerStyles = makeStyles(() => ({
     },
     card: {
         height: 300,
-        width: 400,
+        width: 375,
         display: "flex",
         flexDirection: "column",
         borderRadius: theme.spacing(1),

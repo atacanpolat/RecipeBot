@@ -10,6 +10,7 @@ import {
   Chip,
 } from "@material-ui/core";
 import ListItemText from "@mui/material/ListItemText";
+import Spinner from "../components/Spinner";
 
 import Checkbox from "@mui/material/Checkbox";
 import { Controller, useForm } from "react-hook-form";
@@ -37,6 +38,7 @@ const makeStringsInListLowercase = (list) => {
 };
 
 const GenerateInputComponent = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const classes = useFilterStyles();
 
   const [newIngredient, setNewIngredient] = useState("");
@@ -116,6 +118,16 @@ const GenerateInputComponent = () => {
   const { control, handleSubmit } = useForm();
 
   const formSubmitHandler = (formData) => {
+    if (
+      includeIngredients.length === 0 ||
+      mealType === "" ||
+      servingSize === ""
+    ) {
+      alert("Please fill out all required fields");
+      return;
+    }
+
+    setIsLoading(true);
     const generationParams = {
       ingredients: makeStringsInListLowercase(includeIngredients),
       servingSize: makeStringLowercase(servingSize),
@@ -129,6 +141,8 @@ const GenerateInputComponent = () => {
     console.log(generationParams);
 
     const token = localStorage.getItem("jwt");
+
+    // generate recipe and get its data back
     const response = axios
       .post(API_URL_RECIPE + "generate", generationParams, {
         headers: {
@@ -136,12 +150,21 @@ const GenerateInputComponent = () => {
         },
       })
       .then(function (response) {
+        // if the generation process worked, set the recipe data in the local storage
         console.log(response);
+        localStorage.setItem("recipe", JSON.stringify(response.data.recipe));
+        localStorage.setItem(
+          "instruction",
+          JSON.stringify(response.data.instruction)
+        );
+        setIsLoading(false);
+
+        // redirect to the recipe page that has just been created
+        window.location.href = "/recipes/" + response.data.recipe.id;
       })
       .catch(function (error) {
         console.log(error);
       });
-
     return response;
   };
 
@@ -150,6 +173,7 @@ const GenerateInputComponent = () => {
       <div style={{ flex: "1 0 100%", marginBottom: "20px" }}>
         <h2>Required Fields</h2>
       </div>
+      {isLoading ? <Spinner /> : null}
       <div>
         {/* INGREDIENT INPUT FIELD */}
         <TextField
@@ -431,6 +455,7 @@ const GenerateInputComponent = () => {
             {/* SUBMIT BUTTON */}
             <FormControl>
               <Button
+                disabled={isLoading}
                 type="submit"
                 variant="contained"
                 fullWidth

@@ -56,69 +56,71 @@ export const filterRecipes = asyncHandler(async (req, res) => {
       activeTab,
     } = req.body;
 
-      const user = req.user;
-      const query = {};
-  
-      if (keyword) {
-        query.title = { $regex: keyword, $options: "i" };
-      }
-  
-      if (includeIngredients && includeIngredients.length > 0) {
-        query.$and = [
-          {
-            "ingredients.name": {
-              $regex: includeIngredients.join("|"),
-              $options: "i"
-            }
-          }
-        ];
-      }
-      
-      if (excludeIngredients && excludeIngredients.length > 0) {
-        const excludeQuery = {
-          "ingredients.name": {
-            $nin: excludeIngredients.map(ingredient => new RegExp(ingredient, "i"))
-          }
-        };
-      
-        if (query.$and) {
-          query.$and.push(excludeQuery);
-        } else {
-          query.$and = [excludeQuery];
-        }
-      }    
-  
-      if (mealType) {
-        query["instruction.mealType"] = mealType;
-      }
-  
-      if (dietaryRestriction) {
-        query["instruction.diet"] = dietaryRestriction;
-      }
-  
-      if (servingSize) {
-        query["instruction.servingSize"] = servingSize;
-      }
-  
-      if (cookingUtensils && cookingUtensils.length > 0) {
-        query["instruction.cookingUtensils"] = { $in: cookingUtensils };
-      }
-      
-      if (activeTab == 'saved') {
-        query._id = {$in: user.savedRecipes};
-      } 
-      if (activeTab == 'created') {
-        query._id = {$in: user.createdRecipes}
-      }
-  
-      const recipes = await Recipe.recipeModel.find(query);
+    const user = req.user;
+    const query = {};
 
-      res.status(200).json(recipes);
-    } catch (error) {
-      console.error("Error filtering recipes:", error);
-      res.status(500).json({ message: "Failed to filter recipes" });
+    if (keyword) {
+      query.title = { $regex: keyword, $options: "i" };
     }
-  });
+
+    if (includeIngredients && includeIngredients.length > 0) {
+      query.$and = [
+        {
+          "ingredients.name": {
+            $regex: includeIngredients.join("|"),
+            $options: "i",
+          },
+        },
+      ];
+    }
+
+    if (excludeIngredients && excludeIngredients.length > 0) {
+      const excludeQuery = {
+        "ingredients.name": {
+          $nin: excludeIngredients.map(
+            (ingredient) => new RegExp(ingredient, "i")
+          ),
+        },
+      };
+
+      if (query.$and) {
+        query.$and.push(excludeQuery);
+      } else {
+        query.$and = [excludeQuery];
+      }
+    }
+
+    if (mealType) {
+      query["instruction.mealType"] = mealType;
+    }
+
+    if (dietaryRestriction) {
+      query["instruction.diet"] = dietaryRestriction;
+    }
+
+    if (servingSize) {
+      query["instruction.servingSize"] = servingSize;
+    }
+
+    if (cookingUtensils && cookingUtensils.length > 0) {
+      query["instruction.cookingUtensils"] = { $in: cookingUtensils };
+    }
+
+    if (activeTab == "saved") {
+      query._id = { $in: user.savedRecipes };
+    }
+    if (activeTab == "created") {
+      query._id = { $in: user.createdRecipes };
+    }
+
+    const recipes = await Recipe.recipeModel.find(query);
+
+    res.status(200).json(recipes);
+  } catch (error) {
+    console.error("Error filtering recipes:", error);
+    res.status(500).json({ message: "Failed to filter recipes" });
+  }
+});
 
 export const getCreatedRecipes = asyncHandler(async (req, res) => {
   try {
@@ -269,7 +271,6 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       Meal Type: ${mealType.toString()},
       Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan"; if ingredient is "cream cheese", then "Exquisia"; if ingredient is one of {"oat", "oats", "oatmeal"}, then "Köln"; if ingredient is "beer", then "Augustiner"; if ingredient is "protein powder" or any other supplementary bodybuilding product, then "ProteinWorks" otherwise leave it empty
 
-
       generate it in the following json format:
 
       {
@@ -302,6 +303,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       max_tokens: 1000,
     });
 
+    // get response from ChatGPT
     const response = JSON.parse(completion.data.choices[0].text);
 
     // const sampleResponse = {
@@ -340,24 +342,27 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     //   measurementSystem: "Metric",
     // };
 
+    // add photoUrl and tags to response
+
     const photoUrl =
       "https://image.pollinations.ai/prompt/" +
       encodeURIComponent(response.tenWordSummary);
     response.photoUrl = photoUrl;
     const tags = [
       response.instruction.mealType,
-      response.instruction.diet ? response.instruction.diet : 'Not diet specific',
+      response.instruction.diet
+        ? response.instruction.diet
+        : "Not diet specific",
       response.instruction.cookingTime,
     ];
 
-    //TODO: remove the save recipe part and display the recipe from local storage after generating the recipe
     const instruction = new Recipe.instructionModel({
       narrative: response.instruction.narrative,
       cookingTime: response.instruction.cookingTime,
       mealType: response.instruction.mealType,
       diet: response.instruction.diet,
     });
-    await instruction.save();
+    // await instruction.save(); // OLD
 
     const recipe = new Recipe.recipeModel({
       title: response.title,
@@ -368,12 +373,17 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       isGenerated: true,
       tags: tags,
     });
-    await recipe.save();
+    // await recipe.save();// OLD
 
-    user.createdRecipes.push(recipe._id);
-    await user.save();
+    const allData = {
+      recipe: recipe,
+      instruction: instruction,
+    };
 
-    res.status(201).json(response);
+    // user.createdRecipes.push(recipe._id);
+    // await user.save();
+
+    res.status(201).json(allData);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
