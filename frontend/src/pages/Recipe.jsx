@@ -95,19 +95,16 @@ function Recipe() {
       .then((response) => {
         console.log("RECIPE ADDED TO THE DATABASE");
         console.log(response);
+        localStorage.removeItem("recipe");
+        localStorage.removeItem("instruction");
+        // redirect to new recipe page (since ID has changed)
+        window.location.href = "/recipes/" + response.data._id;
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  // const displayAddToDatabaseButton = () => {
-  //   if (recipeInDatabase) {
-  //     return "none";
-  //   } else {
-  //     return "inline-block";
-  //   }
-  // };
 
   const handleCreateNewRecipe = () => {
     // Save the updatedIngredients and updatedCookingMethod as a new recipe

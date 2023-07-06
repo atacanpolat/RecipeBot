@@ -10,30 +10,36 @@ const Rate = () => {
   const token = localStorage.getItem("jwt");
   const user = JSON.parse(localStorage.getItem("user"));
   const API_URL = `http://localhost:8000/api/v1`; // Updated API URL
+  const API_URL_RECIPES = "http://localhost:8000/api/v1/recipes/";
+
   const [rate, setRate] = useState(0);
   const [userRating, setUserRating] = useState(null);
+
+  const [recipeInDatabase, setRecipeInDatabase] = useState(false);
 
   let recipeData = {};
 
   const getInformation = async () => {
-    // try retreiving recipe from the database
+    // try retreiving recipe from the databas
     await axios
-      .get(API_URL + params.name, {
+      .get(API_URL_RECIPES + params.name, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
         recipeData = response.data;
+        setRecipeInDatabase(true);
       })
       .catch((error) => {
         if (error.response.status === 404 && localStorage.getItem("recipe")) {
           recipeData = JSON.parse(localStorage.getItem("recipe"));
+          setRecipeInDatabase(false);
         } else {
           throw error;
         }
       });
-
+    console.log("is recipe in database?", recipeInDatabase);
     console.log(recipeData);
     setDetails(recipeData);
   };

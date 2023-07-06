@@ -26,7 +26,10 @@ const makeStringLowercase = (string) => {
   if (string.length === 0) {
     return "";
   }
-  return string.charAt(0).toLowerCase() + string.slice(1);
+  // remove all special characters from string
+  const noSpecialChars = string.replace(/[^a-zA-Z0-9 ]/g, "");
+
+  return noSpecialChars.charAt(0).toLowerCase() + noSpecialChars.slice(1);
 };
 
 const makeStringsInListLowercase = (list) => {
@@ -160,9 +163,10 @@ const GenerateInputComponent = () => {
         setIsLoading(false);
 
         // redirect to the recipe page that has just been created
-        window.location.href = "/recipes/" + response.data.recipe.id;
+        window.location.href = "/recipes/" + response.data.recipe._id;
       })
       .catch(function (error) {
+        console.log("logging the error");
         console.log(error);
       });
     return response;
