@@ -14,6 +14,7 @@ import SetAvatarPage from './pages/SetAvatarPage';
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 import Recipe from "./pages/Recipe";
+import Create from "./pages/Create";
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/home" element={<PrivateHomePage />} />
             <Route path="/saved" element={isLoggedIn ? <SavedRecipesPage /> : <Homepage />} />
             <Route path="/generate" element={<Generate />} />
+            <Route path="/create" element={<Create />} />
             <Route path="/inspiration" element={isLoggedIn ? <SearchRecipesPage /> : <Homepage />} />
             <Route path='recipes/:name' element={<Recipe />}/>
           </Routes>
