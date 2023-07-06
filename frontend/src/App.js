@@ -14,6 +14,7 @@ import SetAvatarPage from './pages/SetAvatarPage';
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 import Recipe from "./pages/Recipe";
+import AccountAndSettingsPage from "./pages/AccountAndSettingsPage";
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
             <Route path="/generate" element={<Generate />} />
             <Route path="/inspiration" element={isLoggedIn ? <SearchRecipesPage /> : <Homepage />} />
             <Route path='recipes/:name' element={<Recipe />}/>
+            <Route path='/settings' element={<AccountAndSettingsPage />} />
           </Routes>
           <ToastContainer />
         </div>
