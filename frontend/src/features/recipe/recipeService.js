@@ -204,7 +204,18 @@ const recommendRecipes = (recipesData, userRecipes) => {
   return recommendedRecipes;
 };
 
-
+const saveRecipe = async (recipe, token) => {
+  try {
+    const response = await axios.post(`${API_URL_RECIPE}/save`, recipe, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Failed to retrieve recipe:', error);
+    }
+}
 
 
 
@@ -283,6 +294,7 @@ const recipeService = {
   calculateRecipeData,
   sortRecipes, 
   recommendRecipes,  
+  saveRecipe,
   getRecipeById, 
   getInstructionById, 
   fetchUser, 

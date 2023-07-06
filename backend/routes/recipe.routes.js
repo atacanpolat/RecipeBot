@@ -28,7 +28,7 @@ router.patch("/:id", protect, updateRecipe);
 router.delete("/:id", protect, deleteRecipe);
 
 router.post("/generate", protect, generateRecipe);
-router.patch("/:id/save", protect, saveRecipe);
+router.post("/save", protect, saveRecipe);
 router.post("/:id/generate", protect, modifyRecipe);
 
 export default router;
