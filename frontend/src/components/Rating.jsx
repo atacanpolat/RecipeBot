@@ -10,13 +10,10 @@ const Rate = () => {
   const token = localStorage.getItem("jwt");
   const user = JSON.parse(localStorage.getItem("user"));
   const API_URL = `http://localhost:8000/api/v1`; // Updated API URL
-  const API1_URL = "http://localhost:8000/api/v1/recipes";
   const [rate, setRate] = useState(0);
   const [userRating, setUserRating] = useState(null);
-  const [review, setReview] = useState([]);
 
   let recipeData = {};
-  let recipeInDatabase;
 
   const getInformation = async () => {
     // try retreiving recipe from the database
@@ -28,12 +25,10 @@ const Rate = () => {
       })
       .then((response) => {
         recipeData = response.data;
-        recipeInDatabase = true;
       })
       .catch((error) => {
         if (error.response.status === 404 && localStorage.getItem("recipe")) {
           recipeData = JSON.parse(localStorage.getItem("recipe"));
-          recipeInDatabase = false;
         } else {
           throw error;
         }

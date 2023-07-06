@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import RatingStars from "../components/RatingStars";
 import "../assets/css/star.css";
 import {
   FaClock,
@@ -23,8 +22,9 @@ function Recipe() {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedIngredients, setUpdatedIngredients] = useState([]);
   const [updatedCookingMethod, setUpdatedCookingMethod] = useState("");
+  const [recipeInDatabase, setRecipeInDatabase] = useState(false);
+
   let recipeData = {};
-  let recipeInDatabase;
 
   const getInformation = async () => {
     // try retreiving recipe from the databas
@@ -36,12 +36,12 @@ function Recipe() {
       })
       .then((response) => {
         recipeData = response.data;
-        recipeInDatabase = true;
+        setRecipeInDatabase(true);
       })
       .catch((error) => {
         if (error.response.status === 404 && localStorage.getItem("recipe")) {
           recipeData = JSON.parse(localStorage.getItem("recipe"));
-          recipeInDatabase = false;
+          setRecipeInDatabase(false);
         } else {
           throw error;
         }
@@ -75,9 +75,9 @@ function Recipe() {
     setUpdatedIngredients(updatedIngredientsCopy);
   };
 
-  const handleCookingMethodChange = (e) => {
-    setUpdatedCookingMethod(e.target.value);
-  };
+  // const handleCookingMethodChange = (e) => {
+  //   setUpdatedCookingMethod(e.target.value);
+  // };
 
   const addRecipeToDatabase = () => {
     const recipeParams = {
@@ -202,9 +202,12 @@ function Recipe() {
           >
             <PageWrapper>
               <ContentWrapper>
-                <Button onClick={addRecipeToDatabase}>
-                  Save recipe to database. TODO: display only if recipe is not in database
-                </Button>
+                {!recipeInDatabase ? (
+                  <Button onClick={addRecipeToDatabase}>
+                    Save recipe to database
+                  </Button>
+                ) : null}
+
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
                   <Rating />
@@ -467,20 +470,20 @@ const CookingMethod = styled.div`
   text-align: justify;
 `;
 
-const InputContainer = styled.div`
-  display: flex;
-  margin-bottom: 0.5rem;
-`;
+// const InputContainer = styled.div`
+//   display: flex;
+//   margin-bottom: 0.5rem;
+// `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
+// const Input = styled.input`
+//   width: 100%;
+//   padding: 0.5rem;
+//   border: 1px solid #ccc;
+//   border-radius: 4px;
+// `;
 
-const AddIngredientContainer = styled.div`
-  margin-top: 0.5rem;
-`;
+// const AddIngredientContainer = styled.div`
+//   margin-top: 0.5rem;
+// `;
 
 export default Recipe;
