@@ -390,51 +390,36 @@ export const generateRecipe = asyncHandler(async (req, res) => {
   }
 });
 
-
 export const saveRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    const recipe = req.body;
-    console.log(recipe);
+    const recipeId = req.body.recipeId; // Retrieve the recipeId from the request body
 
+    if (!recipeId) {
+      return res.status(404).json({ error: "Recipe ID not provided" });
+    }
+
+    const recipe = await Recipe.recipeModel.findById(recipeId); // Retrieve the recipe based on the recipeId
     if (!recipe) {
-      return res.status(404).json({ error: "recipe not found" });
+      return res.status(404).json({ error: "Recipe not found" });
     }
 
-    if (recipe.createdBy == user._id) {
-
+    if (recipe.createdBy.toString() === user._id.toString()) {
+      return res.status(400).json({
+        error: "You can't save your own recipe, it's already listed under created recipes",
+      });
     }
-    const instruction = new Recipe.instructionModel({
-      narrative: recipe.instruction.narrative,
-      cookingTime: recipe.instruction.cookingTime,
-      mealType: recipe.instruction.mealType,
-      diet: recipe.instruction.diet,
-    });
-    await instruction.save();
 
-    const recipeToSave = new Recipe.recipeModel({
-      title: recipe.title,
-      ingredients: recipe.ingredients,
-      instruction: recipe.instruction,
-      photoUrl: recipe.photoUrl,
-      createdBy: recipe.createdBy,
-      isGenerated: recipe.isGenerated,
-      tags: recipe.tags,
-    });
-    await recipeToSave.save();
-
-    if (recipeToSave.createdBy == user._id) {
-      user.createdRecipes.push(recipe._id);
-    } else {
-      user.savedRecipes.push(recipe._id);
-    }
+    user.savedRecipes.push(recipeId);
     await user.save();
 
-    res.status(201).send("Recipe saved successfully!");
+    res.status(201).json({ message: "Recipe saved successfully!" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
+
+
 
 //Can'a sor
 export const modifyRecipe = asyncHandler(async (req, res) => {

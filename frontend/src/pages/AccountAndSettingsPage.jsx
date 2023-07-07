@@ -15,6 +15,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import "../assets/css/AccountSettings.css";
+import theme from "../components/helpers/themes";
 
 const AccountAndSettingsPage = () => {
   const [radioGroup, setRadioGroup] = useState("metric");
@@ -137,11 +138,15 @@ const AccountAndSettingsPage = () => {
               </div>
             </div>
             <div className="account-settings-row-container">
-              <div className={pageStyles.directionColumn}>
-                <InputLabel className="account-settings-bold-label">
-                  Profile Picture
-                </InputLabel>
-                <input style={{ width: "300px" }} type="file" />
+              <div 
+              className={pageStyles.directionColumn}
+              style={{display: "flex", justifyContent: "center", paddingLeft: "60px"}}>
+                <Button 
+                href="/setAvatar" 
+                className="account-settings-bold-label" 
+                style={{backgroundColor: theme.palette.violet.light}}>
+                  Change Profile Picture
+                </Button>
               </div>
               <div className={pageStyles.directionColumn}>
                 <InputLabel className="account-settings-bold-label">

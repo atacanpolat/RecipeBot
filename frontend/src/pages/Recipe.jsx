@@ -11,8 +11,8 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import Rating from "../components/Rating";
-import Heart from "../components/Heart";
 import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
+import HeartComponent from "../components/Heart";
 
 function Recipe() {
   const API_URL = "http://localhost:8000/api/v1/recipes/";
@@ -196,7 +196,6 @@ function Recipe() {
         });
     }
   };
-  
 
   return (
     <div
@@ -236,7 +235,7 @@ function Recipe() {
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
                   <Rating />
-                  <Heart />
+                  <HeartComponent user={user} recipe={details} />
                   <Button>Edit</Button>
                   {isUserRecipe && recipeInDatabase && (
           <ButtonDelete onClick={handleDeleteRecipe}>
@@ -414,6 +413,13 @@ const Button = styled.button`
   padding: 15px;
   min-height: 30px;
   min-width: 120px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #0a0a23;
+    color: #fff;
+  }
 `;
 
 const RecipeContainer = styled.div`
@@ -482,6 +488,7 @@ const ButtonDelete = styled.button`
   cursor: pointer;
 `;
 
+
 const IngredientsList = styled.div`
   margin-top: 1rem;
 
@@ -510,6 +517,16 @@ const CookingMethod = styled.div`
   }
   text-align: justify;
 `;
+
+const ButtonCancel = styled(Button)`
+  background-color: #d3d3d3;
+  color: #000;
+
+  &:hover {
+    background-color: #ccc;
+  }
+`;
+
 
 // const InputContainer = styled.div`
 //   display: flex;
