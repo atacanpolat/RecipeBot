@@ -123,9 +123,9 @@ export const useHeaderPrivateStyles = makeStyles(() => ({
       transition: "duration 300ms",
       paddingBottom: "0.25rem",
       borderBottom: "2px solid transparent",
-      "&:hover": {
-        color: theme.palette.grey[200]
-      },
+      // "&:hover": {
+      //   color: theme.palette.grey[200]
+      // },
     },
     logoLink: {
       display: "flex",
@@ -140,9 +140,9 @@ export const useHeaderPrivateStyles = makeStyles(() => ({
         width: "2.5rem",
         marginRight: "0.75rem",
       },
-      "&:hover": {
-        color: theme.palette.grey[200]
-      },
+      // "&:hover": {
+      //   color: theme.palette.grey[200]
+      // },
     },
 
     userInfoLink: {
