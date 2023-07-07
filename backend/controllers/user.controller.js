@@ -183,11 +183,24 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 
 // @desc    Get user profile by id
-// @route   GET /api/users
+// @route   GET /api/users/:id
 // @access  Private
 const getUserInfoById = async (req, res) => {
-  const user = req.user;
-  res.json({user})
+    try {
+        const { id } = req.params;
+
+        const user = await User.findOne({ _id: id })
+            .populate("createdRecipes")
+            .populate("savedRecipes");
+
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 //TODO: update of the default settings

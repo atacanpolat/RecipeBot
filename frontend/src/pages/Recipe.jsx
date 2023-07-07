@@ -31,11 +31,6 @@ function Recipe() {
 
   let recipeData = {};
 
-  const getUser = async () => {
-    const user = await userService.getUserbyId();
-    return user;
-  }
-
   const getInformation = async () => {
     // try retreiving recipe from the databas
     await axios

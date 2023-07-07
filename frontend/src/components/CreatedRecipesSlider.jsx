@@ -68,7 +68,7 @@ function CreatedRecipesSlider({style}) {
           </div>
         </div>
         <div style={{width:"1450px", overflowX:"scroll", paddingLeft:"40px"}}>
-        <Slider ref={setSliderRef} {...sliderSettings} className={classes.cardSlider}>
+        <Slider ref={setSliderRef} {...sliderSettings} className={classes.cardSlider} infinite={false}>
           {cards.map((card, index) => (
             <RecipeCard card={card} key={index} isSlider={true}/>
           ))}   
