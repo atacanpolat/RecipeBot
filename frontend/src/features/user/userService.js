@@ -2,10 +2,10 @@ import axios from 'axios'
 
 const API_URL = 'http://localhost:8000/api/v1/users/'
 
-const getUserbyId = async(userId) => {
+const getUserbyId = async() => {
     try {
         const token = localStorage.getItem('jwt');
-        const response = await axios.get(API_URL + userId, {
+        const response = await axios.get(API_URL, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

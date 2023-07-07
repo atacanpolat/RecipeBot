@@ -26,7 +26,9 @@ function HeartComponent({ user, recipe }) {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Recipe added to saved recipes!");
+      const updatedUser = { ...user, savedRecipes: [...user.savedRecipes, recipe._id] };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      console.log("Recipe added to savedrecipes successfully");
       setClick(true);
       return response.data;
     } catch (error) {
@@ -34,11 +36,30 @@ function HeartComponent({ user, recipe }) {
     }
   };
 
+  const handleRemoveRecipe = async () => {
+    try {
+      const response = await axios.put('http://localhost:8000/api/v1/recipes/remove',
+      { recipeId: recipe._id},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const updatedUser = { ...user, savedRecipes: user.savedRecipes.filter(id => id !== recipe._id) };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      console.log("Recipe removed from saved recipes successfully");
+      setClick(false);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const handleClick = () => {
     if (!isClick) {
       handleSaveRecipe();
     } else {
-      setClick(!isClick);
+      handleRemoveRecipe();
     }
   };
 

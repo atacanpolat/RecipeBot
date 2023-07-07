@@ -18,7 +18,7 @@ router.post('/register',  createUser);
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password/:token', resetPassword)
 router.post('/upload', protect, upload.single('file'), uploadAvatar);
-router.get('/:id', protect, getUserInfoById);
+router.get('/', protect, getUserInfoById);
 router.patch('/:id', protect, updateUserInfoById);
 
 export default router;

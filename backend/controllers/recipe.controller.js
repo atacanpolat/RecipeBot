@@ -420,6 +420,30 @@ export const saveRecipe = asyncHandler(async (req, res) => {
 });
 
 
+export const removeRecipe = asyncHandler(async (req, res) => {
+  try {
+    const user = req.user;
+    const recipeId = req.body.recipeId; // Retrieve the recipeId from the request body
+    console.log(recipeId);
+    
+    if (!recipeId) {
+      return res.status(404).json({ error: "Recipe ID not provided" });
+    }
+
+    user.savedRecipes.pull(recipeId); 
+
+    user.save()
+      .then(() => {
+        res.status(200).json({ message: 'Recipe removed successfully!' });
+      })
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
 
 //Can'a sor
 export const modifyRecipe = asyncHandler(async (req, res) => {
@@ -451,4 +475,5 @@ export default {
   generateRecipe,
   modifyRecipe,
   saveRecipe,
+  removeRecipe
 };

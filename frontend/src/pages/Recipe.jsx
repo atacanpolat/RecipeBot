@@ -13,6 +13,7 @@ import {
 import Rating from "../components/Rating";
 import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
 import HeartComponent from "../components/Heart";
+import userService from "../features/user/userService";
 
 function Recipe() {
   const API_URL = "http://localhost:8000/api/v1/recipes/";
@@ -29,6 +30,11 @@ function Recipe() {
   const [isUserRecipe, setIsUserRecipe] = useState(false); 
 
   let recipeData = {};
+
+  const getUser = async () => {
+    const user = await userService.getUserbyId();
+    return user;
+  }
 
   const getInformation = async () => {
     // try retreiving recipe from the databas

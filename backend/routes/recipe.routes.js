@@ -8,6 +8,7 @@ import {
   deleteRecipe,
   generateRecipe,
   saveRecipe,
+  removeRecipe,
   modifyRecipe,
   filterRecipes,
   getSavedRecipes,
@@ -29,6 +30,7 @@ router.delete("/delete", protect, deleteRecipe);
 
 router.post("/generate", protect, generateRecipe);
 router.post("/save", protect, saveRecipe);
+router.put("/remove", protect, removeRecipe);
 router.post("/:id/generate", protect, modifyRecipe);
 
 export default router;
