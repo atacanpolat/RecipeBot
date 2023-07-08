@@ -183,7 +183,7 @@ const GenerateInputComponent = () => {
         <TextField
           label="Type ingredient..."
           value={newIngredient}
-          onChange={(e) => setNewIngredient(e.target.value.trim())}
+          onChange={(e) => setNewIngredient(e.target.value)}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
               addIngredientToList(includeIngredients, "includeIngredients");
@@ -462,7 +462,6 @@ const GenerateInputComponent = () => {
                 disabled={isLoading}
                 type="submit"
                 variant="contained"
-                fullWidth
                 style={{
                   width: "300px",
                   padding: "10px 30px",

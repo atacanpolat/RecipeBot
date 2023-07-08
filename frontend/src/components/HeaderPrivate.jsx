@@ -1,6 +1,9 @@
 import React from "react";
-import { Button, Avatar } from '@mui/material';
-import { useHeaderPrivateStyles, useHeaderPrivateTopStyles } from "./helpers/styles/headerStyles";
+import { Button, Avatar } from "@mui/material";
+import {
+  useHeaderPrivateStyles,
+  useHeaderPrivateTopStyles,
+} from "./helpers/styles/headerStyles";
 import { Link } from "react-router-dom";
 import { PrimaryButton, theme } from "./helpers/themes";
 
@@ -10,10 +13,8 @@ import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates";
 import LoyaltyIcon from "@mui/icons-material/Loyalty";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 import logo from "../images/logo.png";
-
-
 
 export const HeaderPrivate = () => {
   const classes = useHeaderPrivateStyles();
@@ -24,8 +25,7 @@ export const HeaderPrivate = () => {
   };
 
   return (
-    <header className="header-private" style={{flex: "0 0 auto"}}>
-      {/* TODO: change links for pages*/}
+    <header className="header-private" style={{ flex: "0 0 auto" }}>
       <ul>
         <li>
           <Button startIcon={<HomeIcon />} href="/home">
@@ -61,41 +61,44 @@ export const HeaderPrivate = () => {
           Generate Recipe
         </Button>
         <li>
-        <Button 
-            startIcon={<LogoutIcon/>} 
+          <Button
+            startIcon={<LogoutIcon />}
             href="/"
             variant="outlined"
-            style={{marginTop:"50px"}}
+            style={{ marginTop: "50px" }}
             onClick={handleLogOut}
-
-        > 
-        Logout
-        </Button>
+          >
+            Logout
+          </Button>
         </li>
       </ul>
     </header>
   );
 };
 
-
 export const HeaderPrivateTop = () => {
   const classes = useHeaderPrivateTopStyles();
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
-    <header className="header-private-top" style={{marginBottom:'20px'}}>
+    <header className="header-private-top" style={{ marginBottom: "20px" }}>
       <div className="logo">
-        <a className={`${classes.navLink} ${classes.logoLink}`}>
+        <Link className={`${classes.navLink} ${classes.logoLink}`} to="/">
           <img src={logo} alt="Logo" />
-          <Link to="/">RecipeBot</Link>
-        </a>
+          RecipeBot
+        </Link>
       </div>
       <div>
         <PrimaryButton
-          startIcon={<Avatar src={'http://localhost:8000/' + user.avatar} style={{ border: `2px solid ${theme.palette.common.white}` }} />}
+          startIcon={
+            <Avatar
+              src={"http://localhost:8000/" + user.avatar}
+              style={{ border: `2px solid ${theme.palette.common.white}` }}
+            />
+          }
           href="/settings"
         >
-          {user.firstName + ' ' + user.lastName}
+          {user.firstName + " " + user.lastName}
         </PrimaryButton>
       </div>
     </header>
@@ -118,4 +121,4 @@ const DropdownMenu = () => {
   );
 };
 */
-export default {HeaderPrivate, HeaderPrivateTop};
+export default { HeaderPrivate, HeaderPrivateTop };

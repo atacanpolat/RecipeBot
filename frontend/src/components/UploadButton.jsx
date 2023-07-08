@@ -1,15 +1,12 @@
-
-import React, { useState } from 'react';
-import { Button, CircularProgress } from '@mui/material';
-import ClearIcon from '@mui/icons-material/Clear';
-import uploadService from '../features/uploadService';
-import uploadButtonStyles from './helpers/styles/buttonStyles';
-
+import React, { useState } from "react";
+import { Button, CircularProgress } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
+import uploadService from "../features/uploadService";
+import uploadButtonStyles from "./helpers/styles/buttonStyles";
 
 export const FileSelectButton = ({ onUpload, onRemove }) => {
-  
   const [selectedFile, setSelectedFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState("");
   const classes = uploadButtonStyles();
 
   const handleFileSelect = (event) => {
@@ -17,21 +14,21 @@ export const FileSelectButton = ({ onUpload, onRemove }) => {
     setSelectedFile(file);
     onUpload(file);
     const reader = new FileReader();
-  
+
     reader.onloadend = () => {
       const url = reader.result;
-      if (typeof url === 'string') {
+      if (typeof url === "string") {
         setImageUrl(url);
-      //  onUpload(url);
+        //  onUpload(url);
       } else {
-        console.error('Invalid file URL:', url);
+        console.error("Invalid file URL:", url);
       }
     };
-  
+
     reader.onerror = (error) => {
-      console.error('File read error:', error);
+      console.error("File read error:", error);
     };
-  
+
     if (file) {
       reader.readAsDataURL(file);
     }
@@ -39,7 +36,7 @@ export const FileSelectButton = ({ onUpload, onRemove }) => {
 
   const handleFileRemove = () => {
     setSelectedFile(null);
-    setImageUrl('');
+    setImageUrl("");
     onRemove();
   };
 
@@ -53,14 +50,18 @@ export const FileSelectButton = ({ onUpload, onRemove }) => {
           accept="image/*"
           id="upload-button"
           type="file"
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           onChange={handleFileSelect}
         />
       </label>
       {selectedFile && (
         <div>
           <p>Selected File: {selectedFile.name}</p>
-          <Button size="small" onClick={handleFileRemove} startIcon={<ClearIcon />}>
+          <Button
+            size="small"
+            onClick={handleFileRemove}
+            startIcon={<ClearIcon />}
+          >
             Remove
           </Button>
         </div>
@@ -70,7 +71,6 @@ export const FileSelectButton = ({ onUpload, onRemove }) => {
 };
 
 export const UploadButton = ({ selectedFile }) => {
-
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const classes = uploadButtonStyles();
@@ -79,9 +79,10 @@ export const UploadButton = ({ selectedFile }) => {
     if (selectedFile) {
       setUploading(true);
       const formData = new FormData();
-      formData.append('file', selectedFile);
+      formData.append("file", selectedFile);
 
-      uploadService.uploadUserPhoto(formData)
+      uploadService
+        .uploadUserPhoto(formData)
         .then((response) => {
           console.log(formData);
           console.log(selectedFile);
@@ -90,19 +91,19 @@ export const UploadButton = ({ selectedFile }) => {
           //const userData = JSON.parse(localStorage.getItem('user'));
           //userData.avatar = response.avatar;
           //const updatedUserData = {...userData, ...response};
-          localStorage.setItem('user', JSON.stringify(response));
-          console.log(localStorage.getItem('user'))
+          localStorage.setItem("user", JSON.stringify(response));
+          console.log(localStorage.getItem("user"));
           setUploading(false);
           setUploadSuccess(true);
         })
         .catch((error) => {
-          console.log('Upload error:', error);
+          console.log("Upload error:", error);
           setUploading(false);
           setUploadSuccess(false);
         });
     }
   };
-  
+
   return (
     <div>
       <Button
@@ -112,14 +113,15 @@ export const UploadButton = ({ selectedFile }) => {
         onClick={handleUpload}
         className={classes.uploadButton}
       >
-        {uploading ? <CircularProgress size={24} /> : 'Save Changes'}
+        {uploading ? <CircularProgress size={24} /> : "Save Changes"}
       </Button>
       {uploadSuccess && (
-        <p className={classes.uploadSuccessText}>Profile photo uploaded successfully</p>
+        <p className={classes.uploadSuccessText}>
+          Profile photo uploaded successfully
+        </p>
       )}
     </div>
   );
 };
 
-export default {UploadButton, FileSelectButton};
-
+export default { UploadButton, FileSelectButton };

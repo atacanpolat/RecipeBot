@@ -334,6 +334,101 @@ export const useRecipeSliderStyles = makeStyles(() => ({
   },
 }));
 
+export const useCreateRecipeStyles = makeStyles(() => ({
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap",
+    direction: "column",
+  },
+  filterContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: theme.spacing(2),
+  },
+  createRecipeContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    direction: "column",
+  },
+  filterInput: {
+    marginRight: theme.spacing(2),
+  },
+  filterButton: {
+    marginRight: theme.spacing(2),
+    backgroundColor: theme.palette.violet.main,
+    color: theme.palette.grey[100],
+  },
+  filterSelect: {
+    marginRight: theme.spacing(2),
+    minWidth: 200,
+  },
+  filterCheckboxGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  includedIngredient: {
+    marginRight: theme.spacing(1),
+    backgroundColor: theme.palette.green.main,
+    color: theme.palette.grey[100],
+  },
+  excludedIngredient: {
+    marginRight: theme.spacing(1),
+    backgroundColor: theme.palette.red.main,
+    color: theme.palette.grey[100],
+  },
+  form_field: { flex: "2" },
+  output: { marginLeft: "3rem", flex: "1" },
+  form_field_label: {
+    margin: "0",
+    fontSize: "18px",
+    fontWeight: "500",
+    color: "rgb(84, 84, 84)",
+  },
+  h2: {
+    margin: "0",
+    fontSize: "18px",
+    fontWeight: "500",
+    color: "rgb(84, 84, 84)",
+  },
+  input: {
+    height: "35px",
+    width: "100%",
+    padding: "7px",
+    outline: "none",
+    borderRadius: "5px",
+    border: "1px solid rgb(220, 220, 220)",
+  },
+  input_focus: { border: "1px solid rgb(0, 208, 255)" },
+  services: { display: "flex", justifyContent: "space-between" },
+  first_division: {
+    display: "flex",
+    flexDirection: "column",
+    margin: "0 5px 0.5rem 0",
+    width: "100%",
+  },
+  button: {
+    background: "none",
+    outline: "none",
+    cursor: "pointer",
+    fontWeight: "500",
+    borderRadius: "2px",
+    padding: "5px 10px",
+  },
+  first_division_button: {
+    alignSelf: "flex-start",
+    display: "flex",
+    alignItems: "center",
+    marginTop: "0.5rem",
+    color: "rgb(0, 208, 255)",
+    border: "1px solid rgb(0, 208, 255)",
+  },
+  second_division_button: { color: "red", border: "1px solid red" },
+}));
+
 export const useFilterStyles = makeStyles(() => ({
   container: {
     display: "flex",
@@ -370,7 +465,6 @@ export const useFilterStyles = makeStyles(() => ({
     display: "flex",
     flexDirection: "column",
   },
-
   includedIngredient: {
     marginRight: theme.spacing(1),
     backgroundColor: theme.palette.green.main,
