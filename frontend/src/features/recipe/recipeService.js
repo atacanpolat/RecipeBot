@@ -192,7 +192,7 @@ const recommendRecipes = (recipesData, userRecipes) => {
       }
     }
 
-    const similarityScore = ingredientScore + tagScore;
+    const similarityScore = ingredientScore //+ tagScore;
     return { recipe, similarityScore };
   });
 
