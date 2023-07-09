@@ -25,8 +25,7 @@ const updateUser = async (userData) => {
   
   console.log("Test6666");
   const userInLocalStorage = JSON.parse(localStorage.getItem('user'));
-  //console.log(userInLocalStorage.user._id);
-  //console.log("Test2222");
+
   console.log(userData);
   try {
     const response = await axiosApiInstance.patch(API_URL + "users/" + userInLocalStorage.user._id, userData);

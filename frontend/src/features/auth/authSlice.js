@@ -35,6 +35,19 @@ export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   }
 })
 
+export const updateUser = createAsyncThunk(
+  'auth/updateUser',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const updatedUser = await authService.updateUserProfile(userData);
+      return updatedUser;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+
 
 export const authSlice = createSlice({
     name: 'auth',
