@@ -205,25 +205,38 @@ const getUserInfoById = async (req, res) => {
 
 //TODO: update of the default settings
 const updateUserInfoById = async (req, res) => {
+  console.log("Update User");
+  console.log(req.body);
     try {
         const { id } = req.params;
-        const { name, email, avatar, createdRecipes, savedRecipes, measurmentSystem, diet} =
+        const { firstName, lastName,newPassword, email, avatar, imageX, createdRecipes, savedRecipes, defaultRecipeSettings} =
             req.body;
+
+        console.log("Update User2");
+        console.log(id);
+        console.log(defaultRecipeSettings);
+        console.log(imageX);
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword2 = await bcrypt.hash(newPassword, salt)
 
         await User.findByIdAndUpdate(
             { _id: id },
             {
-                name,
-                email,
+                firstName,
+                lastName,
                 avatar,
+                password:hashedPassword2,
                 createdRecipes: createdRecipes ? createdRecipes.map(({ _id }) => _id) : [],
-                savedRecipes: savedRecipes ? savedRecipes.map(({ _id }) => _id) : []
+                savedRecipes: savedRecipes ? savedRecipes.map(({ _id }) => _id) : [],
+                defaultRecipeSettings: defaultRecipeSettings
                 
             }
         );
+        console.log("updated");
 
         res.status(200).json({ message: "User updated successfully" });
     } catch (error) {
+       console.log(error.message);
         res.status(500).json({ message: error.message });
     }
 };
