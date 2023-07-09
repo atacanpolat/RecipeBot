@@ -1,5 +1,4 @@
 import { makeStyles } from "@material-ui/core";
-import theme from "../themes";
 
 const useAccountSettingStyles = makeStyles(() => ({
   accountSettingsMainContainer: {
@@ -31,7 +30,7 @@ const useAccountSettingStyles = makeStyles(() => ({
     width: "150px",
     float: "right",
     margin: "2rem 0 0 0",
-    backgroundColor: theme.palette.violet.main,
+    backgroundColor: "#1976d2",
     color: "white",
   },
 }));

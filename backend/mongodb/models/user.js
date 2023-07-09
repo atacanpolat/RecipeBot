@@ -40,16 +40,16 @@ const UserSchema = new mongoose.Schema({
         default: "",
       },
     ],
-    allergies: {
+    allergies: [{
       type: String,
       enum: allegiesEnum,
       default: "",
-    },
-    utensils: {
+    }],
+    utensils: [{
       type: String,
       enum: utensilsEnum,
       default: "",
-    },
+    }],
   },
 });
 
