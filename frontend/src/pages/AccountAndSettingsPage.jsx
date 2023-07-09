@@ -28,11 +28,11 @@ const userInLocalStorage = JSON.parse(localStorage.getItem('user'));
 const AccountAndSettingsPage = () => {
 
   console.log("test3333");
-  console.log(userInLocalStorage.user.defaultRecipeSettings);
-  let abc=JSON.stringify(userInLocalStorage.user.defaultRecipeSettings);
+  console.log(userInLocalStorage.defaultRecipeSettings);
+  let abc=JSON.stringify(userInLocalStorage.defaultRecipeSettings);
   console.log(abc);
-  console.log(userInLocalStorage.user.defaultRecipeSettings);
-  //const valuesArray = JSON.parse(userInLocalStorage.user.defaultRecipeSettings);
+  console.log(userInLocalStorage.defaultRecipeSettings);
+  //const valuesArray = JSON.parse(userInLocalStorage.defaultRecipeSettings);
   let valuesArray = JSON.parse(abc);
   console.log("test4444");
 
@@ -182,9 +182,9 @@ const AccountAndSettingsPage = () => {
   }
   
       measurementSystemState=valuesArray.metricSystem;
-      firstNameValue=userInLocalStorage.user.firstName;
-      lastNameValue=userInLocalStorage.user.lastName;
-      phoneValue=userInLocalStorage.user.phone;
+      firstNameValue=userInLocalStorage.firstName;
+      lastNameValue=userInLocalStorage.lastName;
+      phoneValue=userInLocalStorage.phone;
 
   //console.log("measurementSystemState:" + measurementSystemState);
   //console.log("valuesArray.metricsystem:" + valuesArray.metricSystem);
@@ -192,9 +192,9 @@ const AccountAndSettingsPage = () => {
 
   
   useEffect(() => {
-    //console.log(userInLocalStorage.user._id);
-    //console.log(userInLocalStorage.user);
-   // const valuesArray = JSON.parse(userInLocalStorage.user.defaultRecipeSettings);
+    //console.log(userInLocalStorage._id);
+    //console.log(userInLocalStorage);
+   // const valuesArray = JSON.parse(userInLocalStorage.defaultRecipeSettings);
 
     //console.log(valuesArray.dietaryRestrictions);
 
@@ -316,7 +316,7 @@ const AccountAndSettingsPage = () => {
                   label=""
                   variant="outlined"
                   size="small"
-                  defaultValue={userInLocalStorage.user.firstName}
+                  defaultValue={userInLocalStorage.firstName}
                 />
               </div>
               <div className={pageStyles.directionColumn}>
@@ -326,7 +326,7 @@ const AccountAndSettingsPage = () => {
                 <TextField
                   onChange={(e) => setLastNameValue(e.target.value)}
                   className="account-settings-textfield"
-                  defaultValue={userInLocalStorage.user.lastName}
+                  defaultValue={userInLocalStorage.lastName}
                   variant="outlined"
                   size="small"
                 />
@@ -340,7 +340,7 @@ const AccountAndSettingsPage = () => {
                 <TextField
                   onChange={(e) => setEmailValue(e.target.value)}
                   className="account-settings-textfield"
-                  defaultValue={userInLocalStorage.user.email}
+                  defaultValue={userInLocalStorage.email}
                   variant="outlined"
                   size="small"
                 />
@@ -352,7 +352,7 @@ const AccountAndSettingsPage = () => {
                 <TextField
                   onChange={(e) => setPhoneValue(e.target.value)}
                   className="account-settings-textfield"
-                  defaultValue={userInLocalStorage.user.phone}
+                  defaultValue={userInLocalStorage.phone}
                   variant="outlined"
                   size="small"
                   type="number"

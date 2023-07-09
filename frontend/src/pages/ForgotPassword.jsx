@@ -27,6 +27,19 @@ const ForgotPassword = () => {
     }
   };
 
+  const handleBackToLogin = () => {
+    const jwt = localStorage.getItem('jwt');
+    const user = localStorage.getItem('user');
+
+    if (user) {
+      localStorage.removeItem('user');
+    }
+    if (jwt) {
+      localStorage.removeItem('jwt');
+    }
+
+  }
+
   return (
     <>
     <Header />
@@ -72,7 +85,7 @@ const ForgotPassword = () => {
             {message && <Typography variant="body2">{message}</Typography>}
             <Grid container>
               <Grid item xs>
-                <Link href="/login" variant="body2" style={{color: theme.palette.violet.main}}>
+                <Link href="/login" variant="body2" style={{color: theme.palette.violet.main}} onClick={handleBackToLogin}>
                   Back to Sign In
                 </Link>
               </Grid>

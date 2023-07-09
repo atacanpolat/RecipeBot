@@ -47,7 +47,7 @@ const resetPassword = async (token, password) => {
 
 // Update user profile
 export const updateUserProfile = async (userData) => {
-  const response = await axios.put(`${API_URL}/api/user/profile`, userData);
+  const response = await axios.put(`${API_URL}profile`, userData);
   return response.data;
 };
 

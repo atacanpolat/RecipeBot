@@ -21,13 +21,11 @@ axiosApiInstance.interceptors.request.use(
 
 
 const updateUser = async (userData) => {
-  //const user = localStorage.getItem("user");
-  
-  console.log("Test6666");
+
   const userInLocalStorage = JSON.parse(localStorage.getItem('user'));
   console.log(userData);
   try {
-    const response = await axiosApiInstance.patch(API_URL + "users/" + userInLocalStorage.user._id, userData);
+    const response = await axiosApiInstance.patch(API_URL + "users/" + userInLocalStorage._id, userData);
     return response.data;
   } catch (error) {
     throw new Error(error);
