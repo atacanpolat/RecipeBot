@@ -6,17 +6,37 @@ import asyncHandler from "express-async-handler";
 export const createReview = asyncHandler(async (req,res) => {
     try {
         const user = req.user;
+<<<<<<< Updated upstream
         const recipeId = req.params.id;
+=======
+        const { recipeId, text, rating } = req.body;
+>>>>>>> Stashed changes
         const recipe = await Recipe.recipeModel.findById(recipeId);
-        
 
-        if (!recipe) {
+       if (!recipe) {
             return res.status(404).json({ error: "Recipe not found" });
           }
 
+        if (recipe.createdBy.toString() === user.id.toString()) {
+            return res
+              .status(400)
+              .json({ error: "Sneaky :)) You are not allowed to leave a review to your own recipe :))" });
+          }
+          
+        const existingReview = await Review.reviewModel.findOne({
+            createdFor: recipe._id,
+            createdBy: user._id,
+        });
+      
+        if (existingReview) {
+          return res
+            .status(400)
+            .json({ error: "You have already written a review for this recipe" });
+        } 
         const review = new Review.reviewModel({
             text,
             rating,
+            createdFor: recipe._id,
             createdBy: user._id,
           });
           await recipe.save();
@@ -34,10 +54,14 @@ export const createReview = asyncHandler(async (req,res) => {
   export const updateReview = asyncHandler(async (req, res) => {
     try {
       const user = req.user;
+<<<<<<< Updated upstream
       const { id } = req.params;
       const { text, rating } = req.body;
+=======
+      const { recipeId, text, rating } = req.body;
+>>>>>>> Stashed changes
       
-      const review = await Review.reviewModel.findById(id);
+      const review = await Review.reviewModel.findById(recipeId);
       if (!review) {
         return res.status(404).json({ error: "Review not found" });
       }
@@ -80,6 +104,5 @@ export const createReview = asyncHandler(async (req,res) => {
   });
 
 
-//  export const generateRecipe = asyncHandler(asnyc (req,res) => {});
 
   export default {createReview, updateReview, deleteReview};

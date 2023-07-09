@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
 const mealType = ['breakfast','soup', 'starter', 'appetizer', 'main', 'salad', 'dessert']
+<<<<<<< Updated upstream
 const diet = ['none', 'gluten-free', 'lactose-free', 'Kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
+=======
+const diet = ["", 'none', 'gluten-free', 'lactose-free', 'kosher', 'seafood', 'halal', 'vegetarian', 'vegan', 'keto', 'low-calorie']
+>>>>>>> Stashed changes
 
 const IngredientSchema = new mongoose.Schema({
     name: String,
@@ -18,8 +22,8 @@ const InstructionSchema = new mongoose.Schema({
     },
     diet: {
         type:String,
-        enum:diet,
-        default:'none'
+        // enum:diet,
+        default:'none',
     }
 })
 

@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const ReviewSchema = new mongoose.Schema({
     text: String,
     rating: {type:Number, required:true},
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    createdFor: {type: mongoose.Schema.Types.ObjectId, ref: "Recipe", required: true }
 })
 
 const reviewModel = mongoose.model('Review', ReviewSchema);
