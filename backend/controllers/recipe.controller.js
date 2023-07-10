@@ -264,47 +264,64 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     
 
     const prompt = `
-      Generate me a recipe
-
-      Ingredients: ${ingredients.toString()},
-      Ingredients NOT to include: ${ingredientsExcl.toString()},
-      Serving Size: ${servingSize.toString()},
-      Cooking Utensils: ${utensils.toString()},
-      Cooking Time: ${cookingTime.toString()},
-      Dietary Restrictions: ${diet.toString()},
-      Allergies: ${allergies.toString()},
-      Meal Type: ${mealType.toString()},
-      Additional notes: ${additionalNotes.toString()},
-      Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan"; if ingredient is rice, then "Naturkind"; if ingredient is one of {"mayonnaise", "ketchup", "mustard", or a similar sauce} then "Heinz"; if ingredient is "soy sauce", then "Kikkoman"; if ingredient is one of {"almond milk", "soy milk", "oat milk"}, then "Alpro"; if ingredient is {"cream cheese", "skyr"}, then "Exquisia"; if ingredient is "peanut butter", then "Calve"; if ingredient is some kind of a deli or a meat, then "Vinzenzmurr"; if ingredient is one of {"oat", "oats", "oatmeal", "müsli", "muesli", "granola"}, then "Köln"; if ingredient is "beer", then "Giesinger"; if ingredient is "protein powder" or any other supplementary bodybuilding product, then "ProteinWorks"; if ingredient is "olive oil", then "Vignoli Extra Virgin"; if ingredient is a seafood, then "Iglo"; otherwise leave it empty
-
-      Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
-      If there are any other ingredients that are used in the recipe other than the ingredients listed above, then add them to the JSON under ingredients as well.
-      If there are ingredients to include that violate the dietary restriction, then don't include them
-      Enumerate each step of the cooking narrative.
-      Get inspiration from already existing recipes all around the world.
-
-      generate it in the following json format:
-
-      {
-        "title": "Title",
-        "ingredients": [
-          {
-            "name": "Ingredient Name",
-            "quantity": "Ingredient Quantity",
-            "brand": "Brand of the ingredient"
-          }
-        ],
-        "instruction": {
-          "narrative": "Enumerated Instruction Narrative: 1. Step 1 2. Step 2 ... ",
-          "cookingTime": "Cooking Time",
-          "servingSize": "Serving Size",
-          "mealType": "Meal Type",
-          "diet": "Dietary Restrictions"
-        },
-        "tenWordSummary": "10-Word Descriptive Recipe Summary",
-        "measurementSystem": "Measurement System"
-      }`;
-   
+    Generate me a recipe
+  
+    Ingredients: ${ingredients.toString()},
+    Ingredients NOT to include: ${ingredientsExcl.toString()},
+    Serving Size: ${servingSize.toString()},
+    Cooking Utensils: ${utensils.toString()},
+    Cooking Time: ${cookingTime.toString()},
+    Dietary Restrictions: ${diet.toString()},
+    Allergies: ${allergies.toString()},
+    Meal Type: ${mealType.toString()},
+    Additional notes: ${additionalNotes.toString()}
+  
+    For the brands of ingredients:
+    - If the ingredient is one of {"yoghurt", "butter", "milk"}, use the brand "Weihenstephan".
+    - If the ingredient is a legume or rice, use the brand "Naturkind".
+    - If the ingredient is one of {"mayonnaise", "ketchup", "mustard"}, or a similar sauce, use the brand "Heinz".
+    - If the ingredient is "soy sauce", use the brand "Kikkoman".
+    - If the ingredient is one of {"almond milk", "soy milk", "oat milk"}, use the brand "Alpro".
+    - If the ingredient is one of {"cream cheese", "skyr"}, use the brand "Exquisia".
+    - If the ingredient is a nut butter (e.g., peanut butter, almond butter), use the brand "Calve".
+    - If the ingredient is a deli or a meat, use the brand "Vinzenzmurr".
+    - If the ingredient is one of {"oat", "oats", "oatmeal", "müsli", "muesli", "granola"}, use the brand "Köln".
+    - If the ingredient is "beer", use the brand "Giesinger".
+    - If the ingredient is "protein powder" or any other supplementary bodybuilding product, use the brand "ProteinWorks".
+    - If the ingredient is "olive oil", use the brand "Vignoli Extra Virgin".
+    - If the ingredient is a seafood, use the brand "Iglo".
+    - If none of the above apply, leave the brand empty.
+      
+  
+    Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
+    If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well.
+    If there are ingredients to include that violate the dietary restriction, then don't include them
+    Enumerate each step of the cooking narrative.
+    Get inspiration from already existing recipes all around the world.
+  
+    Generate it in the following JSON format:
+  
+    {
+      "title": "Creative Recipe Title",
+      "ingredients": [
+        {
+          "name": "Ingredient Name",
+          "quantity": "Ingredient Quantity",
+          "brand": "Brand of the ingredient"
+        }
+      ],
+      "instruction": {
+        "narrative": "Enumerated Instruction Narrative: 1. Step 1 2. Step 2 ... ",
+        "cookingTime": "Cooking Time",
+        "servingSize": "Serving Size",
+        "mealType": "Meal Type",
+        "diet": "Dietary Restrictions"
+      },
+      "twentyWordSummary": "20-Word Recipe Description for Image Generation",
+      "measurementSystem": "Measurement System"
+    }
+  `;
+     
     // send prompt to ChatGPT
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
@@ -348,7 +365,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     //     mealType: "main",
     //     diet: "kosher",
     //   },
-    //   tenWordSummary: "Tomato, Rice, Basil and Milk dish.",
+    //   twentyWordSummary: "Tomato, Rice, Basil and Milk dish.",
     //   measurementSystem: "Metric",
     // };
 
@@ -356,7 +373,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     const photoUrl =
       "https://image.pollinations.ai/prompt/" +
-      encodeURIComponent(response.tenWordSummary);
+      encodeURIComponent(response.twentyWordSummary);
     response.photoUrl = photoUrl;
 
     const tags = [
