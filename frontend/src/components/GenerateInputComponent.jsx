@@ -44,6 +44,7 @@ const makeStringsInListLowercase = (list) => {
 };
 
 const GenerateInputComponent = () => {
+
   const [isLoading, setIsLoading] = useState(false);
   const classes = useFilterStyles();
 

@@ -170,7 +170,7 @@ function Recipe() {
         return instruction;
       }
     }
-    return "/"; // Change "Default Value" to the desired default value
+    return "/"; 
   };
 
   const formatCookingMethod = (cookingMethod) => {

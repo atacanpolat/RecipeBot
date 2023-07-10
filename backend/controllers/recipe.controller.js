@@ -370,7 +370,6 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     // };
 
     // add photoUrl and tags to response
-
     const photoUrl =
       "https://image.pollinations.ai/prompt/" +
       encodeURIComponent(response.twentyWordSummary);
