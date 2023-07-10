@@ -50,17 +50,7 @@ const SortingComponent = ({ onSortSubmit }) => {
         >
           <ListItemText primary="Default" />
         </MenuItem>
-
-        <MenuItem
-          className={classes.menuItem}
-          onClick={() => handleCriterionSelect("author")}
-          selected={selectedCriterion === "author"}
-        >
-          <ListItemIcon>
-            <SortIcon />
-          </ListItemIcon>
-          <ListItemText primary="Author" />
-        </MenuItem>
+        
         <MenuItem
           className={classes.menuItem}
           onClick={() => handleCriterionSelect("title")}
@@ -71,6 +61,7 @@ const SortingComponent = ({ onSortSubmit }) => {
           </ListItemIcon>
           <ListItemText primary="Title" />
         </MenuItem>
+        
         <MenuItem
           className={classes.menuItem}
           onClick={() => handleCriterionSelect("popularity")}
@@ -81,6 +72,7 @@ const SortingComponent = ({ onSortSubmit }) => {
           </ListItemIcon>
           <ListItemText primary="Most Popular" />
         </MenuItem>
+        
         <MenuItem
           className={classes.menuItem}
           onClick={() => handleCriterionSelect("highest-ranking")}
@@ -91,6 +83,7 @@ const SortingComponent = ({ onSortSubmit }) => {
           </ListItemIcon>
           <ListItemText primary="Highest Ranking" />
         </MenuItem>
+        
         <MenuItem
           className={classes.menuItem}
           onClick={() => handleCriterionSelect("most-commented")}

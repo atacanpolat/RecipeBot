@@ -218,7 +218,7 @@ function Recipe() {
           />
           <PhotoImage src={details.photo} alt="" />
         </PhotoWrapper>
-        <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", width: "100%"}}>
           <HeaderPrivate />
           <div
             style={{
@@ -341,8 +341,7 @@ const DetailWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  margin: 0;
-  padding: 0;
+  width:1 00%;
 
   .info-row {
     display: flex;
