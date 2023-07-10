@@ -475,6 +475,29 @@ export const useFilterStyles = makeStyles(() => ({
     backgroundColor: theme.palette.red.main,
     color: theme.palette.grey[100],
   },
+  additionalNotes: {
+    margin: theme.spacing(4),
+    width: "100%",
+  },
+  exampleNotes: {
+    marginTop: theme.spacing(2),
+    fontStyle: "italic",
+    color: theme.palette.text.secondary,
+  },
+
+  textarea: {
+    minHeight: "80px", // Adjust the desired height here
+    width: "60%",
+    resize: "vertical",
+    padding: theme.spacing(1),
+    fontSize: theme.typography.fontSize,
+    lineHeight: "1.5",
+    border: `1px solid ${theme.palette.grey[400]}`,
+    borderRadius: theme.shape.borderRadius,
+    fontFamily: theme.typography.fontFamily,
+    boxSizing: "border-box",
+    overflowY: "auto",
+  },
 }));
 
 export const useSortStyles = makeStyles(() => ({

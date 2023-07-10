@@ -259,6 +259,9 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       "metric";
     const allergies =
       req.body.allergies || user.defaultRecipeSettings.allergies || [];
+    const additionalNotes = req.body.additionalNotes || "";
+
+    
 
     const prompt = `
       Generate me a recipe
@@ -271,7 +274,14 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       Dietary Restrictions: ${diet.toString()},
       Allergies: ${allergies.toString()},
       Meal Type: ${mealType.toString()},
+      Additional notes: ${additionalNotes.toString()},
       Brand of the ingredient: If ingredient is one of {"yoghurt", "butter", "milk"}, then "Weihenstephan"; if ingredient is rice, then "Naturkind"; if ingredient is one of {"mayonnaise", "ketchup", "mustard", or a similar sauce} then "Heinz"; if ingredient is "soy sauce", then "Kikkoman"; if ingredient is one of {"almond milk", "soy milk", "oat milk"}, then "Alpro"; if ingredient is {"cream cheese", "skyr"}, then "Exquisia"; if ingredient is "peanut butter", then "Calve"; if ingredient is some kind of a deli or a meat, then "Vinzenzmurr"; if ingredient is one of {"oat", "oats", "oatmeal", "müsli", "muesli", "granola"}, then "Köln"; if ingredient is "beer", then "Giesinger"; if ingredient is "protein powder" or any other supplementary bodybuilding product, then "ProteinWorks"; if ingredient is "olive oil", then "Vignoli Extra Virgin"; if ingredient is a seafood, then "Iglo"; otherwise leave it empty
+
+      Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
+      If there are any other ingredients that are used in the recipe other than the ingredients listed above, then add them to the JSON under ingredients as well.
+      If there are ingredients to include that violate the dietary restriction, then don't include them
+      Enumerate each step of the cooking narrative.
+      Get inspiration from already existing recipes all around the world.
 
       generate it in the following json format:
 
@@ -285,7 +295,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
           }
         ],
         "instruction": {
-          "narrative": "Enumerated Instruction Narrative",
+          "narrative": "Enumerated Instruction Narrative: 1. Step 1 2. Step 2 ... ",
           "cookingTime": "Cooking Time",
           "servingSize": "Serving Size",
           "mealType": "Meal Type",
@@ -293,11 +303,8 @@ export const generateRecipe = asyncHandler(async (req, res) => {
         },
         "tenWordSummary": "10-Word Descriptive Recipe Summary",
         "measurementSystem": "Measurement System"
-      }
-
-      Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
-      If there are any other ingredients that are used in the recipe other than the ingredients listed above, then add them to the JSON under ingredients as well.
-      If there are ingredients to include that violate the dietary restriction, then don't include them`;
+      }`;
+   
     // send prompt to ChatGPT
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
@@ -307,6 +314,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     // get response from ChatGPT
     const response = JSON.parse(completion.data.choices[0].text);
+    console.log(response);
 
     // const sampleResponse = {
     //   title: "Tomato Rice Basil Milk",
@@ -350,6 +358,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       "https://image.pollinations.ai/prompt/" +
       encodeURIComponent(response.tenWordSummary);
     response.photoUrl = photoUrl;
+
     const tags = [
       response.instruction.mealType,
       response.instruction.diet
@@ -387,6 +396,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     res.status(201).json(allData);
   } catch (error) {
+
     res.status(500).json({ error: error.message });
   }
 });

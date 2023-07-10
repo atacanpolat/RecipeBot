@@ -9,6 +9,8 @@ import {
   MenuItem,
   Chip,
 } from "@material-ui/core";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
+
 import ListItemText from "@mui/material/ListItemText";
 import Spinner from "../components/Spinner";
 
@@ -54,6 +56,9 @@ const GenerateInputComponent = () => {
   const [cookingUtensils, setCookingUtensils] = useState([]);
   const [allergies, setAllergies] = useState([]);
   const [cookingTime, setCookingTime] = useState("");
+  const [additionalNotes, setAdditionalNotes] = useState("");
+  const exampleNotes = "e.g., 'african style', 'stew', 'spicy', 'use spices'...";
+
 
   const addIngredientToList = (list, listName) => {
     // list and listName: either "includeIngredients" or "excludeIngredients"
@@ -141,6 +146,7 @@ const GenerateInputComponent = () => {
       diet: makeStringsInListLowercase(dietaryRestrictions),
       mealType: makeStringLowercase(mealType),
       allergies: makeStringsInListLowercase(allergies),
+      additionalNotes: makeStringLowercase(additionalNotes)
     };
     console.log(generationParams);
 
@@ -466,6 +472,24 @@ const GenerateInputComponent = () => {
                 </FormControl>
               )}
             />
+
+           {/* Additional Notes */}
+           <div className={classes.additionalNotes}>
+             <InputLabel id="additional-notes">Additional Notes</InputLabel>
+             <div className={classes.notesContent}>
+               <TextareaAutosize
+                 id="additional-notes"
+                 placeholder="Enter any additional notes..."
+                 value={additionalNotes}
+                 onChange={(e) => setAdditionalNotes(e.target.value)}
+                 className={classes.textarea}
+               />
+               <div className={classes.exampleNotes}>{exampleNotes}</div>
+             </div>
+           </div>
+
+
+
 
             <div style={{ marginBottom: "75px" }}></div>
             {/* SUBMIT BUTTON */}
