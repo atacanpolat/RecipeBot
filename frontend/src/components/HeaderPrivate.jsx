@@ -83,7 +83,7 @@ export const HeaderPrivateTop = () => {
   return (
     <header className="header-private-top" style={{ marginBottom: "20px" }}>
       <div className="logo">
-        <Link className={`${classes.navLink} ${classes.logoLink}`} to="/">
+        <Link className={`${classes.navLink} ${classes.logoLink}`} to="/home">
           <img src={logo} alt="Logo" />
           RecipeBot
         </Link>
@@ -104,21 +104,5 @@ export const HeaderPrivateTop = () => {
     </header>
   );
 };
-/*
-const DropdownMenu = () => {
 
-  const handleLogOut = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('jwt');
-
-  }
-  return (
-    <ul className="dropdown-menu">
-      <li><a href="/settings">Settings</a></li>
-      <li><a href="/profile">Profile</a></li>
-      <li><a onClick={handleLogOut} href="/">Logout</a></li>
-    </ul>
-  );
-};
-*/
 export default { HeaderPrivate, HeaderPrivateTop };

@@ -28,7 +28,7 @@ function HeartComponent({ user, recipe }) {
       });
       const updatedUser = { ...user, savedRecipes: [...user.savedRecipes, recipe._id] };
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      console.log("Recipe added to savedrecipes successfully");
+      console.log("Recipe added to saved recipes successfully");
       setClick(true);
       return response.data;
     } catch (error) {

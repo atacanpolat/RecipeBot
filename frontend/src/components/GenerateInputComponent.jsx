@@ -18,6 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { useFilterStyles } from "./helpers/styles/recipesStyles";
 import Enums from "./enums/enums";
+import { toast } from "react-toastify";
 
 const API_URL_RECIPE = "http://localhost:8000/api/v1/recipes/";
 
@@ -168,6 +169,17 @@ const GenerateInputComponent = () => {
       .catch(function (error) {
         console.log("logging the error");
         console.log(error);
+        setIsLoading(false);
+        toast.error('🦄 Oops, something went wrong whikle generating your recipe, please try it again :)', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          });
       });
     return response;
   };

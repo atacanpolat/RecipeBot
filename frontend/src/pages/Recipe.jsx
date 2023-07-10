@@ -92,6 +92,8 @@ function Recipe() {
       ingredients: details.ingredients,
       instruction: details.instruction,
       photo: details.photo,
+      isGenerated: details.isGenerated ? details.isGenerated : false,
+      tags: [details.instruction.mealType, details.instruction.diet ? details.instruction.diet : "Not diet specific", details.instruction.cookingTime]
     };
     axios
       .post(API_URL + "/create", recipeParams, {
