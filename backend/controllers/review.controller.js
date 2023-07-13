@@ -29,6 +29,7 @@ export const createReview = asyncHandler(async (req,res) => {
             .status(400)
             .json({ error: "You have already written a review for this recipe" });
         } 
+        
         const review = new Review.reviewModel({
             text,
             rating,
@@ -39,6 +40,7 @@ export const createReview = asyncHandler(async (req,res) => {
       
           user.reviewsWritten.push(recipe._id);
           await user.save();
+
           recipe.reviews.push(review);
           await recipe.save();
 
@@ -79,23 +81,40 @@ export const createReview = asyncHandler(async (req,res) => {
     try {
       const { id } = req.params;
       const user = req.user;
-      
+  
       const review = await Review.reviewModel.findById(id);
+      console.log(id);
+      console.log(review);
+
+      const recipe = await Recipe.recipeModel.findById(review.createdFor);
+      console.log(recipe);
+ 
       if (!review) {
         return res.status(404).json({ error: "Review not found" });
       }
-
+  
+      if (!recipe) {
+        return res.status(404).json({ error: "Recipe not found" });
+      }
+  
       if (review.createdBy.toString() !== user.id) {
         return res.status(401).json({ error: "Unauthorized access" });
       }
-      
-      await review.remove();
-      
+  
+      await review.deleteOne();
+
+      user.reviewsWritten.pull(recipe._id);
+      await user.save();
+
+      recipe.reviews.pull(id);
+      await recipe.save();
+
       res.status(200).json({ message: "Review deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   });
+  
 
 
 

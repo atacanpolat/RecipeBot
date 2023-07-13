@@ -15,7 +15,6 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPasswordPage from "./pages/ResetPassword";
 import Recipe from "./pages/Recipe";
 import AccountAndSettingsPage from "./pages/AccountAndSettingsPage";
-import ProfileSettings from "./pages/ProfileSettings";
 import Create from "./pages/Create";
 
 function App() {
@@ -29,7 +28,6 @@ function App() {
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<SignIn />} />
             <Route path="/register" element={<SignUp />} />
-            <Route path="/profile" element={<ProfileSettings />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} /> 
             <Route path="/setAvatar" element={isLoggedIn ? <SetAvatarPage /> : <Homepage />} />

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../assets/css/star.css";
 import {
   FaClock,
   FaConciergeBell,
@@ -10,10 +9,11 @@ import {
   FaSeedling,
   FaTrash,
 } from "react-icons/fa";
-import Rating from "../components/Rating";
+import ReviewComponent from "../components/ReviewComponent";
 import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
 import HeartComponent from "../components/Heart";
 import userService from "../features/user/userService";
+import { Rating } from "../components/helpers/styles/RatingStyles";
 
 function Recipe() {
   const API_URL = "http://localhost:8000/api/v1/recipes/";
@@ -27,28 +27,46 @@ function Recipe() {
   const [updatedIngredients, setUpdatedIngredients] = useState([]);
   const [updatedCookingMethod, setUpdatedCookingMethod] = useState("");
   const [recipeInDatabase, setRecipeInDatabase] = useState(false);
-  const [isUserRecipe, setIsUserRecipe] = useState(false); 
+  const [isUserRecipe, setIsUserRecipe] = useState(false);
+  const [reviews, setReviews] = useState([]);
 
   let recipeData = {};
 
   const getInformation = async () => {
-    // try retreiving recipe from the databas
+    // try retrieving recipe from the database
     await axios
       .get(API_URL + params.name, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((response) => {
+      .then(async (response) => {
         recipeData = response.data;
         setRecipeInDatabase(true);
         setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
+  
+        const reviewPromises = recipeData.reviews.map((review) => {
+          return axios.get(`http://localhost:8000/api/v1/users/${review.createdBy}`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+        });
+  
+        const userResponses = await Promise.all(reviewPromises);
+        const updatedReviews = recipeData.reviews.map((review, index) => ({
+          ...review,
+          user: userResponses[index].data,
+        }));
+  
+        setReviews(updatedReviews);
       })
       .catch((error) => {
         if (error.response.status === 404 && localStorage.getItem("recipe")) {
           recipeData = JSON.parse(localStorage.getItem("recipe"));
           setRecipeInDatabase(false);
           setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
+          setReviews(recipeData.reviews);
         } else {
           throw error;
         }
@@ -57,7 +75,7 @@ function Recipe() {
     console.log(recipeData);
     setDetails(recipeData);
   };
-
+  
   useEffect(() => {
     getInformation();
   }, [params.name]);
@@ -82,10 +100,6 @@ function Recipe() {
     setUpdatedIngredients(updatedIngredientsCopy);
   };
 
-  // const handleCookingMethodChange = (e) => {
-  //   setUpdatedCookingMethod(e.target.value);
-  // };
-
   const addRecipeToDatabase = () => {
     const recipeParams = {
       title: details.title,
@@ -93,7 +107,11 @@ function Recipe() {
       instruction: details.instruction,
       photo: details.photo,
       isGenerated: details.isGenerated ? details.isGenerated : false,
-      tags: [details.instruction.mealType, details.instruction.diet ? details.instruction.diet : "Not diet specific", details.instruction.cookingTime]
+      tags: [
+        details.instruction.mealType,
+        details.instruction.diet ? details.instruction.diet : "Not diet specific",
+        details.instruction.cookingTime,
+      ],
     };
     axios
       .post(API_URL + "/create", recipeParams, {
@@ -113,7 +131,6 @@ function Recipe() {
         console.log(error);
       });
   };
-
 
   const handleCreateNewRecipe = () => {
     // Save the updatedIngredients and updatedCookingMethod as a new recipe
@@ -155,7 +172,8 @@ function Recipe() {
     if (details.ingredients && details.ingredients.length > 0) {
       return details.ingredients.map((ingredient, index) => (
         <li key={index}>
-          Ingredient {index + 1}: {ingredient.brand} {ingredient.name} - {ingredient.quantity} 
+          Ingredient {index + 1}: {ingredient.brand} {ingredient.name} -{" "}
+          {ingredient.quantity}
         </li>
       ));
     }
@@ -170,7 +188,7 @@ function Recipe() {
         return instruction;
       }
     }
-    return "/"; 
+    return "/";
   };
 
   const formatCookingMethod = (cookingMethod) => {
@@ -178,12 +196,13 @@ function Recipe() {
     return cookingMethodList;
   };
 
-
   const handleDeleteRecipe = () => {
-    const confirmed = window.confirm("Are you sure you want to delete this recipe?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this recipe?"
+    );
     if (confirmed) {
       axios
-        .delete(API_URL + 'delete', {
+        .delete(API_URL + "delete", {
           data: { recipeId: details._id },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -201,73 +220,56 @@ function Recipe() {
   };
 
   return (
-    <div
-      style={{
-        alignItems: "center",
-        width: "100%",
-        gap: "20px",
-        flexDirection: "column",
-      }}
-    >
+    <div>
       <HeaderPrivateTop />
-
       <DetailWrapper>
         <PhotoWrapper>
-          <BackgroundImage
-            style={{ backgroundImage: `url(${details.photo})` }}
-          />
+          <BackgroundImage style={{ backgroundImage: `url(${details.photo})` }} />
           <PhotoImage src={details.photo} alt="" />
         </PhotoWrapper>
-        <div style={{ display: "flex", width: "100%"}}>
+        <div style={{ display: "flex", width: "100%" }}>
           <HeaderPrivate />
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              flex: "1 1 auto",
-            }}
-          >
+          <div style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}>
             <PageWrapper>
               <ContentWrapper>
-                {!recipeInDatabase ? (
+                {!recipeInDatabase && (
                   <Button onClick={addRecipeToDatabase}>
                     Save recipe to database
                   </Button>
-                ) : null}
-
+                )}
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
                   <Rating />
                   <HeartComponent user={user} recipe={details} />
                   <Button>Edit</Button>
                   {isUserRecipe && recipeInDatabase && (
-          <ButtonDelete onClick={handleDeleteRecipe}>
-            <FaTrash /> Delete Recipe
-          </ButtonDelete>
-        )}
+                    <ButtonDelete onClick={handleDeleteRecipe}>
+                      <FaTrash /> Delete Recipe
+                    </ButtonDelete>
+                  )}
                 </RecipeContainer>
                 <InfoContainer>
                   <div className="info-row">
                     <span className="info-label">
-                      <FaClock></FaClock> Cooking time:
+                      <FaClock /> Cooking time:
                     </span>
                     <span className="info-value">{displayInfo(1)}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">
-                      <FaPizzaSlice></FaPizzaSlice> Meal type:
+                      <FaPizzaSlice /> Meal type:
                     </span>
                     <span className="info-value">{displayInfo(4)}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">
-                      <FaConciergeBell></FaConciergeBell> Serving size:
+                      <FaConciergeBell /> Serving size:
                     </span>
                     <span className="info-value">{displayInfo(2)}</span>
                   </div>
                   <div className="info-row">
                     <span className="info-label">
-                      <FaSeedling></FaSeedling>Diet:
+                      <FaSeedling /> Diet:
                     </span>
                     <span className="info-value">{displayInfo(5)}</span>
                   </div>
@@ -321,6 +323,11 @@ function Recipe() {
                     ))}
                   </ol>
                 </CookingMethod>
+                <ReviewComponent
+                  recipe={details}
+                  token={token}
+                  user={user}
+                />
               </ContentWrapper>
             </PageWrapper>
           </div>
@@ -329,6 +336,7 @@ function Recipe() {
     </div>
   );
 }
+
 const PageWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -528,6 +536,50 @@ const ButtonCancel = styled(Button)`
     background-color: #ccc;
   }
 `;
+
+
+const ReviewsContainer = styled.div`
+  margin-top: 2rem;
+
+  h4 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+`;
+
+const ReviewItem = styled.div`
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+`;
+
+const ReviewHeader = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+`;
+
+const ProfileImage = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+`;
+
+const ReviewUsername = styled.span`
+  font-weight: bold;
+`;
+
+const RatingContainer = styled.div`
+  margin-bottom: 0.5rem;
+`;
+
+const ReviewText = styled.p`
+  margin-bottom: 0;
+`;
+
+
 
 
 // const InputContainer = styled.div`
