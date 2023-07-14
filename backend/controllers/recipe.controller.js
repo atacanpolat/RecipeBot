@@ -8,7 +8,8 @@ const { Configuration, OpenAIApi } = require("openai");
 // Create a new recipe
 export const createRecipe = asyncHandler(async (req, res) => {
   try {
-    const { title, ingredients, instruction, photo, isGenerated, tags } = req.body;
+    const { title, ingredients, instruction, photo, isGenerated, tags } =
+      req.body;
     const user = req.user;
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -21,7 +22,7 @@ export const createRecipe = asyncHandler(async (req, res) => {
       photo: photo,
       isGenerated: isGenerated ? isGenerated : false,
       tags: tags,
-      createdBy: user._id
+      createdBy: user._id,
     });
     await recipe.save();
 
@@ -195,13 +196,13 @@ export const deleteRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
     const userId = user.id;
-    const {recipeId} = req.body;
+    const { recipeId } = req.body;
 
     const recipe = await Recipe.recipeModel.findById(recipeId);
     if (!recipe) {
       return res.status(404).json({ error: "Recipe not found" });
     }
-    
+
     if (recipe.createdBy.toString() !== userId) {
       return res.status(401).json({ error: "Unauthorized access jj" });
     }
@@ -261,8 +262,6 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       req.body.allergies || user.defaultRecipeSettings.allergies || [];
     const additionalNotes = req.body.additionalNotes || "";
 
-    
-
     const prompt = `
     Generate me a recipe
   
@@ -321,7 +320,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       "measurementSystem": "Measurement System"
     }
   `;
-     
+
     // send prompt to ChatGPT
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
@@ -412,7 +411,6 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     res.status(201).json(allData);
   } catch (error) {
-
     res.status(500).json({ error: error.message });
   }
 });
@@ -420,20 +418,21 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 export const saveRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    const recipeId = req.body.recipeId; 
+    const recipeId = req.body.recipeId;
 
     if (!recipeId) {
       return res.status(404).json({ error: "Recipe ID not provided" });
     }
 
-    const recipe = await Recipe.recipeModel.findById(recipeId); 
+    const recipe = await Recipe.recipeModel.findById(recipeId);
     if (!recipe) {
       return res.status(404).json({ error: "Recipe not found" });
     }
 
     if (recipe.createdBy.toString() === user._id.toString()) {
       return res.status(400).json({
-        error: "You can't save your own recipe, it's already listed under created recipes",
+        error:
+          "You can't save your own recipe, it's already listed under created recipes",
       });
     }
 
@@ -446,31 +445,25 @@ export const saveRecipe = asyncHandler(async (req, res) => {
   }
 });
 
-
 export const removeRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
     const recipeId = req.body.recipeId;
     console.log(recipeId);
-    
+
     if (!recipeId) {
       return res.status(404).json({ error: "Recipe ID not provided" });
     }
 
-    user.savedRecipes.pull(recipeId); 
+    user.savedRecipes.pull(recipeId);
 
-    user.save()
-      .then(() => {
-        res.status(200).json({ message: 'Recipe removed successfully!' });
-      })
-
+    user.save().then(() => {
+      res.status(200).json({ message: "Recipe removed successfully!" });
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-
 
 //Can'a sor
 export const modifyRecipe = asyncHandler(async (req, res) => {
@@ -490,6 +483,21 @@ export const modifyRecipe = asyncHandler(async (req, res) => {
   });
 });
 
+export const uploadRecipeImage = asyncHandler(async (req, res) => {
+  try {
+    const recipe = rqe.recipe;
+
+    console.log(req.file);
+    recipe.image = req.file ? req.file.path : null;
+
+    await recipe.save();
+
+    res.status(200).json(recipe);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 export default {
   createRecipe,
   getAllRecipes,
@@ -502,5 +510,6 @@ export default {
   generateRecipe,
   modifyRecipe,
   saveRecipe,
-  removeRecipe
+  removeRecipe,
+  uploadRecipeImage,
 };
