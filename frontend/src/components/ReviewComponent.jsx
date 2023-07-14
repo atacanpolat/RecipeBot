@@ -146,7 +146,7 @@ const ReviewComponent = ({ recipe, token }) => {
 
   useEffect(() => {
     fetchReviews();
-  }, [recipeID, token, user._id]); // Fetch reviews when there's a change in these dependencies
+  }, [recipeID, token, user._id]); 
 
   useEffect(() => {
     const currentUserReview = reviews.find((review) => review.createdBy === user._id);
@@ -174,15 +174,13 @@ const ReviewComponent = ({ recipe, token }) => {
       let updatedReviews = [];
   
       if (userReview) {
-        // Update existing review
         await reviewService.updateReview(userReview._id, reviewData, token);
   
-        // Update the review in the reviews array
         updatedReviews = reviews.map((review) => {
           if (review._id === userReview._id) {
             return {
               ...review,
-              rating: rating, // Use the current rating state
+              rating: rating, 
               text: reviewText,
             };
           }
@@ -226,12 +224,11 @@ const ReviewComponent = ({ recipe, token }) => {
   
       await reviewService.updateReview(userReview._id, reviewData, token);
   
-      // Update the review in the reviews array
       const updatedReviews = reviews.map((review) => {
         if (review._id === userReview._id) {
           return {
             ...review,
-            rating: rating, // Use the current rating state
+            rating: rating, 
             text: modifiedReviewText,
           };
         }
@@ -259,7 +256,6 @@ const ReviewComponent = ({ recipe, token }) => {
       try {
         await reviewService.deleteReview(userReview._id, token);
 
-        // Remove the deleted review from the reviews array
         const updatedReviews = reviews.filter((review) => review._id !== userReview._id);
         setUserReview(null);
         setRating(0);

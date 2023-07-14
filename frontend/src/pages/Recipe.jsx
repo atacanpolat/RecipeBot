@@ -8,12 +8,14 @@ import {
   FaPizzaSlice,
   FaSeedling,
   FaTrash,
+  FaStar
 } from "react-icons/fa";
 import ReviewComponent from "../components/ReviewComponent";
 import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
 import HeartComponent from "../components/Heart";
 import userService from "../features/user/userService";
 import { Rating } from "../components/helpers/styles/RatingStyles";
+import recipeService from "../features/recipe/recipeService";
 
 function Recipe() {
   const API_URL = "http://localhost:8000/api/v1/recipes/";
@@ -29,6 +31,8 @@ function Recipe() {
   const [recipeInDatabase, setRecipeInDatabase] = useState(false);
   const [isUserRecipe, setIsUserRecipe] = useState(false);
   const [reviews, setReviews] = useState([]);
+  const [meanRating, setMeanRating] = useState(0);
+  const [reviewCount, setReviewCount] = useState(0);
 
   let recipeData = {};
 
@@ -79,6 +83,16 @@ function Recipe() {
   useEffect(() => {
     getInformation();
   }, [params.name]);
+
+  useEffect(() => {
+    // Calculate the initial rating and review count
+    const calculatedData = recipeService.calculateRecipeData([details]);
+    const meanRating = calculatedData[0].meanRating ;
+    const reviewCount = calculatedData[0].reviewCount;
+
+    setMeanRating(meanRating ? meanRating : 0);
+    setReviewCount(reviewCount);
+  }, [details]);
 
   const handleEditIngredients = () => {
     setIsEditing(true);
@@ -239,7 +253,11 @@ function Recipe() {
                 )}
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
-                  <Rating />
+                  <RatingContainer>
+                        {meanRating}
+                        <StarIcon className="star-icon" />
+                        <span>     ({reviewCount} reviews)</span>
+                  </RatingContainer>
                   <HeartComponent user={user} recipe={details} />
                   <Button>Edit</Button>
                   {isUserRecipe && recipeInDatabase && (
@@ -447,6 +465,13 @@ const RecipeName = styled.h1`
   margin-right: 10rem;
   white-space: nowrap; /* Prevent title from wrapping */
 `;
+
+const StarIcon = styled(FaStar)`
+  color: gold; /* Adjust the color as desired */
+  margin-left: 0.5rem; /* Add margin to create spacing between the rating and the star */
+`;
+
+
 const IngredientsHeading = styled.div`
   display: flex;
   align-items: center;

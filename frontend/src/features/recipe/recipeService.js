@@ -69,21 +69,21 @@ const calculateRecipeData = (responseData) => {
     const { _id, title, photo, tags, reviews, createdBy } = recipeData;
     const recipeId = _id;
     const imgSrc = photo;
-    const tagList = tags.join(", ");
-    const reviewCount = reviews.length;
+    const tagList = tags ? tags.join(", ") : [];
+    const reviewCount = reviews ? reviews.length : 0;
     const recipeUrl = "http://localhost:3000/recipes/" + _id;
 
     let totalRating = 0;
-    reviews.forEach((review) => {
+    if (reviews) {reviews.forEach((review) => {
       totalRating += review.rating;
-    });
+    });}
     const meanRating = reviewCount > 0 ? totalRating / reviewCount : 0;
 
     calculatedData.push({
       recipeId,
       title,
       imgSrc,
-      tags: tagList,
+      tags: tagList ? tagList : [],
       reviewCount,
       meanRating,
       recipeUrl,

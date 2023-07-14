@@ -24,10 +24,8 @@ const reviewService = {
         },
       });
 
-      // Fetch the user data for the current user
       const currentUser = JSON.parse(localStorage.getItem('user'));
 
-      // Include the user data in the created review
       const createdReview = {
         ...response.data,
         user: currentUser,
