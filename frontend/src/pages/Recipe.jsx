@@ -323,11 +323,12 @@ function Recipe() {
                     ))}
                   </ol>
                 </CookingMethod>
+
                 <ReviewComponent
                   recipe={details}
                   token={token}
-                  user={user}
                 />
+                
               </ContentWrapper>
             </PageWrapper>
           </div>

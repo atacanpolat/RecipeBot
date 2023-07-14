@@ -23,7 +23,17 @@ const reviewService = {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+
+      // Fetch the user data for the current user
+      const currentUser = JSON.parse(localStorage.getItem('user'));
+
+      // Include the user data in the created review
+      const createdReview = {
+        ...response.data,
+        user: currentUser,
+      };
+
+      return createdReview;
     } catch (error) {
       console.error("Failed to create review:", error);
       throw error;
@@ -31,7 +41,7 @@ const reviewService = {
   },
   updateReview: async (reviewId, reviewData, token) => {
     try {
-      const response = await axios.put(`${API_URL}/review/${reviewId}`, reviewData, {
+      const response = await axios.patch(`${API_URL}/review/${reviewId}`, reviewData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

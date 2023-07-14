@@ -13,7 +13,6 @@ const RatingStars = ({ rating, handleRatingChange }) => {
   };
 
   return (
-    <div className="container">
       <div className="stars">
         {GRADES.map((grade, index) => (
           <Star
@@ -24,7 +23,6 @@ const RatingStars = ({ rating, handleRatingChange }) => {
           />
         ))}
       </div>
-    </div>
   );
 };
 

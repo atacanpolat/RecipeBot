@@ -51,31 +51,44 @@ export const createReview = asyncHandler(async (req,res) => {
         res.status(500).json({error: error.message});
     }
   })
-
   export const updateReview = asyncHandler(async (req, res) => {
     try {
+      const reviewId = req.params.id;
+      const { text, rating } = req.body;
       const user = req.user;
-      const { recipeId, text, rating } = req.body;
-      
-      const review = await Review.reviewModel.findById(recipeId);
+  
+      const review = await Review.reviewModel.findById(reviewId);
+      const recipe = await Recipe.recipeModel.findById(review.createdFor);
+  
       if (!review) {
         return res.status(404).json({ error: "Review not found" });
       }
-
+  
       if (review.createdBy.toString() !== user.id) {
         return res.status(401).json({ error: "Unauthorized access" });
       }
-      
+  
       review.text = text;
       review.rating = rating;
-      
+  
       await review.save();
-      
+  
+      // Update the review in the recipe's reviews array
+      const reviewIndex = recipe.reviews.findIndex((r) => r._id.toString() === reviewId);
+      if (reviewIndex !== -1) {
+        recipe.reviews[reviewIndex].text = text;
+        recipe.reviews[reviewIndex].rating = rating;
+      }
+  
+      await recipe.save();
+  
       res.status(200).json(review);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   });
+  
+  
 
   export const deleteReview = asyncHandler(async (req, res) => {
     try {
@@ -83,11 +96,7 @@ export const createReview = asyncHandler(async (req,res) => {
       const user = req.user;
   
       const review = await Review.reviewModel.findById(id);
-      console.log(id);
-      console.log(review);
-
       const recipe = await Recipe.recipeModel.findById(review.createdFor);
-      console.log(recipe);
  
       if (!review) {
         return res.status(404).json({ error: "Review not found" });
