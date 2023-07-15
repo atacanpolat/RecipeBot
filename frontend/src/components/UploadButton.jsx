@@ -88,9 +88,6 @@ export const UploadButton = ({ selectedFile }) => {
           console.log(selectedFile);
           console.log(response);
           console.log(response.avatar);
-          //const userData = JSON.parse(localStorage.getItem('user'));
-          //userData.avatar = response.avatar;
-          //const updatedUserData = {...userData, ...response};
           localStorage.setItem("user", JSON.stringify(response));
           console.log(localStorage.getItem("user"));
           setUploading(false);
