@@ -39,6 +39,7 @@ const CreateInputComponent = () => {
   const [recipeCookingTime, setRecipeCookingTime] = useState(null);
   const [recipeMealType, setRecipeMealType] = useState(null);
   const [recipeServingSize, setRecipeServingSize] = useState(null);
+  const [recipeDiet, setRecipeDiet] = useState([]);
   const [recipeCookingMethod, setRecipeCookingMethod] = useState(null);
 
   const [recipeIngredients, setRecipeIngredients] = useState([
@@ -54,13 +55,7 @@ const CreateInputComponent = () => {
     servingSize: recipeServingSize,
     allRecipeParams: recipeIngredients,
     cookingMethod: recipeCookingMethod,
-    // diet: TODO!!!,
-  };
-
-  // TODO: delete this function, only for debubbing
-  const printAllRecipeParams = () => {
-    console.log(allRecipeParams);
-    console.log("areAllValuesSet?", areAllValuesSet(allRecipeParams));
+    diet: recipeDiet,
   };
 
   const handleCreateRecipe = () => {
@@ -72,18 +67,19 @@ const CreateInputComponent = () => {
         cookingTime: allRecipeParams.cookingTime,
         servingSize: allRecipeParams.servingSize,
         mealType: allRecipeParams.mealType,
-        diet: null, // TODO
+        diet: allRecipeParams.diet,
       },
       photo: allRecipeParams.image,
       isGenerated: false,
       tags: [
         allRecipeParams.mealType,
         allRecipeParams.cookingTime,
-        // TODO: add diet
+        allRecipeParams.diet[0],
       ],
     };
 
-    console.log("the ingredients are", recipeParams.ingredients);
+    console.log(recipeParams)
+
     axios
       .post(API_URL + "create", recipeParams, {
         headers: {
@@ -138,6 +134,13 @@ const CreateInputComponent = () => {
       ...recipeIngredients,
       { name: "", quantity: "", brand: "" },
     ]);
+  };
+
+  const handleDietaryRestrictionsChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setRecipeDiet(typeof value === "string" ? value.split(",") : value);
   };
 
   return (
@@ -276,6 +279,42 @@ const CreateInputComponent = () => {
                 {Enums.ServingSizes.map((servSizeVal) => (
                   <MenuItem value={servSizeVal} key={servSizeVal}>
                     {servSizeVal.charAt(0).toUpperCase() + servSizeVal.slice(1)}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        />
+
+        {/* Dietary restrictions */}
+        <Controller
+          name="dietary-restrictions"
+          control={control}
+          type="text"
+          defaultValue={[]}
+          render={({ field }) => (
+            <FormControl className={classes.filterSelect}>
+              <InputLabel id="dietary-restrictions">
+                Dietary Restrictions
+              </InputLabel>
+              <Select
+                multiple
+                value={recipeDiet}
+                onChange={handleDietaryRestrictionsChange}
+                renderValue={(selected) =>
+                  selected
+                    .map((e) => e.charAt(0).toUpperCase() + e.slice(1))
+                    .join(", ")
+                }
+              >
+                {Enums.DietaryRestrictions.map((dietVal) => (
+                  <MenuItem key={dietVal} value={dietVal}>
+                    <Checkbox checked={recipeDiet.indexOf(dietVal) > -1} />
+                    <ListItemText
+                      primary={
+                        dietVal.charAt(0).toUpperCase() + dietVal.slice(1)
+                      }
+                    />
                   </MenuItem>
                 ))}
               </Select>

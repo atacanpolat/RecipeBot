@@ -27,7 +27,7 @@ function Recipe() {
   const [updatedIngredients, setUpdatedIngredients] = useState([]);
   const [updatedCookingMethod, setUpdatedCookingMethod] = useState("");
   const [recipeInDatabase, setRecipeInDatabase] = useState(false);
-  const [isUserRecipe, setIsUserRecipe] = useState(false); 
+  const [isUserRecipe, setIsUserRecipe] = useState(false);
 
   let recipeData = {};
 
@@ -82,10 +82,6 @@ function Recipe() {
     setUpdatedIngredients(updatedIngredientsCopy);
   };
 
-  // const handleCookingMethodChange = (e) => {
-  //   setUpdatedCookingMethod(e.target.value);
-  // };
-
   const addRecipeToDatabase = () => {
     const recipeParams = {
       title: details.title,
@@ -93,7 +89,13 @@ function Recipe() {
       instruction: details.instruction,
       photo: details.photo,
       isGenerated: details.isGenerated ? details.isGenerated : false,
-      tags: [details.instruction.mealType, details.instruction.diet ? details.instruction.diet : "Not diet specific", details.instruction.cookingTime]
+      tags: [
+        details.instruction.mealType,
+        details.instruction.diet
+          ? details.instruction.diet
+          : "Not diet specific",
+        details.instruction.cookingTime,
+      ],
     };
     axios
       .post(API_URL + "/create", recipeParams, {
@@ -113,7 +115,6 @@ function Recipe() {
         console.log(error);
       });
   };
-
 
   const handleCreateNewRecipe = () => {
     // Save the updatedIngredients and updatedCookingMethod as a new recipe
@@ -152,25 +153,46 @@ function Recipe() {
   };
 
   const formatIngredients = () => {
-    if (details.ingredients && details.ingredients.length > 0) {
-      return details.ingredients.map((ingredient, index) => (
-        <li key={index}>
-          Ingredient {index + 1}: {ingredient.brand} {ingredient.name} - {ingredient.quantity} 
-        </li>
-      ));
+    if (!details.ingredients || details.ingredients.length === 0) {
+      return null;
     }
-    return null;
+
+    return details.ingredients.map((ingredient, index) => {
+      if (ingredient.name === "") {
+        return null;
+      }
+
+      return <li key={index}>{formatIngredientText(ingredient, index)}</li>;
+    });
+  };
+
+  const formatIngredientText = (ingredient, index) => {
+    const brandText =
+      ingredient.brand !== "" ? ` ® ${ingredient.brand}` : ingredient.brand;
+    const quantityText = ` (${ingredient.quantity})`;
+
+    return (
+      <>
+        {index + 1}:<i>&nbsp;{brandText}&nbsp;</i>
+        <strong>&nbsp;{ingredient.name}&nbsp;</strong>
+        {quantityText}
+      </>
+    );
   };
 
   const displayInfo = (info) => {
     if (details.instruction && Object.keys(details.instruction).length > 0) {
       const instructionKey = Object.keys(details.instruction)[info];
       const instruction = details.instruction[instructionKey];
+      // if the instruction is an array, format it properly
+      if (Array.isArray(instruction)) {
+        return instruction.map((obj) => obj).join(", ");
+      }
       if (instruction) {
         return instruction;
       }
     }
-    return "/"; 
+    return "/";
   };
 
   const formatCookingMethod = (cookingMethod) => {
@@ -178,12 +200,13 @@ function Recipe() {
     return cookingMethodList;
   };
 
-
   const handleDeleteRecipe = () => {
-    const confirmed = window.confirm("Are you sure you want to delete this recipe?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this recipe?"
+    );
     if (confirmed) {
       axios
-        .delete(API_URL + 'delete', {
+        .delete(API_URL + "delete", {
           data: { recipeId: details._id },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -218,7 +241,7 @@ function Recipe() {
           />
           <PhotoImage src={details.photo} alt="" />
         </PhotoWrapper>
-        <div style={{ display: "flex", width: "100%"}}>
+        <div style={{ display: "flex", width: "100%" }}>
           <HeaderPrivate />
           <div
             style={{
@@ -241,10 +264,10 @@ function Recipe() {
                   <HeartComponent user={user} recipe={details} />
                   <Button>Edit</Button>
                   {isUserRecipe && recipeInDatabase && (
-          <ButtonDelete onClick={handleDeleteRecipe}>
-            <FaTrash /> Delete Recipe
-          </ButtonDelete>
-        )}
+                    <ButtonDelete onClick={handleDeleteRecipe}>
+                      <FaTrash /> Delete Recipe
+                    </ButtonDelete>
+                  )}
                 </RecipeContainer>
                 <InfoContainer>
                   <div className="info-row">
@@ -267,7 +290,7 @@ function Recipe() {
                   </div>
                   <div className="info-row">
                     <span className="info-label">
-                      <FaSeedling></FaSeedling>Diet:
+                      <FaSeedling></FaSeedling> Diet:
                     </span>
                     <span className="info-value">{displayInfo(5)}</span>
                   </div>
@@ -315,11 +338,11 @@ function Recipe() {
                 </IngredientsList>
                 <CookingMethod>
                   <h4>Cooking method:</h4>
-                  <ol>
+                  <div>
                     {formatCookingMethod(displayInfo(0)).map((step, index) => (
                       <li key={index}>{step}</li>
                     ))}
-                  </ol>
+                  </div>
                 </CookingMethod>
               </ContentWrapper>
             </PageWrapper>
@@ -341,7 +364,7 @@ const DetailWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  width:1 00%;
+  width: 1 00%;
 
   .info-row {
     display: flex;
@@ -352,10 +375,14 @@ const DetailWrapper = styled.div`
     width: 150px;
     text-align: left;
   }
+  .info-label svg {
+    margin-right: 5px;
+  }
   .info-value {
     display: inline-block;
-    width: 150px;
-    height: 25px;
+    width: auto;
+    height: 26px;
+    padding: 0 15px;
     background-color: #d3d3d3; /* Light gray color */
     border-radius: 10px; /* Adjust the value for desired roundness */
     margin-bottom: 10px; /* Adjust the value for desired spacing */
@@ -391,7 +418,7 @@ const BackgroundImage = styled.div`
 `;
 
 const PhotoImage = styled.img`
-  width: 100%;
+  height: 50vh;
 `;
 
 const ContentWrapper = styled.div`
@@ -490,7 +517,6 @@ const ButtonDelete = styled.button`
   cursor: pointer;
 `;
 
-
 const IngredientsList = styled.div`
   margin-top: 1rem;
 
@@ -528,22 +554,5 @@ const ButtonCancel = styled(Button)`
     background-color: #ccc;
   }
 `;
-
-
-// const InputContainer = styled.div`
-//   display: flex;
-//   margin-bottom: 0.5rem;
-// `;
-
-// const Input = styled.input`
-//   width: 100%;
-//   padding: 0.5rem;
-//   border: 1px solid #ccc;
-//   border-radius: 4px;
-// `;
-
-// const AddIngredientContainer = styled.div`
-//   margin-top: 0.5rem;
-// `;
 
 export default Recipe;
