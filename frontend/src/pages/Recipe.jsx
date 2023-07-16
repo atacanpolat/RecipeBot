@@ -163,7 +163,6 @@ function Recipe() {
           instruction: {
             0: updatedCookingMethod,
           },
-          // Other recipe properties
         },
         {
           headers: {
@@ -172,14 +171,10 @@ function Recipe() {
         }
       )
       .then((response) => {
-        // Handle successful response
         console.log("New recipe saved:", response.data);
-        // Redirect or display success message
       })
       .catch((error) => {
-        // Handle error
         console.error("Failed to save new recipe:", error);
-        // Display error message or handle the error in an appropriate way
       });
   };
 
@@ -286,13 +281,8 @@ function Recipe() {
                         <span>     ({reviewCount} reviews)</span>
                   </RatingContainer>
                   <HeartComponent user={user} recipe={details} />
-                  {isUserRecipe && (
-                    <Button onClick={handleEditRecipeClick}>Edit</Button>
-                  )}
                   {isUserRecipe && recipeInDatabase && (
-                    <ButtonDelete onClick={handleDeleteRecipe}>
-                      <FaTrash /> Delete Recipe
-                    </ButtonDelete>
+                    <Button onClick={handleEditRecipeClick}>Edit</Button>
                   )}
                 </RecipeContainer>
                 <InfoContainer>

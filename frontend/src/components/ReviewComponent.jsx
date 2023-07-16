@@ -4,6 +4,7 @@ import styled from "styled-components";
 import RatingStars from "./RatingStars";
 import { RiDeleteBinLine, RiPencilLine } from "react-icons/ri";
 import reviewService from "../features/recipe/reviewService";
+import silhouettePP from "../images/silhoutte_pp.png";
 
 const Container = styled.div`
   display: flex;
@@ -303,7 +304,7 @@ const ReviewComponent = ({ recipe, token }) => {
   <div key={review._id}>
     <ReviewItem key={review._id}>
       <ReviewHeader>
-        <ProfileImage src={"http://localhost:8000/" + review.user.avatar} alt="Profile" />
+        <ProfileImage src={review.user.avatar !== "" ? "http://localhost:8000/" + review.user.avatar : URL.createObjectURL(silhouettePP)} alt="Profile" />
         <ReviewUsername>
           {review.user.firstName} {review.user.lastName}
         </ReviewUsername>
