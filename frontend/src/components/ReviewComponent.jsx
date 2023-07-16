@@ -37,7 +37,7 @@ const SubmitButton = styled.button`
 `;
 
 const ReviewContainer = styled.div`
-  margin-top: 2rem;
+  margin-top: 4rem;
 `;
 
 const ReviewItem = styled.div`
@@ -275,6 +275,8 @@ const ReviewComponent = ({ recipe, token }) => {
     ? [userReview, ...reviews.filter((review) => review._id !== userReview._id)]
     : reviews;
 
+  console.log(reviews);
+
   return (
     <ReviewContainer>
       {canLeaveReview && (
@@ -293,6 +295,9 @@ const ReviewComponent = ({ recipe, token }) => {
       )}
 
       <h2>Reviews</h2>
+      {reviews.length === 0 && (
+        <p>It's quite empty in here</p>
+      )}
       <ReviewList>
       {sortedReviews.map((review) => (
   <div key={review._id}>

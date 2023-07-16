@@ -13,8 +13,6 @@ import {
 import ReviewComponent from "../components/ReviewComponent";
 import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
 import HeartComponent from "../components/Heart";
-import userService from "../features/user/userService";
-import { Rating } from "../components/helpers/styles/RatingStyles";
 import recipeService from "../features/recipe/recipeService";
 
 function Recipe() {
@@ -186,13 +184,13 @@ function Recipe() {
     if (details.ingredients && details.ingredients.length > 0) {
       return details.ingredients.map((ingredient, index) => (
         <li key={index}>
-          Ingredient {index + 1}: {ingredient.brand} {ingredient.name} -{" "}
-          {ingredient.quantity}
+          Ingredient {index + 1}: <strong>{ingredient.brand}</strong>    {ingredient.name} - {ingredient.quantity}
         </li>
       ));
     }
     return null;
   };
+  
 
   const displayInfo = (info) => {
     if (details.instruction && Object.keys(details.instruction).length > 0) {
@@ -246,11 +244,6 @@ function Recipe() {
           <div style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}>
             <PageWrapper>
               <ContentWrapper>
-                {!recipeInDatabase && (
-                  <Button onClick={addRecipeToDatabase}>
-                    Save recipe to database
-                  </Button>
-                )}
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
                   <RatingContainer>
@@ -259,12 +252,7 @@ function Recipe() {
                         <span>     ({reviewCount} reviews)</span>
                   </RatingContainer>
                   <HeartComponent user={user} recipe={details} />
-                  <Button>Edit</Button>
-                  {isUserRecipe && recipeInDatabase && (
-                    <ButtonDelete onClick={handleDeleteRecipe}>
-                      <FaTrash /> Delete Recipe
-                    </ButtonDelete>
-                  )}
+
                 </RecipeContainer>
                 <InfoContainer>
                   <div className="info-row">
@@ -341,11 +329,26 @@ function Recipe() {
                     ))}
                   </ol>
                 </CookingMethod>
+                <HandleRecipeButtons>
+                {!recipeInDatabase && (
+                  <Button onClick={addRecipeToDatabase}>
+                    Save recipe to database
+                  </Button>
+                )}
+                
+                {isUserRecipe && recipeInDatabase && (
+                    <ButtonDelete onClick={handleDeleteRecipe}>
+                      <FaTrash /> Delete Recipe
+                    </ButtonDelete>
+                  )}
+                </HandleRecipeButtons>
 
-                <ReviewComponent
+                {recipeInDatabase && 
+                (<ReviewComponent
                   recipe={details}
                   token={token}
-                />
+                 />
+                )}
                 
               </ContentWrapper>
             </PageWrapper>
@@ -514,14 +517,10 @@ const ButtonFlink = styled.div`
   background-color: #c91383;
 `;
 
-const ButtonDelete = styled.button`
-  /* Add your desired button styles here */
+const ButtonDelete = styled(Button)`
+
   background-color: red;
   color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 `;
 
 
@@ -552,6 +551,8 @@ const CookingMethod = styled.div`
     margin-bottom: 0.5rem;
   }
   text-align: justify;
+  margin-bottom: 4rem;
+
 `;
 
 const ButtonCancel = styled(Button)`
@@ -561,6 +562,11 @@ const ButtonCancel = styled(Button)`
   &:hover {
     background-color: #ccc;
   }
+`;
+
+const HandleRecipeButtons = styled.div`
+  display: flex;
+  gap: 1rem;
 `;
 
 
@@ -604,24 +610,5 @@ const RatingContainer = styled.div`
 const ReviewText = styled.p`
   margin-bottom: 0;
 `;
-
-
-
-
-// const InputContainer = styled.div`
-//   display: flex;
-//   margin-bottom: 0.5rem;
-// `;
-
-// const Input = styled.input`
-//   width: 100%;
-//   padding: 0.5rem;
-//   border: 1px solid #ccc;
-//   border-radius: 4px;
-// `;
-
-// const AddIngredientContainer = styled.div`
-//   margin-top: 0.5rem;
-// `;
 
 export default Recipe;
