@@ -53,8 +53,6 @@ function Recipe() {
           throw error;
         }
       });
-    console.log("is recipe in database?", recipeInDatabase);
-    console.log(recipeData);
     setDetails(recipeData);
   };
 
@@ -91,7 +89,10 @@ function Recipe() {
       isGenerated: details.isGenerated ? details.isGenerated : false,
       tags: [
         details.instruction.mealType,
-        details.instruction.diet
+        details.instruction.diet &&
+        details.instruction.diet !== "" &&
+        details.instruction.diet.length > 0 &&
+        details.instruction.diet[0] !== ""
           ? details.instruction.diet
           : "Not diet specific",
         details.instruction.cookingTime,
@@ -223,6 +224,13 @@ function Recipe() {
     }
   };
 
+  const handleEditRecipeClick = () => {
+    localStorage.setItem("editingRecipe", true);
+    localStorage.setItem("recipeData", JSON.stringify(details));
+    // redirect to generation page
+    window.location.href = "/generate";
+  };
+
   return (
     <div
       style={{
@@ -262,7 +270,9 @@ function Recipe() {
                   <RecipeName>{details.title}</RecipeName>
                   <Rating />
                   <HeartComponent user={user} recipe={details} />
-                  <Button>Edit</Button>
+                  {isUserRecipe && recipeInDatabase && (
+                    <Button onClick={handleEditRecipeClick}>Edit</Button>
+                  )}
                   {isUserRecipe && recipeInDatabase && (
                     <ButtonDelete onClick={handleDeleteRecipe}>
                       <FaTrash /> Delete Recipe
@@ -297,7 +307,7 @@ function Recipe() {
                 </InfoContainer>
                 <IngredientsHeading>
                   <h4>Ingredients:</h4>
-                  {isEditing ? (
+                  {/* {isEditing ? (
                     <div className="edit-container">
                       {updatedIngredients.map((ingredient, index) => (
                         <div className="input-container" key={index}>
@@ -314,8 +324,8 @@ function Recipe() {
                             }
                           />
                           {/* Add other input fields for quantity, brand, etc. as needed */}
-                        </div>
-                      ))}
+                  {/* </div> */}
+                  {/* ))}
                       <div className="add-ingredient-container">
                         <button onClick={handleAddIngredient}>Add</button>
                       </div>
@@ -328,7 +338,7 @@ function Recipe() {
                     </div>
                   ) : (
                     <Button onClick={handleEditIngredients}>Edit</Button>
-                  )}
+                  )} */}
                   <a href="https://www.goflink.com/de-DE/">
                     <ButtonFlink>Order on Flink</ButtonFlink>
                   </a>

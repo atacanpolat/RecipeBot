@@ -1,33 +1,10 @@
 import mongoose from "mongoose";
 import { ReviewSchema } from "./review.js";
 
-const mealType = [
-  "breakfast",
-  "soup",
-  "starter",
-  "appetizer",
-  "main",
-  "salad",
-  "dessert",
-];
-const diet = [
-  "",
-  "none",
-  "gluten-free",
-  "lactose-free",
-  "kosher",
-  "seafood",
-  "halal",
-  "vegetarian",
-  "vegan",
-  "keto",
-  "low-calorie",
-];
-
 const IngredientSchema = new mongoose.Schema({
   name: String,
   quantity: String,
-  brand: String, //TODO: brand maybe as an object?
+  brand: String,
 });
 
 const InstructionSchema = new mongoose.Schema({
@@ -35,13 +12,10 @@ const InstructionSchema = new mongoose.Schema({
   cookingTime: { type: String, required: true },
   servingSize: { type: String, required: true, default: "2 people" },
   cookingUtensils: [{ type: String }],
-  mealType: {
-    type: String,
-  },
+  mealType: { type: String },
   diet: [
     {
       type: String,
-      // enum:diet,
       default: "none",
     },
   ],

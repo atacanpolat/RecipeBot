@@ -167,16 +167,13 @@ export const getRecipeById = asyncHandler(async (req, res) => {
 export const updateRecipe = asyncHandler(async (req, res) => {
   try {
     const { title, ingredients, instruction, photo } = req.body;
+    // console.log("lista", title, ingredients, instruction, photo);
     const user = req.user;
     const userId = user.id;
 
     const recipe = await Recipe.recipeModel.findById(req.params.id);
     if (!recipe) {
       return res.status(404).json({ error: "Recipe not found" });
-    }
-
-    if (recipe.createdBy.toString() !== userId) {
-      return res.status(401).json({ error: "Unauthorized access" });
     }
 
     recipe.title = title;
@@ -226,40 +223,35 @@ const openai = new OpenAIApi(configuration);
 export const generateRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
+    console.log(req.body);
 
     // extract variables from request.body + handle default/empty values
 
     // REQUIRED
-    // ingredients (include)
-    let ingredients = [];
-    if ("ingredients" in req.body) {
-      ingredients = req.body.ingredients;
-    } else {
-      throw new Error("ingredients not found in request body");
-    }
-
-    // servingSize
-    let servingSize = "";
-    if ("servingSize" in req.body) {
-      servingSize = req.body.servingSize;
-    } else {
-      throw new Error("servingSize not found in request body");
-    }
+    const ingredients = req.body.ingredients || [];
+    const servingSize = req.body.servingSize || "any";
 
     // OPTIONAL
     const ingredientsExcl = req.body.ingredientsExcl || [];
+
     const utensils =
       req.body.utensils || user.defaultRecipeSettings.utensils || [];
+
     const cookingTime = req.body.cookingTime || "any";
+
     const diet =
-      req.body.diet || user.defaultRecipeSettings.dietaryRestriction || "none";
+      req.body.diet || user.defaultRecipeSettings.dietaryRestriction || [];
+
     const mealType = req.body.mealType || "any";
+
     const measurement =
       req.body.measurement ||
       user.defaultRecipeSettings.measurementSystem ||
       "metric";
+
     const allergies =
       req.body.allergies || user.defaultRecipeSettings.allergies || [];
+
     const additionalNotes = req.body.additionalNotes || "";
 
     const prompt = `
@@ -296,12 +288,19 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well.
     If there are ingredients to include that violate the dietary restriction, then don't include them
     Enumerate each step of the cooking narrative.
+    The cooking time of the generated recipe should always be one of these values: {"under 10 minutes", "10-20 minutes", "under 30 minutes", "under 1 hour", "under 2 hours"}.
     Get inspiration from already existing recipes all around the world.
   
     Generate it in the following JSON format:
   
     {
-      "title": "Creative Recipe Title",
+      "title": ${
+        req.body.title !== null &&
+        req.body.title !== undefined &&
+        req.body.title !== ""
+          ? req.body.title.toString()
+          : '"Creative Recipe Title"'
+      },
       "ingredients": [
         {
           "name": "Ingredient Name",
@@ -329,44 +328,11 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     });
 
     // get response from ChatGPT
-    const response = JSON.parse(completion.data.choices[0].text);
-    console.log(response);
-
-    // const sampleResponse = {
-    //   title: "Tomato Rice Basil Milk",
-    //   ingredients: [
-    //     {
-    //       name: "Tomato",
-    //       quantity: "4 tomatoes",
-    //       brand: "",
-    //     },
-    //     {
-    //       name: "Rice",
-    //       quantity: "2 cups of uncooked rice",
-    //       brand: "",
-    //     },
-    //     {
-    //       name: "Basil",
-    //       quantity: "1/4 cup of fresh basil, diced",
-    //       brand: "",
-    //     },
-    //     {
-    //       name: "Milk",
-    //       quantity: "2 cups of milk",
-    //       brand: "Weihenstephan",
-    //     },
-    //   ],
-    //   instruction: {
-    //     narrative:
-    //       "In a large pan over medium heat, add tomatoes and cook until softened. Add the rice and basil and cook for 3 minutes, stirring occasionally. Reduce heat and add the milk and stir until the milk is absorbed. Cook for 5 more minutes and remove from heat. Serve warm. Enjoy!",
-    //     cookingTime: "Under 30 minutes",
-    //     servingSize: "4 people",
-    //     mealType: "main",
-    //     diet: "kosher",
-    //   },
-    //   twentyWordSummary: "Tomato, Rice, Basil and Milk dish.",
-    //   measurementSystem: "Metric",
-    // };
+    const responseRaw = completion.data.choices[0].text
+      .trim()
+      .replace("Recipe JSON:", "");
+    const response = JSON.parse(responseRaw);
+    console.log("RESPONSE", response);
 
     // add photoUrl and tags to response
     const photoUrl =
@@ -388,7 +354,6 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       mealType: response.instruction.mealType,
       diet: response.instruction.diet,
     });
-    // await instruction.save(); // OLD
 
     const recipe = new Recipe.recipeModel({
       title: response.title,
@@ -399,15 +364,16 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       isGenerated: true,
       tags: tags,
     });
-    // await recipe.save();// OLD
 
     const allData = {
       recipe: recipe,
       instruction: instruction,
     };
 
-    // user.createdRecipes.push(recipe._id);
-    // await user.save();
+    console.log("ALL DATA", allData);
+
+    user.createdRecipes.push(recipe._id);
+    await user.save();
 
     res.status(201).json(allData);
   } catch (error) {

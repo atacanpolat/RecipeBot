@@ -21,7 +21,7 @@ function Generate() {
         >
           {/* MAIN CONTAINER */}
           <Container>
-            <GenerateInputComponent onClickGenerate={"TODO"} />
+            <GenerateInputComponent onClickGenerate={""} />
           </Container>
         </div>
       </div>
