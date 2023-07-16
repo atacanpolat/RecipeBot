@@ -181,12 +181,8 @@ function Recipe() {
   };
 
   const formatIngredients = () => {
-    if (details.ingredients && details.ingredients.length > 0) {
-      return details.ingredients.map((ingredient, index) => (
-        <li key={index}>
-          Ingredient {index + 1}: <strong>{ingredient.brand}</strong>    {ingredient.name} - {ingredient.quantity}
-        </li>
-      ));
+    if (!details.ingredients || details.ingredients.length === 0) {
+      return null;
     }
 
     return details.ingredients.map((ingredient, index) => {
@@ -211,6 +207,7 @@ function Recipe() {
       </>
     );
   };
+
   
 
   const displayInfo = (info) => {
