@@ -1,5 +1,6 @@
 import Recipe from "../mongodb/models/recipe.js";
 import asyncHandler from "express-async-handler";
+import axios from "axios";
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
@@ -336,9 +337,13 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     // add photoUrl and tags to response
     const photoUrl =
-      "https://image.pollinations.ai/prompt/" +
-      encodeURIComponent(response.twentyWordSummary);
-    response.photoUrl = photoUrl;
+    "https://image.pollinations.ai/prompt/" +
+    encodeURIComponent(response.twentyWordSummary);
+
+    // Download the image
+    const imageResponse = await axios.get(photoUrl, { responseType: 'arraybuffer' });
+    const imageData = Buffer.from(imageResponse.data).toString('base64');
+    const dataURI = `data:image/png;base64,${imageData}`;
 
     const tags = [
       response.instruction.mealType,
@@ -359,7 +364,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       title: response.title,
       ingredients: response.ingredients,
       instruction: response.instruction,
-      photo: response.photoUrl,
+      photo: dataURI,
       createdBy: user._id,
       isGenerated: true,
       tags: tags,
@@ -372,8 +377,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     console.log("ALL DATA", allData);
 
-    user.createdRecipes.push(recipe._id);
-    await user.save();
+
 
     res.status(201).json(allData);
   } catch (error) {
