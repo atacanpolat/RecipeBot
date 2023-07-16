@@ -188,7 +188,28 @@ function Recipe() {
         </li>
       ));
     }
-    return null;
+
+    return details.ingredients.map((ingredient, index) => {
+      if (ingredient.name === "") {
+        return null;
+      }
+
+      return <li key={index}>{formatIngredientText(ingredient, index)}</li>;
+    });
+  };
+
+  const formatIngredientText = (ingredient, index) => {
+    const brandText =
+      ingredient.brand !== "" ? ` ® ${ingredient.brand}` : ingredient.brand;
+    const quantityText = ` (${ingredient.quantity})`;
+
+    return (
+      <>
+        {index + 1}:<i>&nbsp;{brandText}&nbsp;</i>
+        <strong>&nbsp;{ingredient.name}&nbsp;</strong>
+        {quantityText}
+      </>
+    );
   };
   
 
@@ -196,6 +217,10 @@ function Recipe() {
     if (details.instruction && Object.keys(details.instruction).length > 0) {
       const instructionKey = Object.keys(details.instruction)[info];
       const instruction = details.instruction[instructionKey];
+      // if the instruction is an array, format it properly
+      if (Array.isArray(instruction)) {
+        return instruction.map((obj) => obj).join(", ");
+      }
       if (instruction) {
         return instruction;
       }
@@ -210,7 +235,9 @@ function Recipe() {
 
   const handleDeleteRecipe = () => {
     const confirmed = window.confirm(
+      
       "Are you sure you want to delete this recipe?"
+    
     );
     if (confirmed) {
       axios
@@ -323,11 +350,11 @@ function Recipe() {
                 </IngredientsList>
                 <CookingMethod>
                   <h4>Cooking method:</h4>
-                  <ol>
+                  <div>
                     {formatCookingMethod(displayInfo(0)).map((step, index) => (
                       <li key={index}>{step}</li>
                     ))}
-                  </ol>
+                  </div>
                 </CookingMethod>
                 <HandleRecipeButtons>
                 {!recipeInDatabase && (
@@ -371,7 +398,7 @@ const DetailWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  width:1 00%;
+  width: 1 00%;
 
   .info-row {
     display: flex;
@@ -382,10 +409,14 @@ const DetailWrapper = styled.div`
     width: 150px;
     text-align: left;
   }
+  .info-label svg {
+    margin-right: 5px;
+  }
   .info-value {
     display: inline-block;
-    width: 150px;
-    height: 25px;
+    width: auto;
+    height: 26px;
+    padding: 0 15px;
     background-color: #d3d3d3; /* Light gray color */
     border-radius: 10px; /* Adjust the value for desired roundness */
     margin-bottom: 10px; /* Adjust the value for desired spacing */
@@ -421,7 +452,7 @@ const BackgroundImage = styled.div`
 `;
 
 const PhotoImage = styled.img`
-  width: 100%;
+  height: 50vh;
 `;
 
 const ContentWrapper = styled.div`
@@ -522,7 +553,6 @@ const ButtonDelete = styled(Button)`
   background-color: red;
   color: white;
 `;
-
 
 const IngredientsList = styled.div`
   margin-top: 1rem;
