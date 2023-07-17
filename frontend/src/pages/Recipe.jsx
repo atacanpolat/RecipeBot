@@ -8,7 +8,7 @@ import {
   FaPizzaSlice,
   FaSeedling,
   FaTrash,
-  FaStar
+  FaStar,
 } from "react-icons/fa";
 import ReviewComponent from "../components/ReviewComponent";
 import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
@@ -46,21 +46,24 @@ function Recipe() {
         recipeData = response.data;
         setRecipeInDatabase(true);
         setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
-  
+
         const reviewPromises = recipeData.reviews.map((review) => {
-          return axios.get(`http://localhost:8000/api/v1/users/${review.createdBy}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
+          return axios.get(
+            `http://localhost:8000/api/v1/users/${review.createdBy}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
-          });
+          );
         });
-  
+
         const userResponses = await Promise.all(reviewPromises);
         const updatedReviews = recipeData.reviews.map((review, index) => ({
           ...review,
           user: userResponses[index].data,
         }));
-  
+
         setReviews(updatedReviews);
       })
       .catch((error) => {
@@ -75,7 +78,7 @@ function Recipe() {
       });
     setDetails(recipeData);
   };
-  
+
   useEffect(() => {
     getInformation();
   }, [params.name]);
@@ -83,7 +86,7 @@ function Recipe() {
   useEffect(() => {
     // Calculate the initial rating and review count
     const calculatedData = recipeService.calculateRecipeData([details]);
-    const meanRating = calculatedData[0].meanRating ;
+    const meanRating = calculatedData[0].meanRating;
     const reviewCount = calculatedData[0].reviewCount;
 
     setMeanRating(meanRating ? meanRating : 0);
@@ -206,8 +209,6 @@ function Recipe() {
     );
   };
 
-  
-
   const displayInfo = (info) => {
     if (details.instruction && Object.keys(details.instruction).length > 0) {
       const instructionKey = Object.keys(details.instruction)[info];
@@ -230,9 +231,7 @@ function Recipe() {
 
   const handleDeleteRecipe = () => {
     const confirmed = window.confirm(
-      
       "Are you sure you want to delete this recipe?"
-    
     );
     if (confirmed) {
       axios
@@ -261,24 +260,39 @@ function Recipe() {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        alignItems: "center",
+        width: "100%",
+        gap: "20px",
+        flexDirection: "column",
+      }}
+    >
       <HeaderPrivateTop />
       <DetailWrapper>
         <PhotoWrapper>
-          <BackgroundImage style={{ backgroundImage: `url(${details.photo})` }} />
-          <PhotoImage src={details.photo} alt="" />
+          <BackgroundImage
+            style={{ backgroundImage: `url(${details.photo})` }}
+          />
+          <PhotoImage src={details.photo} alt={details.title} />
         </PhotoWrapper>
         <div style={{ display: "flex", width: "100%" }}>
           <HeaderPrivate />
-          <div style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flex: "1 1 auto",
+            }}
+          >
             <PageWrapper>
               <ContentWrapper>
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
                   <RatingContainer>
-                        {meanRating}
-                        <StarIcon className="star-icon" />
-                        <span>     ({reviewCount} reviews)</span>
+                    {meanRating}
+                    <StarIcon className="star-icon" />
+                    <span> ({reviewCount} reviews)</span>
                   </RatingContainer>
                   <HeartComponent user={user} recipe={details} />
                   {isUserRecipe && recipeInDatabase && (
@@ -361,26 +375,22 @@ function Recipe() {
                   </div>
                 </CookingMethod>
                 <HandleRecipeButtons>
-                {!recipeInDatabase && (
-                  <Button onClick={addRecipeToDatabase}>
-                    Save recipe to database
-                  </Button>
-                )}
-                
-                {isUserRecipe && recipeInDatabase && (
+                  {!recipeInDatabase && (
+                    <Button onClick={addRecipeToDatabase}>
+                      Save recipe to database
+                    </Button>
+                  )}
+
+                  {isUserRecipe && recipeInDatabase && (
                     <ButtonDelete onClick={handleDeleteRecipe}>
                       <FaTrash /> Delete Recipe
                     </ButtonDelete>
                   )}
                 </HandleRecipeButtons>
 
-                {recipeInDatabase && 
-                (<ReviewComponent
-                  recipe={details}
-                  token={token}
-                 />
+                {recipeInDatabase && (
+                  <ReviewComponent recipe={details} token={token} />
                 )}
-                
               </ContentWrapper>
             </PageWrapper>
           </div>
@@ -407,6 +417,7 @@ const DetailWrapper = styled.div`
   .info-row {
     display: flex;
     align-items: flex-start;
+    gap: 20px
   }
   .info-label {
     font-weight: bold;
@@ -462,8 +473,8 @@ const PhotoImage = styled.img`
 const ContentWrapper = styled.div`
   z-index: 1;
   width: 100%;
-  max-width: 1200px; /* Adjust the maximum width as needed */
-  padding: 1rem;
+  // max-width: 1200px; /* Adjust the maximum width as needed */
+  padding: 1rem 5rem;
   box-sizing: border-box;
 `;
 
@@ -495,6 +506,7 @@ const RecipeContainer = styled.div`
   align-items: center;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  justify-content: space-between;
 `;
 
 const RecipeName = styled.h1`
@@ -509,11 +521,11 @@ const StarIcon = styled(FaStar)`
   margin-left: 0.5rem; /* Add margin to create spacing between the rating and the star */
 `;
 
-
 const IngredientsHeading = styled.div`
   display: flex;
   align-items: center;
   margin-top: 1rem;
+  justify-content: space-between;
   h4 {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
@@ -553,7 +565,6 @@ const ButtonFlink = styled.div`
 `;
 
 const ButtonDelete = styled(Button)`
-
   background-color: red;
   color: white;
 `;
@@ -586,7 +597,6 @@ const CookingMethod = styled.div`
   }
   text-align: justify;
   margin-bottom: 4rem;
-
 `;
 
 const ButtonCancel = styled(Button)`
@@ -602,7 +612,6 @@ const HandleRecipeButtons = styled.div`
   display: flex;
   gap: 1rem;
 `;
-
 
 const ReviewsContainer = styled.div`
   margin-top: 2rem;
