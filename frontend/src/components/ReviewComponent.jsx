@@ -200,6 +200,7 @@ const ReviewComponent = ({ recipe, token }) => {
       setReviewText("");
   
       console.log("Review submitted successfully");
+      window.location.reload();
     } catch (error) {
       console.error("Failed to submit review:", error);
     }
@@ -240,6 +241,7 @@ const ReviewComponent = ({ recipe, token }) => {
       setEditingReview(false);
       setReviewText("");
       console.log("Review updated successfully");
+      window.location.reload();
     } catch (error) {
       console.error("Failed to update review:", error);
     }
@@ -264,6 +266,7 @@ const ReviewComponent = ({ recipe, token }) => {
         setReviews(updatedReviews);
 
         console.log("Review deleted successfully");
+        window.location.reload();
       } catch (error) {
         console.error("Failed to delete review:", error);
       }

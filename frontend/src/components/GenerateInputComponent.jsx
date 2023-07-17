@@ -22,6 +22,8 @@ import { useFilterStyles } from "./helpers/styles/recipesStyles";
 import Enums from "./enums/enums";
 import { toast } from "react-toastify";
 
+import gif from "../images/taco_gif.gif"; // Replace with the path to your GIF file
+
 const API_URL_RECIPE = "http://localhost:8000/api/v1/recipes/";
 
 const makeStringLowercase = (string) => {
