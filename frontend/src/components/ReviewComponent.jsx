@@ -276,7 +276,7 @@ const ReviewComponent = ({ recipe, token }) => {
     ? [userReview, ...reviews.filter((review) => review._id !== userReview._id)]
     : reviews;
 
-  console.log(reviews);
+  // console.log(reviews);
 
   return (
     <ReviewContainer>
