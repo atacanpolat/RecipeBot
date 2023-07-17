@@ -34,17 +34,43 @@ const CreateInputComponent = () => {
   const classes = useCreateRecipeStyles();
   const { control, handleSubmit } = useForm();
 
-  const [recipeTitle, setRecipeTitle] = useState(null);
-  const [recipeImage, setRecipeImage] = useState(null);
-  const [recipeCookingTime, setRecipeCookingTime] = useState(null);
-  const [recipeMealType, setRecipeMealType] = useState(null);
-  const [recipeServingSize, setRecipeServingSize] = useState(null);
-  const [recipeDiet, setRecipeDiet] = useState([]);
-  const [recipeCookingMethod, setRecipeCookingMethod] = useState(null);
+  const editingRecipe =
+    localStorage.getItem("editingRecipe") !== null
+      ? JSON.parse(localStorage.getItem("editingRecipe"))
+      : false;
 
-  const [recipeIngredients, setRecipeIngredients] = useState([
-    { name: "", quantity: "", brand: "" },
-  ]);
+  const editingRecipeData = editingRecipe
+    ? JSON.parse(localStorage.getItem("recipeData"))
+    : null;
+
+  const [recipeTitle, setRecipeTitle] = useState(
+    editingRecipe ? editingRecipeData.title : null
+  );
+  const [recipeImage, setRecipeImage] = useState(
+    editingRecipe ? editingRecipeData.photo : null
+  );
+  const [recipeCookingTime, setRecipeCookingTime] = useState(
+    editingRecipe ? editingRecipeData.instruction.cookingTime : ""
+  );
+
+  const [recipeMealType, setRecipeMealType] = useState(
+    editingRecipe ? editingRecipeData.instruction.mealType : ""
+  );
+  const [recipeServingSize, setRecipeServingSize] = useState(
+    editingRecipe ? editingRecipeData.instruction.servingSize : ""
+  );
+  const [recipeDiet, setRecipeDiet] = useState(
+    editingRecipe && editingRecipeData.instruction.diet.length > 0
+      ? editingRecipeData.instruction.diet
+      : []
+  );
+  const [recipeCookingMethod, setRecipeCookingMethod] = useState(
+    editingRecipe ? editingRecipeData.instruction.narrative : ""
+  );
+
+  const [recipeIngredients, setRecipeIngredients] = useState(
+    editingRecipe ? editingRecipeData.ingredients : []
+  );
 
   const allRecipeParams = {
     title: recipeTitle,
@@ -78,23 +104,48 @@ const CreateInputComponent = () => {
       ],
     };
 
-    console.log(recipeParams)
+    console.log(recipeParams);
 
-    axios
-      .post(API_URL + "create", recipeParams, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        console.log("RECIPE ADDED TO THE DATABASE");
-        console.log(response);
-        // redirect to new recipe page (since ID has changed)
-        window.location.href = "/recipes/" + response.data._id;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // update recipe
+    if (editingRecipe) {
+      const recipeId = editingRecipeData._id;
+      const response = axios
+        .patch(API_URL + recipeId, recipeParams, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(function (response) {
+          console.log(response);
+          console.log("Recipe updated successfully!!");
+          localStorage.setItem("editingRecipe", JSON.stringify(false));
+          localStorage.removeItem("recipeData");
+          setIsLoading(false);
+          window.location.href = "/recipes/" + recipeId;
+        })
+        .catch(function (error) {
+          setIsLoading(false);
+          console.log("error while updating the recipe", error);
+        });
+    }
+    // create recipe from scratch
+    else {
+      axios
+        .post(API_URL + "create", recipeParams, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log("RECIPE ADDED TO THE DATABASE");
+          console.log(response);
+          // redirect to new recipe page (since ID has changed)
+          window.location.href = "/recipes/" + response.data._id;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   function areAllValuesSet(obj) {
@@ -146,6 +197,23 @@ const CreateInputComponent = () => {
   return (
     <div className={classes.createRecipeContainer}>
       <div style={{ flex: "1 0 100%", marginBottom: "20px" }}>
+        {!editingRecipe ? (
+          <div>
+            <h1>Create a recipe manually</h1>
+            <p>
+              Do you want to manually add a recipe? Maybe a tasty recipe from
+              your grandmother or your latest creation? Feel free do add it
+              here.
+            </p>
+            <div style={{ marginTop: "100px" }}></div>
+          </div>
+        ) : null}
+        {editingRecipe ? (
+          <div>
+            <h4>Editing Recipe:</h4> <h2>{editingRecipeData.title}</h2>
+            <br></br>
+          </div>
+        ) : null}
         <h2>Basic Required Fields</h2>
       </div>
       {isLoading ? <Spinner /> : null}
@@ -153,11 +221,12 @@ const CreateInputComponent = () => {
         {/* Recipe title */}
         <TextField
           required
+          value={recipeTitle}
           style={{ width: "50%" }}
           id="recipe-title"
           label="Recipe title"
           variant="standard"
-          onChange={(e) => setRecipeTitle(e.target.value.trim())}
+          onChange={(e) => setRecipeTitle(e.target.value)}
         />
 
         {/* BREAK */}
@@ -345,6 +414,7 @@ const CreateInputComponent = () => {
                   <TextField
                     name="name"
                     required
+                    value={singleIngredient.name}
                     InputLabelProps={{ shrink: true }}
                     label="Ingredient"
                     onChange={(e) => handleIngredientChange(e, index)}
@@ -352,6 +422,7 @@ const CreateInputComponent = () => {
                   <TextField
                     style={{ marginLeft: "10px" }}
                     name="quantity"
+                    value={singleIngredient.quantity}
                     InputLabelProps={{ shrink: true }}
                     label="Quantity"
                     onChange={(e) => handleIngredientChange(e, index)}
@@ -395,6 +466,7 @@ const CreateInputComponent = () => {
           id="outlined-multiline-flexible"
           label="Write here the recipe cooking method"
           multiline
+          value={recipeCookingMethod}
           variant="outlined"
           minRows={10}
           onChange={(e) => setRecipeCookingMethod(e.target.value)}
@@ -412,7 +484,7 @@ const CreateInputComponent = () => {
           }}
           onClick={() => handleCreateRecipe()}
         >
-          CREATE RECIPE
+          {editingRecipe ? "UPDATE" : "CREATE"} RECIPE
         </Button>
       </div>
     </div>

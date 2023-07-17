@@ -20,13 +20,6 @@ function Create() {
         >
           {/* MAIN CONTAINER */}
           <Container>
-            <h1>Create a recipe manually</h1>
-            <p>
-              Do you want to manually add a recipe? Maybe a tasty recipe from
-              your grandmother or your latest creation? Feel free do add it
-              here.
-            </p>
-            <div style={{marginTop: "100px"}}></div>
             <CreateInputComponent></CreateInputComponent>
           </Container>
         </div>
