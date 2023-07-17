@@ -348,7 +348,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     const tags = [
       response.instruction.mealType,
       response.instruction.diet
-        ? response.instruction.diet
+        ? response.instruction.diet.join(', ')
         : "Not diet specific",
       response.instruction.cookingTime,
     ];

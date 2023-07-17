@@ -154,24 +154,35 @@ const GenerateInputComponent = () => {
   };
 
   const handleUpdatEditedRecipe = (recipeId, editedRecipeData, token) => {
-    const response = axios
+    /*
+    const response = axios.post(API_URL_RECIPE+'create', editedRecipeData.recipe, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+    
       .patch(API_URL_RECIPE + recipeId, editedRecipeData.recipe, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
+    
       .then(function (response) {
-        console.log(response);
+      */
+        console.log(editedRecipeData.recipe);
         console.log("Recipe updated successfully!!");
         localStorage.setItem("editingRecipe", JSON.stringify(false));
+        localStorage.setItem("recipe", JSON.stringify(editedRecipeData.recipe));
         localStorage.removeItem("recipeData");
         setIsLoading(false);
-        window.location.href = "/recipes/" + recipeId;
+        window.location.href = "/recipes/" + editedRecipeData.recipe._id;
+    /*
       })
       .catch(function (error) {
         setIsLoading(false);
         console.log("error while updating the recipe", error);
       });
+      */
   };
 
   const { control, handleSubmit } = useForm();
@@ -225,7 +236,7 @@ const GenerateInputComponent = () => {
         console.log(error);
         setIsLoading(false);
         toast.error(
-          "🦄 Oops, something went wrong whikle generating your recipe, please try it again :)",
+          "🦄 Oops, something went wrong while generating your recipe, please try it again :)",
           {
             position: "top-center",
             autoClose: 5000,
