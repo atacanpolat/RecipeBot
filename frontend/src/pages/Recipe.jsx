@@ -281,7 +281,7 @@ function Recipe() {
                         <span>     ({reviewCount} reviews)</span>
                   </RatingContainer>
                   <HeartComponent user={user} recipe={details} />
-                  {isUserRecipe && recipeInDatabase && (
+                  {recipeInDatabase && (
                     <Button onClick={handleEditRecipeClick}>Edit</Button>
                   )}
                 </RecipeContainer>
