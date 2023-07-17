@@ -6,7 +6,6 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { Configuration, OpenAIApi } = require("openai");
 
-// Create a new recipe
 export const createRecipe = asyncHandler(async (req, res) => {
   try {
     const { title, ingredients, instruction, photo, isGenerated, tags } =
@@ -16,13 +15,15 @@ export const createRecipe = asyncHandler(async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const formattedTags = tags.map(tag => Array.isArray(tag) ? tag.join(", ") : tag);
+
     const recipe = new Recipe.recipeModel({
       title: title,
       ingredients: ingredients,
       instruction: instruction,
       photo: photo,
       isGenerated: isGenerated ? isGenerated : false,
-      tags: tags,
+      tags: formattedTags,
       createdBy: user._id,
     });
     await recipe.save();
@@ -35,6 +36,7 @@ export const createRecipe = asyncHandler(async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Get all recipes
 export const getAllRecipes = asyncHandler(async (req, res) => {
@@ -347,11 +349,12 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     const tags = [
       response.instruction.mealType,
-      response.instruction.diet
-        ? response.instruction.diet.join(', ')
-        : "Not diet specific",
+      ...(response.instruction.diet !== ""
+        ? response.instruction.diet.split(",").map(item => item.trim())
+        : ["Not diet specific"]),
       response.instruction.cookingTime,
     ];
+    
 
     const instruction = new Recipe.instructionModel({
       narrative: response.instruction.narrative,

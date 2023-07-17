@@ -169,7 +169,7 @@ const GenerateInputComponent = () => {
     
       .then(function (response) {
       */
-        console.log(editedRecipeData.recipe);
+        console.log(editedRecipeData);
         console.log("Recipe updated successfully!!");
         localStorage.setItem("editingRecipe", JSON.stringify(false));
         localStorage.setItem("recipe", JSON.stringify(editedRecipeData.recipe));
