@@ -282,6 +282,11 @@ function Recipe() {
             style={{ backgroundImage: `url(${details.photo})` }}
           />
           <PhotoImage src={details.photo} alt={details.title} />
+          {details.isGenerated ? (
+            <GeneratedText>AI generated recipe</GeneratedText>
+          ) : (
+            <GeneratedText>User created recipe</GeneratedText>
+          )}
         </PhotoWrapper>
         <div style={{ display: "flex", width: "100%" }}>
           <HeaderPrivate />
@@ -475,6 +480,17 @@ const BackgroundImage = styled.div`
 
 const PhotoImage = styled.img`
   height: 50vh;
+`;
+
+const GeneratedText = styled.p`
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 1.2rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 5px;
 `;
 
 const ContentWrapper = styled.div`
