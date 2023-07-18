@@ -254,6 +254,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       req.body.allergies || (user ? user.defaultRecipeSettings.allergies : []) || [];
 
     const additionalNotes = req.body.additionalNotes || "";
+    const onlyUseIngredients = req.body.onlyUseIngredients;
 
     const prompt = `
     Generate me a recipe
@@ -286,7 +287,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       
   
     Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
-    If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well.
+    ${onlyUseIngredients.toString()}
     If there are ingredients to include that violate the dietary restriction, then don't include them
     Enumerate each step of the cooking narrative.
     The cooking time of the generated recipe should always be one of these values: {"under 10 minutes", "10-20 minutes", "under 30 minutes", "under 1 hour", "under 2 hours"}.
