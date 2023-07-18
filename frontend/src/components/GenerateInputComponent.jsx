@@ -14,8 +14,6 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import ListItemText from "@mui/material/ListItemText";
 import Spinner from "../components/Spinner";
 
-import authService from "../features/auth/authService";
-
 import Checkbox from "@mui/material/Checkbox";
 import { Controller, useForm } from "react-hook-form";
 
@@ -24,7 +22,6 @@ import { useFilterStyles } from "./helpers/styles/recipesStyles";
 import Enums from "./enums/enums";
 import { toast } from "react-toastify";
 
-import gif from "../images/taco_gif.gif"; // Replace with the path to your GIF file
 import { FormControlLabel } from "@mui/material";
 
 const API_URL_RECIPE = "http://localhost:8000/api/v1/recipes/";
@@ -179,13 +176,13 @@ const GenerateInputComponent = () => {
     
       .then(function (response) {
       */
-        console.log(editedRecipeData);
-        console.log("Recipe updated successfully!!");
-        localStorage.setItem("editingRecipe", JSON.stringify(false));
-        localStorage.setItem("recipe", JSON.stringify(editedRecipeData.recipe));
-        localStorage.removeItem("recipeData");
-        setIsLoading(false);
-        window.location.href = "/recipes/" + editedRecipeData.recipe._id;
+    console.log(editedRecipeData);
+    console.log("Recipe updated successfully!!");
+    localStorage.setItem("editingRecipe", JSON.stringify(false));
+    localStorage.setItem("recipe", JSON.stringify(editedRecipeData.recipe));
+    localStorage.removeItem("recipeData");
+    setIsLoading(false);
+    window.location.href = "/recipes/" + editedRecipeData.recipe._id;
     /*
       })
       .catch(function (error) {
@@ -210,10 +207,9 @@ const GenerateInputComponent = () => {
       allergies: makeStringsInListLowercase(allergies),
       additionalNotes: makeStringLowercase(additionalNotes),
       title: editingRecipe ? editingRecipeData.title : null,
-      onlyUseIngredients: onlyUseIngredients ? 
-      "Only use the ingredients listed in the 'ingredients to include', and no other ingredient" : 
-      "If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well."
-
+      onlyUseIngredients: onlyUseIngredients
+        ? "Only use the ingredients listed in the 'ingredients to include', and no other ingredient"
+        : "If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well.",
     };
     console.log(generationParams);
 
@@ -356,7 +352,7 @@ const GenerateInputComponent = () => {
             label="Only use these ingredients"
           />
         )}
-        
+
         {/* SELECT FIELDS */}
         <div className={classes.filterContainer}>
           <form onSubmit={handleSubmit(formSubmitHandler)}>

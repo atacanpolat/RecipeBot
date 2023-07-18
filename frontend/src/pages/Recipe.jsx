@@ -24,9 +24,9 @@ function Recipe() {
   let params = useParams();
   const navigate = useNavigate();
   const [details, setDetails] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [updatedIngredients, setUpdatedIngredients] = useState([]);
-  const [updatedCookingMethod, setUpdatedCookingMethod] = useState("");
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [updatedIngredients] = useState([]);
+  // const [updatedCookingMethod] = useState("");
   const [recipeInDatabase, setRecipeInDatabase] = useState(false);
   const [isUserRecipe, setIsUserRecipe] = useState(false);
   const [reviews, setReviews] = useState([]);
@@ -41,50 +41,48 @@ function Recipe() {
       recipeData = JSON.parse(localStorage.getItem("recipe"));
       setRecipeInDatabase(false);
       setDetails(recipeData);
-
-    }
-    else {
-    await axios
-      .get(API_URL + params.name, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(async (response) => {
-        recipeData = response.data;
-        setRecipeInDatabase(true);
-        setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
-
-        const reviewPromises = recipeData.reviews.map((review) => {
-          return axios.get(
-            `http://localhost:8000/api/v1/users/${review.createdBy}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-        });
-
-        const userResponses = await Promise.all(reviewPromises);
-        const updatedReviews = recipeData.reviews.map((review, index) => ({
-          ...review,
-          user: userResponses[index].data,
-        }));
-
-        setReviews(updatedReviews);
-      })
-      .catch((error) => {
-        if (error.response.status === 404 && localStorage.getItem("recipe")) {
-          recipeData = JSON.parse(localStorage.getItem("recipe"));
-          setRecipeInDatabase(false);
+    } else {
+      await axios
+        .get(API_URL + params.name, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(async (response) => {
+          recipeData = response.data;
+          setRecipeInDatabase(true);
           setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
-          setReviews(recipeData.reviews);
-        } else {
-          throw error;
-        }
-      });
-    setDetails(recipeData);
+
+          const reviewPromises = recipeData.reviews.map((review) => {
+            return axios.get(
+              `http://localhost:8000/api/v1/users/${review.createdBy}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+          });
+
+          const userResponses = await Promise.all(reviewPromises);
+          const updatedReviews = recipeData.reviews.map((review, index) => ({
+            ...review,
+            user: userResponses[index].data,
+          }));
+
+          setReviews(updatedReviews);
+        })
+        .catch((error) => {
+          if (error.response.status === 404 && localStorage.getItem("recipe")) {
+            recipeData = JSON.parse(localStorage.getItem("recipe"));
+            setRecipeInDatabase(false);
+            setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
+            setReviews(recipeData.reviews);
+          } else {
+            throw error;
+          }
+        });
+      setDetails(recipeData);
     }
   };
 
@@ -92,39 +90,17 @@ function Recipe() {
     getInformation();
   }, [params.name]);
 
-
   useEffect(() => {
     if (user) {
-    // Calculate the initial rating and review count
-    const calculatedData = recipeService.calculateRecipeData([details]);
-    const meanRating = calculatedData[0].meanRating;
-    const reviewCount = calculatedData[0].reviewCount;
+      // Calculate the initial rating and review count
+      const calculatedData = recipeService.calculateRecipeData([details]);
+      const meanRating = calculatedData[0].meanRating;
+      const reviewCount = calculatedData[0].reviewCount;
 
-    setMeanRating(meanRating ? meanRating : 0);
-    setReviewCount(reviewCount);
+      setMeanRating(meanRating ? meanRating : 0);
+      setReviewCount(reviewCount);
     }
   }, [details]);
-
-
-  const handleEditIngredients = () => {
-    setIsEditing(true);
-    setUpdatedIngredients(
-      details.ingredients.map((ingredient) => ({ ...ingredient }))
-    );
-  };
-
-  const handleAddIngredient = () => {
-    setUpdatedIngredients([
-      ...updatedIngredients,
-      { name: "", quantity: "", brand: "" },
-    ]);
-  };
-
-  const handleIngredientChange = (index, field, value) => {
-    const updatedIngredientsCopy = [...updatedIngredients];
-    updatedIngredientsCopy[index][field] = value;
-    setUpdatedIngredients(updatedIngredientsCopy);
-  };
 
   const addRecipeToDatabase = () => {
     const recipeParams = {
@@ -163,36 +139,36 @@ function Recipe() {
       });
   };
 
-  const handleCreateNewRecipe = () => {
-    // Save the updatedIngredients and updatedCookingMethod as a new recipe
-    // You can make an API call here to save the new recipe with the updated details
-    // Use the updatedIngredients and updatedCookingMethod to create the new recipe
-    // After successfully saving the new recipe, redirect or display a success message
+  // const handleCreateNewRecipe = () => {
+  //   // Save the updatedIngredients and updatedCookingMethod as a new recipe
+  //   // You can make an API call here to save the new recipe with the updated details
+  //   // Use the updatedIngredients and updatedCookingMethod to create the new recipe
+  //   // After successfully saving the new recipe, redirect or display a success message
 
-    // Example API call:
-    axios
-      .post(
-        API_URL,
-        {
-          title: details.title,
-          ingredients: updatedIngredients,
-          instruction: {
-            0: updatedCookingMethod,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        console.log("New recipe saved:", response.data);
-      })
-      .catch((error) => {
-        console.error("Failed to save new recipe:", error);
-      });
-  };
+  //   // Example API call:
+  //   axios
+  //     .post(
+  //       API_URL,
+  //       {
+  //         title: details.title,
+  //         ingredients: updatedIngredients,
+  //         instruction: {
+  //           0: updatedCookingMethod,
+  //         },
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       console.log("New recipe saved:", response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to save new recipe:", error);
+  //     });
+  // };
 
   const formatIngredients = () => {
     if (!details.ingredients || details.ingredients.length === 0) {
@@ -288,9 +264,7 @@ function Recipe() {
         flexDirection: "column",
       }}
     >
-      <>
-      {token ? <HeaderPrivateTop /> : <Header />}
-      </>
+      <>{token ? <HeaderPrivateTop /> : <Header />}</>
       <DetailWrapper>
         <PhotoWrapper>
           <BackgroundImage
@@ -317,15 +291,15 @@ function Recipe() {
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
 
-                  {token && ( 
-                  <RatingContainer>
-                    {meanRating}
-                    <StarIcon className="star-icon" />
-                    <span> ({reviewCount} reviews)</span>
-                  </RatingContainer>
+                  {token && (
+                    <RatingContainer>
+                      {meanRating}
+                      <StarIcon className="star-icon" />
+                      <span> ({reviewCount} reviews)</span>
+                    </RatingContainer>
                   )}
 
-                  {token && (<HeartComponent user={user} recipe={details} />)}
+                  {token && <HeartComponent user={user} recipe={details} />}
                   {recipeInDatabase && (
                     <Button onClick={handleEditRecipeClick}>Edit</Button>
                   )}
@@ -641,59 +615,13 @@ const CookingMethod = styled.div`
   margin-bottom: 4rem;
 `;
 
-const ButtonCancel = styled(Button)`
-  background-color: #d3d3d3;
-  color: #000;
-
-  &:hover {
-    background-color: #ccc;
-  }
-`;
-
 const HandleRecipeButtons = styled.div`
   display: flex;
   gap: 1rem;
 `;
 
-const ReviewsContainer = styled.div`
-  margin-top: 2rem;
-
-  h4 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-`;
-
-const ReviewItem = styled.div`
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-`;
-
-const ReviewHeader = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-`;
-
-const ProfileImage = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
-`;
-
-const ReviewUsername = styled.span`
-  font-weight: bold;
-`;
-
 const RatingContainer = styled.div`
   margin-bottom: 0.5rem;
-`;
-
-const ReviewText = styled.p`
-  margin-bottom: 0;
 `;
 
 export default Recipe;

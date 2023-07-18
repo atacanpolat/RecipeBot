@@ -7,22 +7,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Chip,
   IconButton,
 } from "@material-ui/core";
 import ListItemText from "@mui/material/ListItemText";
 import Spinner from "../components/Spinner";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Checkbox from "@mui/material/Checkbox";
 import { Controller, useForm } from "react-hook-form";
-import uploadService from "../features/uploadService";
 
 import { useState } from "react";
-import {
-  useCreateRecipeStyles,
-  useFilterStyles,
-} from "./helpers/styles/recipesStyles";
+import { useCreateRecipeStyles } from "./helpers/styles/recipesStyles";
 import Enums from "./enums/enums";
 
 const API_URL = "http://localhost:8000/api/v1/recipes/";
@@ -32,7 +26,8 @@ const CreateInputComponent = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const classes = useCreateRecipeStyles();
-  const { control, handleSubmit } = useForm();
+  // const { control, handleSubmit } = useForm(); // TODO: restore this line if submission doesn't work
+  const { control } = useForm();
 
   const editingRecipe =
     localStorage.getItem("editingRecipe") !== null
@@ -117,7 +112,7 @@ const CreateInputComponent = () => {
     // update recipe
     if (editingRecipe) {
       const recipeId = editingRecipeData._id;
-      const response = axios
+      axios
         .patch(API_URL + recipeId, recipeParams, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -247,6 +242,7 @@ const CreateInputComponent = () => {
         {recipeImage ? (
           <img
             src={recipeImage}
+            alt={recipeTitle}
             width={"250px"}
             style={{ display: "block", margin: "auto", marginBottom: "30px" }}
           />

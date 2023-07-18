@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from "react";
-
 import Header from "../components/Header";
 import { HeaderPrivate, HeaderPrivateTop } from "../components/HeaderPrivate";
 
@@ -8,14 +6,7 @@ import { Container } from "@material-ui/core";
 import GenerateInputComponent from "../components/GenerateInputComponent";
 
 function Generate() {
-  const isUserLoggedIn = () => {
-    return localStorage.getItem("token") !== null;
-  };
-
-  const [userLoggedIn, setUserLoggedIn] = useState(isUserLoggedIn());
-
-  const token = localStorage.getItem('jwt');
-
+  const token = localStorage.getItem("jwt");
 
   return (
     <div
@@ -34,7 +25,7 @@ function Generate() {
           style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
         >
           {/* MAIN CONTAINER */}
-          {userLoggedIn ? null : <div style={{marginBottom: "40px"}}></div>}
+          {token ? null : <div style={{ marginBottom: "40px" }}></div>}
 
           <Container>
             <GenerateInputComponent onClickGenerate={""} />
