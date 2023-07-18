@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HeaderPrivate, HeaderPrivateTop } from "../components/HeaderPrivate";
-import { SectionHeading } from "../components/helpers/themes";
+import { PrimaryButton, SectionHeading } from "../components/helpers/themes";
 import { useRecipeContainerStyles } from "../components/helpers/styles/recipesStyles";
 import useAccountSettingStyles from "../components/helpers/styles/accountSettingStyles";
 import { toast } from 'react-toastify'
@@ -18,6 +18,7 @@ import {
 import "../assets/css/AccountSettings.css";
 import UpdateUserProfileService from "../features/UpdateUserProfileService";
 import UserService from "../features/user/userService";
+import theme from "../components/helpers/themes";
 
 const userInLocalStorage = JSON.parse(localStorage.getItem('user'));
 
@@ -410,12 +411,16 @@ const AccountAndSettingsPage = () => {
                 <InputLabel className="account-settings-bold-label">
                   Profile Picture
                 </InputLabel>
-                <input
-                  style={{ width: "300px" }}
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handlePageUpload(e)}
-                />
+                <Button 
+                href="/setAvatar" 
+                variant="contained" 
+                style={{backgroundColor:theme.palette.violet.light, 
+                        color: theme.palette.grey[100],
+                        width: "350px"
+                      }}
+                >
+                  Change Profile Picture
+                </Button>
               </div>
               <div className={pageStyles.directionColumn}>
               <InputLabel className="account-settings-bold-label">

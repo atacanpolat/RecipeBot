@@ -21,10 +21,12 @@ const useAccountSettingStyles = makeStyles(() => ({
     width: "50rem",
     margin: "auto",
     padding: "0 0 3rem 0",
+    alignContent: "center"
   },
   directionColumn: {
     display: "flex",
     flexDirection: "column",
+    alignItems: "center"
   },
   submitButton: {
     width: "150px",
