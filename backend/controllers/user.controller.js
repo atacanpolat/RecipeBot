@@ -223,7 +223,7 @@ const updateUserInfoById = async (req, res) => {
         if (user2) {
             res.status(200).json(user2);
         } else {
-            res.status(404).json({ message: "User not found" push});
+            res.status(404).json({ message: "User not found"});
         }
 */
 
