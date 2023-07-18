@@ -209,29 +209,19 @@ const updateUserInfoById = async (req, res) => {
   console.log(req.body);
   //console.log(req.user);
     try {
+        const user2 = req.user;
         const { id } = req.params;
-        const { firstName, lastName,newPassword, email, avatar, imageX, createdRecipes, savedRecipes, defaultRecipeSettings} =
+        const { firstName, lastName, email, avatar, imageX, createdRecipes, savedRecipes, defaultRecipeSettings, newPassword} =
             req.body;
 
-        console.log("defaultRecipeSettings");
-        console.log(defaultRecipeSettings);
         
-        const user2 = await User.findOne({ _id: id })
-            .populate("createdRecipes")
-            .populate("savedRecipes");
-/*
-        if (user2) {
-            res.status(200).json(user2);
-        } else {
-            res.status(404).json({ message: "User not found"});
-        }
-*/
-
+        if (newPassword) {
         const salt = await bcrypt.genSalt(10)
         const hashedPassword2 = await bcrypt.hash(newPassword, salt)
-        const user = req.user;
+        }
+        
 
-        await user.updateOne({
+        await user2.updateOne({
           firstName: firstName ? firstName : user2.firstName,
           lastName: lastName ? lastName : user2.lastName,
           email: email ? email : user2.email,
@@ -243,21 +233,7 @@ const updateUserInfoById = async (req, res) => {
           reviewsWritten: user2.reviewsWritten,
           resetToken: user2.resetToken
         })
-        await user.save();
-        /*
-        await User.findByIdAndUpdate(
-            { _id: id },
-            {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                password: hashedPassword2,
-                defaultRecipeSettings: defaultRecipeSettings
-                
-            }
-        );
-        */
-        console.log("updated");
+        await user2.save();
 
         res.status(200).json({ message: "User updated successfully" });
     } catch (error) {

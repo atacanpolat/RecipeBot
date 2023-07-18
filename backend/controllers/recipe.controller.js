@@ -225,9 +225,7 @@ const openai = new OpenAIApi(configuration);
 
 export const generateRecipe = asyncHandler(async (req, res) => {
   try {
-    const user = req.user;
-    console.log(user);
-
+    const user = req.body.user;
     // extract variables from request.body + handle default/empty values
 
     // REQUIRED
@@ -236,25 +234,37 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     // OPTIONAL
     const ingredientsExcl = req.body.ingredientsExcl || [];
-
-    const utensils = req.body.utensils || (user ? user.defaultRecipeSettings.utensils : []) || [];
-
     const cookingTime = req.body.cookingTime || "any";
-
-    const diet =
-      req.body.diet || (user ? user.defaultRecipeSettings.dietaryRestriction : []) || [];
-
     const mealType = req.body.mealType || "any";
-
-    const measurement =
-      req.body.measurement ||
-      (user ? user.defaultRecipeSettings.measurementSystem : []) || "metric";
-
-    const allergies =
-      req.body.allergies || (user ? user.defaultRecipeSettings.allergies : []) || [];
-
     const additionalNotes = req.body.additionalNotes || "";
     const onlyUseIngredients = req.body.onlyUseIngredients;
+
+    const utensils = 
+    req.body.utensils !== undefined && req.body.utensils.length > 0 
+    ? req.body.utensils : 
+    (user && user.defaultRecipeSettings.utensils) || [];
+
+
+    const diet = 
+    req.body.diet !== undefined && req.body.diet.length > 0
+    ? req.body.diet
+    : (user && user.defaultRecipeSettings.dietaryRestrictions) || [];
+
+    const measurement = 
+    req.body.measurementSystem !== undefined && req.body.measurementSystem !== "" 
+    ? req.body.measurementSystem : 
+    (user && user.defaultRecipeSettings.measurementSystem) || "metric";
+
+    const allergies =
+    req.body.allergies !== undefined && req.body.allergies.length > 0 
+    ? req.body.allergies : 
+    (user && user.defaultRecipeSettings.allergies) || [];
+
+    console.log(req.body.diet);
+    console.log(diet);
+    console.log(user.defaultRecipeSettings.dietaryRestrictions)
+
+
 
     const prompt = `
     Generate me a recipe
@@ -278,6 +288,9 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     - If the ingredient is one of {"cream cheese", "skyr"}, use the brand "Exquisia".
     - If the ingredient is a nut butter (e.g., peanut butter, almond butter), use the brand "Calve".
     - If the ingredient is a deli or a meat, use the brand "Vinzenzmurr".
+    - If the ingredient is one of {"feta cheese", "tulum cheese", "goat cheese", "white cheese"}, use the brand "Gazi",
+    - If the ingredient is one of {"burrata", "mozzarella", "scamorza cheese"}, use the brand "Eataly",
+    - If the ingredient is a type of pasta, use the brand "De Cecco",
     - If the ingredient is one of {"oat", "oats", "oatmeal", "müsli", "muesli", "granola"}, use the brand "Köln".
     - If the ingredient is "beer", use the brand "Giesinger".
     - If the ingredient is "protein powder" or any other supplementary bodybuilding product, use the brand "ProteinWorks".
@@ -288,7 +301,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
   
     Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
     ${onlyUseIngredients.toString()}
-    If there are ingredients to include that violate the dietary restriction, then don't include them
+    If there are ingredients to include that violate the dietary restrictions (${diet.toString()}), then don't include them
     Enumerate each step of the cooking narrative.
     The cooking time of the generated recipe should always be one of these values: {"under 10 minutes", "10-20 minutes", "under 30 minutes", "under 1 hour", "under 2 hours"}.
     Get inspiration from already existing recipes all around the world.
@@ -376,10 +389,6 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       recipe: recipe,
       instruction: instruction,
     };
-
-    console.log("ALL DATA", allData);
-
-
 
     res.status(201).json(allData);
   } catch (error) {

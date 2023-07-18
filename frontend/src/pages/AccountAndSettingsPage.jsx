@@ -261,20 +261,12 @@ const AccountAndSettingsPage = () => {
 
   const updateProfileInfos = () => {
     
-    if (newPassword.length < 6) {
-      toast("Password must be at least 6 characters");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast("Passwords do not match");
-      return;
-    }
+
     const profileInfosAndSettings = {
       firstName: firstNameValue,
       lastName: lastNameValue,
       email: emailValue,
       phone: phoneValue,
-      newPassword: newPassword,
       measurementSystem: measurementSystemState,
       allergies: allergensState,
       dietaryRestrictions: dietaryRestrictionsState,
@@ -282,6 +274,20 @@ const AccountAndSettingsPage = () => {
       imageX: imageFormData,
       defaultRecipeSettings:{"measurementSystem":"metric",dietaryRestrictions: dietaryRestrictionsState,allergies: allergensState, utensils: cookingUtensilsState}
     };
+
+    if (newPassword !== "") {
+      profileInfosAndSettings.newPassword = newPassword;
+
+      if (newPassword.length < 6) {
+        toast("Password must be at least 6 characters");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        toast("Passwords do not match");
+        return;
+      }
+      
+    }
 
     console.log("profileInfosAndSettings");
     console.log(profileInfosAndSettings);
@@ -402,6 +408,7 @@ const AccountAndSettingsPage = () => {
                   onChange={(e) => setNewPassword(e.target.value)}
                   className="account-settings-textfield"
                   variant="outlined"
+                  type="password"
                   size="small"
                 />
               </div>
@@ -430,6 +437,7 @@ const AccountAndSettingsPage = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="account-settings-textfield"
                   variant="outlined"
+                  type="password"
                   size="small"
                 />
               </div>

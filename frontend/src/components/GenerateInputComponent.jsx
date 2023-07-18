@@ -46,6 +46,7 @@ const makeStringsInListLowercase = (list) => {
 };
 
 const GenerateInputComponent = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
   const editingRecipe =
     localStorage.getItem("editingRecipe") !== null
       ? JSON.parse(localStorage.getItem("editingRecipe"))
@@ -197,6 +198,7 @@ const GenerateInputComponent = () => {
   const formSubmitHandler = (formData) => {
     setIsLoading(true);
     const generationParams = {
+      user: user,
       ingredients: makeStringsInListLowercase(includeIngredients),
       servingSize: makeStringLowercase(servingSize),
       ingredientsExcl: makeStringsInListLowercase(excludeIngredients),
