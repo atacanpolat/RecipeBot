@@ -1,9 +1,18 @@
+import React, { useState, useEffect } from "react";
+
+import Header from "../components/Header";
 import { HeaderPrivate, HeaderPrivateTop } from "../components/HeaderPrivate";
 import { Container } from "@material-ui/core";
 
 import GenerateInputComponent from "../components/GenerateInputComponent";
 
 function Generate() {
+  const isUserLoggedIn = () => {
+    return localStorage.getItem("token") !== null;
+  };
+
+  const [userLoggedIn, setUserLoggedIn] = useState(isUserLoggedIn());
+
   return (
     <div
       style={{
@@ -13,13 +22,18 @@ function Generate() {
         flexDirection: "column",
       }}
     >
-      <HeaderPrivateTop />
+      {/* HEADER */}
+      {userLoggedIn ? <HeaderPrivateTop /> : <Header />}
+
       <div style={{ display: "flex" }}>
-        <HeaderPrivate className="sideNav" />
+        {userLoggedIn ? <HeaderPrivate className="sideNav" /> : null}
+
         <div
           style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
         >
           {/* MAIN CONTAINER */}
+          {userLoggedIn ? null : <div style={{marginBottom: "40px"}}></div>}
+
           <Container>
             <GenerateInputComponent onClickGenerate={""} />
           </Container>

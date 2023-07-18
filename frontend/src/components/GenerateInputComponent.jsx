@@ -14,6 +14,8 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import ListItemText from "@mui/material/ListItemText";
 import Spinner from "../components/Spinner";
 
+import authService from "../features/auth/authService";
+
 import Checkbox from "@mui/material/Checkbox";
 import { Controller, useForm } from "react-hook-form";
 
@@ -225,7 +227,7 @@ const GenerateInputComponent = () => {
         console.log(error);
         setIsLoading(false);
         toast.error(
-          "🦄 Oops, something went wrong whikle generating your recipe, please try it again :)",
+          "🦄 Oops, something went wrong while generating your recipe, please try it again :)",
           {
             position: "top-center",
             autoClose: 5000,
