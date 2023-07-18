@@ -69,7 +69,15 @@ const CreateInputComponent = () => {
   );
 
   const [recipeIngredients, setRecipeIngredients] = useState(
-    editingRecipe ? editingRecipeData.ingredients : []
+    editingRecipe
+      ? editingRecipeData.ingredients
+      : [
+          {
+            name: "",
+            quantity: "",
+            brand: "",
+          },
+        ]
   );
 
   const allRecipeParams = {
