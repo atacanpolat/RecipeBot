@@ -1,9 +1,14 @@
 import { HeaderPrivate, HeaderPrivateTop } from "../components/HeaderPrivate";
+import Header from "../components/Header";
+
 import { Container } from "@material-ui/core";
 
 import GenerateInputComponent from "../components/GenerateInputComponent";
 
 function Generate() {
+  const token = localStorage.getItem('jwt');
+
+
   return (
     <div
       style={{
@@ -13,9 +18,10 @@ function Generate() {
         flexDirection: "column",
       }}
     >
-      <HeaderPrivateTop />
+      {token ? <HeaderPrivateTop /> : <Header />}
+
       <div style={{ display: "flex" }}>
-        <HeaderPrivate className="sideNav" />
+        {token && <HeaderPrivate className="sideNav" />}
         <div
           style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
         >

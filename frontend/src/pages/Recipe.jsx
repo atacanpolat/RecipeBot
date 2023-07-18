@@ -14,6 +14,7 @@ import ReviewComponent from "../components/ReviewComponent";
 import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
 import HeartComponent from "../components/Heart";
 import recipeService from "../features/recipe/recipeService";
+import Header from "../components/Header";
 
 function Recipe() {
   const API_URL = "http://localhost:8000/api/v1/recipes/";
@@ -36,6 +37,13 @@ function Recipe() {
 
   const getInformation = async () => {
     // try retrieving recipe from the database
+    if (!user) {
+      recipeData = JSON.parse(localStorage.getItem("recipe"));
+      setRecipeInDatabase(false);
+      setDetails(recipeData);
+
+    }
+    else {
     await axios
       .get(API_URL + params.name, {
         headers: {
@@ -77,13 +85,16 @@ function Recipe() {
         }
       });
     setDetails(recipeData);
+    }
   };
 
   useEffect(() => {
     getInformation();
   }, [params.name]);
 
+
   useEffect(() => {
+    if (user) {
     // Calculate the initial rating and review count
     const calculatedData = recipeService.calculateRecipeData([details]);
     const meanRating = calculatedData[0].meanRating;
@@ -91,7 +102,9 @@ function Recipe() {
 
     setMeanRating(meanRating ? meanRating : 0);
     setReviewCount(reviewCount);
+    }
   }, [details]);
+
 
   const handleEditIngredients = () => {
     setIsEditing(true);
@@ -275,7 +288,9 @@ function Recipe() {
         flexDirection: "column",
       }}
     >
-      <HeaderPrivateTop />
+      <>
+      {token ? <HeaderPrivateTop /> : <Header />}
+      </>
       <DetailWrapper>
         <PhotoWrapper>
           <BackgroundImage
@@ -301,12 +316,16 @@ function Recipe() {
               <ContentWrapper>
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
+
+                  {token && ( 
                   <RatingContainer>
                     {meanRating}
                     <StarIcon className="star-icon" />
                     <span> ({reviewCount} reviews)</span>
                   </RatingContainer>
-                  <HeartComponent user={user} recipe={details} />
+                  )}
+
+                  {token && (<HeartComponent user={user} recipe={details} />)}
                   {recipeInDatabase && (
                     <Button onClick={handleEditRecipeClick}>Edit</Button>
                   )}
@@ -387,20 +406,20 @@ function Recipe() {
                   </div>
                 </CookingMethod>
                 <HandleRecipeButtons>
-                  {!recipeInDatabase && (
+                  {!recipeInDatabase && token && (
                     <Button onClick={addRecipeToDatabase}>
                       Save recipe to database
                     </Button>
                   )}
 
-                  {isUserRecipe && recipeInDatabase && (
+                  {isUserRecipe && recipeInDatabase && token && (
                     <ButtonDelete onClick={handleDeleteRecipe}>
                       <FaTrash /> Delete Recipe
                     </ButtonDelete>
                   )}
                 </HandleRecipeButtons>
 
-                {recipeInDatabase && (
+                {recipeInDatabase && token && (
                   <ReviewComponent recipe={details} token={token} />
                 )}
               </ContentWrapper>

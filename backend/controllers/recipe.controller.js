@@ -226,7 +226,7 @@ const openai = new OpenAIApi(configuration);
 export const generateRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    console.log(req.body);
+    console.log(user);
 
     // extract variables from request.body + handle default/empty values
 
@@ -237,23 +237,21 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     // OPTIONAL
     const ingredientsExcl = req.body.ingredientsExcl || [];
 
-    const utensils =
-      req.body.utensils || user.defaultRecipeSettings.utensils || [];
+    const utensils = req.body.utensils || (user ? user.defaultRecipeSettings.utensils : []) || [];
 
     const cookingTime = req.body.cookingTime || "any";
 
     const diet =
-      req.body.diet || user.defaultRecipeSettings.dietaryRestriction || [];
+      req.body.diet || (user ? user.defaultRecipeSettings.dietaryRestriction : []) || [];
 
     const mealType = req.body.mealType || "any";
 
     const measurement =
       req.body.measurement ||
-      user.defaultRecipeSettings.measurementSystem ||
-      "metric";
+      (user ? user.defaultRecipeSettings.measurementSystem : []) || "metric";
 
     const allergies =
-      req.body.allergies || user.defaultRecipeSettings.allergies || [];
+      req.body.allergies || (user ? user.defaultRecipeSettings.allergies : []) || [];
 
     const additionalNotes = req.body.additionalNotes || "";
 
@@ -368,7 +366,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       ingredients: response.ingredients,
       instruction: response.instruction,
       photo: dataURI,
-      createdBy: user._id,
+      createdBy: user ? user._id : "",
       isGenerated: true,
       tags: tags,
     });

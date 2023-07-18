@@ -23,14 +23,14 @@ const router = express.Router();
 router.get("/", protect, getAllRecipes);
 router.get("/created", protect, getCreatedRecipes);
 router.get("/saved", protect, getSavedRecipes);
-router.get("/:id", protect, getRecipeById);
+router.get("/:id", getRecipeById);
 router.patch("/filter", protect, filterRecipes);
 router.post("/create", protect, createRecipe);
 router.post("/upload", protect, upload.single("file"), uploadRecipeImage);
 router.patch("/:id", protect, updateRecipe);
 router.delete("/delete", protect, deleteRecipe);
 
-router.post("/generate", protect, generateRecipe);
+router.post("/generate", generateRecipe);
 router.post("/save", protect, saveRecipe);
 router.put("/remove", protect, removeRecipe);
 router.post("/:id/generate", protect, modifyRecipe);

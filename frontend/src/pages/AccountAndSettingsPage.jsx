@@ -87,8 +87,28 @@ const AccountAndSettingsPage = () => {
       checked: false,
     },
     {
+      value: "halal",
+      label: "Halal",
+      checked: false,
+    },
+    {
+      value: "vegetarian",
+      label: "Vegetarian",
+      checked: false,
+    },
+    {
       value: "vegan",
       label: "Vegan",
+      checked: false,
+    },
+    {
+      value: "keto",
+      label: "Keto",
+      checked: false,
+    },
+    {
+      value: "low-calorie",
+      label: "Low-calorie",
       checked: false,
     },
   ];
@@ -124,22 +144,22 @@ const AccountAndSettingsPage = () => {
 
   const cookingUtensils = [
     {
-      value: "nooven",
+      value: "no oven",
       label: "No Oven",
       checked: false,
     },
     {
-      value: "nostove",
+      value: "no stove",
       label: "No Stove",
       checked: false,
     },
     {
-      value: "noblender",
+      value: "no blender",
       label: "No Blender",
       checked: false,
     },
     {
-      value: "nomicrowave",
+      value: "no microwave",
       label: "No Microwave",
       checked: false,
     },
@@ -152,56 +172,45 @@ const AccountAndSettingsPage = () => {
     for(var i=0;i<dietaryRestrictions.length;i++)
     {
       //console.log(dietaryRestrictions[i].value==valuesArray.dietaryRestrictions[j]);
-      if(dietaryRestrictions[i].value==valuesArray.dietaryRestrictions[j])
+      if(dietaryRestrictions[i].value===valuesArray.dietaryRestrictions[j])
       {
         dietaryRestrictions[i].checked=true;
       }
     }
   }
 
-  for (var  j=0;j<valuesArray.allergies.length;j++) {
-    for(var i=0;i<allergens.length;i++)
+  for (var  j1=0;j1<valuesArray.allergies.length;j1++) {
+    for(var i1=0;i1<allergens.length;i1++)
     {
      // console.log(dietaryRestrictions[i].value==valuesArray.allergies[j]);
-      if(allergens[i].value==valuesArray.allergies[j])
+      if(allergens[i1].value===valuesArray.allergies[j1])
       {
-        allergens[i].checked=true;
+        allergens[i1].checked=true;
       }
     }
   }
 
-  for (var  j=0;j<valuesArray.utensils.length;j++) {
-    for(var i=0;i<cookingUtensils.length;i++)
+  for (var  j2=0;j2<valuesArray.utensils.length;j2++) {
+    for(var i2=0;i2<cookingUtensils.length;i2++)
     {
      // console.log(dietaryRestrictions[i].value==valuesArray.allergies[j]);
-      if(cookingUtensils[i].value==valuesArray.utensils[j])
+      if(cookingUtensils[i2].value===valuesArray.utensils[j2])
       {
-        cookingUtensils[i].checked=true;
+        cookingUtensils[i2].checked=true;
       }
     }
   }
   
       measurementSystemState=valuesArray.metricSystem;
-      firstNameValue=userInLocalStorage.firstName;
-      lastNameValue=userInLocalStorage.lastName;
-      phoneValue=userInLocalStorage.phone;
+      //firstNameValue=userInLocalStorage.firstName;
+      //lastNameValue=userInLocalStorage.lastName;
+      //phoneValue=userInLocalStorage.phone;
 
   //console.log("measurementSystemState:" + measurementSystemState);
   //console.log("valuesArray.metricsystem:" + valuesArray.metricSystem);
   
 
   
-  useEffect(() => {
-    //console.log(userInLocalStorage._id);
-    //console.log(userInLocalStorage);
-   // const valuesArray = JSON.parse(userInLocalStorage.defaultRecipeSettings);
-
-    //console.log(valuesArray.dietaryRestrictions);
-
-    setCheckedValues();
-
-  }, []);
-
   const setCheckedValues = () => {
     let dietaryVariables = [];
     dietaryRestrictions.forEach((item) => {
@@ -226,6 +235,28 @@ const AccountAndSettingsPage = () => {
     setCookingUtensilsState(cookingUtensilsVariables);
   };
 
+  
+  useEffect(() => {
+    //console.log(userInLocalStorage._id);
+    //console.log(userInLocalStorage);
+   // const valuesArray = JSON.parse(userInLocalStorage.defaultRecipeSettings);
+
+    //console.log(valuesArray.dietaryRestrictions);
+
+    setCheckedValues();
+
+  }, []);
+
+
+  const fetchUser = async () => {
+    const userData2 = await UserService.getUserbyId(userInLocalStorage._id)
+    console.log("Updated User");
+    console.log(userData2);
+    localStorage.setItem('user', JSON.stringify(userData2));
+
+  };
+  
+
   const updateProfileInfos = () => {
     const profileInfosAndSettings = {
       firstName: firstNameValue,
@@ -241,19 +272,26 @@ const AccountAndSettingsPage = () => {
       defaultRecipeSettings:{"measurementSystem":"metric",dietaryRestrictions: dietaryRestrictionsState,allergies: allergensState, utensils: cookingUtensilsState}
     };
 
+    console.log("profileInfosAndSettings");
     console.log(profileInfosAndSettings);
 
     UpdateUserProfileService.updateUser(profileInfosAndSettings)
       .then((response) => {
         toast("Saved");
         console.log("Upload success:", response);
-
+        fetchUser();
         // Kadir:  TODO: login again to get userdata to local storage
       })
       .catch((error) => {
         toast("Error:" + error);
         console.log("Upload error:", error);
       });
+
+
+     
+
+      
+      
   };
 
   const changeDietaryRestrictionsState = (e) => {
