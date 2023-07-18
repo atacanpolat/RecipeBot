@@ -6,7 +6,6 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { Configuration, OpenAIApi } = require("openai");
 
-// Create a new recipe
 export const createRecipe = asyncHandler(async (req, res) => {
   try {
     const { title, ingredients, instruction, photo, isGenerated, tags } =
@@ -16,13 +15,15 @@ export const createRecipe = asyncHandler(async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const formattedTags = tags.map(tag => Array.isArray(tag) ? tag.join(", ") : tag);
+
     const recipe = new Recipe.recipeModel({
       title: title,
       ingredients: ingredients,
       instruction: instruction,
       photo: photo,
       isGenerated: isGenerated ? isGenerated : false,
-      tags: tags,
+      tags: formattedTags,
       createdBy: user._id,
     });
     await recipe.save();
@@ -35,6 +36,7 @@ export const createRecipe = asyncHandler(async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Get all recipes
 export const getAllRecipes = asyncHandler(async (req, res) => {
@@ -224,7 +226,7 @@ const openai = new OpenAIApi(configuration);
 export const generateRecipe = asyncHandler(async (req, res) => {
   try {
     const user = req.user;
-    console.log(req.body);
+    console.log(user);
 
     // extract variables from request.body + handle default/empty values
 
@@ -235,25 +237,24 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     // OPTIONAL
     const ingredientsExcl = req.body.ingredientsExcl || [];
 
-    const utensils =
-      req.body.utensils || user.defaultRecipeSettings.utensils || [];
+    const utensils = req.body.utensils || (user ? user.defaultRecipeSettings.utensils : []) || [];
 
     const cookingTime = req.body.cookingTime || "any";
 
     const diet =
-      req.body.diet || user.defaultRecipeSettings.dietaryRestriction || [];
+      req.body.diet || (user ? user.defaultRecipeSettings.dietaryRestriction : []) || [];
 
     const mealType = req.body.mealType || "any";
 
     const measurement =
       req.body.measurement ||
-      user.defaultRecipeSettings.measurementSystem ||
-      "metric";
+      (user ? user.defaultRecipeSettings.measurementSystem : []) || "metric";
 
     const allergies =
-      req.body.allergies || user.defaultRecipeSettings.allergies || [];
+      req.body.allergies || (user ? user.defaultRecipeSettings.allergies : []) || [];
 
     const additionalNotes = req.body.additionalNotes || "";
+    const onlyUseIngredients = req.body.onlyUseIngredients;
 
     const prompt = `
     Generate me a recipe
@@ -286,7 +287,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       
   
     Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
-    If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well.
+    ${onlyUseIngredients.toString()}
     If there are ingredients to include that violate the dietary restriction, then don't include them
     Enumerate each step of the cooking narrative.
     The cooking time of the generated recipe should always be one of these values: {"under 10 minutes", "10-20 minutes", "under 30 minutes", "under 1 hour", "under 2 hours"}.
@@ -347,11 +348,12 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     const tags = [
       response.instruction.mealType,
-      response.instruction.diet
-        ? response.instruction.diet
-        : "Not diet specific",
+      ...(response.instruction.diet !== ""
+        ? response.instruction.diet.split(",").map(item => item.trim())
+        : ["Not diet specific"]),
       response.instruction.cookingTime,
     ];
+    
 
     const instruction = new Recipe.instructionModel({
       narrative: response.instruction.narrative,
@@ -365,7 +367,7 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       ingredients: response.ingredients,
       instruction: response.instruction,
       photo: dataURI,
-      createdBy: user._id,
+      createdBy: user ? user._id : "",
       isGenerated: true,
       tags: tags,
     });

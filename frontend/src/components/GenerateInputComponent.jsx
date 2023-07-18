@@ -24,6 +24,9 @@ import { useFilterStyles } from "./helpers/styles/recipesStyles";
 import Enums from "./enums/enums";
 import { toast } from "react-toastify";
 
+import gif from "../images/taco_gif.gif"; // Replace with the path to your GIF file
+import { FormControlLabel } from "@mui/material";
+
 const API_URL_RECIPE = "http://localhost:8000/api/v1/recipes/";
 
 const makeStringLowercase = (string) => {
@@ -56,6 +59,7 @@ const GenerateInputComponent = () => {
     : null;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [onlyUseIngredients, setOnlyUseIngredients] = useState(false);
   const classes = useFilterStyles();
 
   const [newIngredient, setNewIngredient] = useState("");
@@ -145,6 +149,10 @@ const GenerateInputComponent = () => {
     setAllergies(typeof value === "string" ? value.split(",") : value);
   };
 
+  const handleOnlyUseIngredientsChange = (event) => {
+    setOnlyUseIngredients(event.target.checked);
+  };
+
   const handleServingSizeChange = (event) => {
     const selectedValue = event.target.value;
     setServingSize(() => selectedValue);
@@ -156,24 +164,35 @@ const GenerateInputComponent = () => {
   };
 
   const handleUpdatEditedRecipe = (recipeId, editedRecipeData, token) => {
-    const response = axios
+    /*
+    const response = axios.post(API_URL_RECIPE+'create', editedRecipeData.recipe, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+    
       .patch(API_URL_RECIPE + recipeId, editedRecipeData.recipe, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
+    
       .then(function (response) {
-        console.log(response);
+      */
+        console.log(editedRecipeData);
         console.log("Recipe updated successfully!!");
         localStorage.setItem("editingRecipe", JSON.stringify(false));
+        localStorage.setItem("recipe", JSON.stringify(editedRecipeData.recipe));
         localStorage.removeItem("recipeData");
         setIsLoading(false);
-        window.location.href = "/recipes/" + recipeId;
+        window.location.href = "/recipes/" + editedRecipeData.recipe._id;
+    /*
       })
       .catch(function (error) {
         setIsLoading(false);
         console.log("error while updating the recipe", error);
       });
+      */
   };
 
   const { control, handleSubmit } = useForm();
@@ -191,6 +210,10 @@ const GenerateInputComponent = () => {
       allergies: makeStringsInListLowercase(allergies),
       additionalNotes: makeStringLowercase(additionalNotes),
       title: editingRecipe ? editingRecipeData.title : null,
+      onlyUseIngredients: onlyUseIngredients ? 
+      "Only use the ingredients listed in the 'ingredients to include', and no other ingredient" : 
+      "If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well."
+
     };
     console.log(generationParams);
 
@@ -320,6 +343,20 @@ const GenerateInputComponent = () => {
           ))}
         </div>
 
+        {/* Only use these ingredients checkbox */}
+        {includeIngredients.length > 0 && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={onlyUseIngredients}
+                onChange={handleOnlyUseIngredientsChange}
+                name="onlyUseIngredients"
+              />
+            }
+            label="Only use these ingredients"
+          />
+        )}
+        
         {/* SELECT FIELDS */}
         <div className={classes.filterContainer}>
           <form onSubmit={handleSubmit(formSubmitHandler)}>
