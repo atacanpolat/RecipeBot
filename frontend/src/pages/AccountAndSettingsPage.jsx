@@ -46,6 +46,7 @@ const AccountAndSettingsPage = () => {
   let [emailValue, setEmailValue] = useState("");
   let [phoneValue, setPhoneValue] = useState("");
   let [newPassword, setNewPassword] = useState("");
+  let [confirmPassword, setConfirmPassword] = useState("");
   let [imageFormData, setImageFormData] = useState("");
 
   const classes = useRecipeContainerStyles();
@@ -258,6 +259,15 @@ const AccountAndSettingsPage = () => {
   
 
   const updateProfileInfos = () => {
+    
+    if (newPassword.length < 6) {
+      toast("Password must be at least 6 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast("Passwords do not match");
+      return;
+    }
     const profileInfosAndSettings = {
       firstName: firstNameValue,
       lastName: lastNameValue,
@@ -277,7 +287,7 @@ const AccountAndSettingsPage = () => {
 
     UpdateUserProfileService.updateUser(profileInfosAndSettings)
       .then((response) => {
-        toast("Saved");
+        toast("Saving");
         console.log("Upload success:", response);
         fetchUser();
         // Kadir:  TODO: login again to get userdata to local storage
@@ -384,16 +394,14 @@ const AccountAndSettingsPage = () => {
                 />
               </div>
               <div className={pageStyles.directionColumn}>
-                <InputLabel className="account-settings-bold-label">
-                  Phone
+              <InputLabel className="account-settings-bold-label">
+                  New Password
                 </InputLabel>
                 <TextField
-                  onChange={(e) => setPhoneValue(e.target.value)}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   className="account-settings-textfield"
-                  defaultValue={userInLocalStorage.phone}
                   variant="outlined"
                   size="small"
-                  type="number"
                 />
               </div>
             </div>
@@ -410,11 +418,11 @@ const AccountAndSettingsPage = () => {
                 />
               </div>
               <div className={pageStyles.directionColumn}>
-                <InputLabel className="account-settings-bold-label">
-                  New Password
+              <InputLabel className="account-settings-bold-label">
+                  Confirm Password
                 </InputLabel>
                 <TextField
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className="account-settings-textfield"
                   variant="outlined"
                   size="small"
