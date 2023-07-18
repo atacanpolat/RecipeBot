@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 import Header from "../components/Header";
 import { HeaderPrivate, HeaderPrivateTop } from "../components/HeaderPrivate";
-import Header from "../components/Header";
 
 import { Container } from "@material-ui/core";
 
