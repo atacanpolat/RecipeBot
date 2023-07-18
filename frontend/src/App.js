@@ -30,12 +30,12 @@ function App() {
             <Route path="/register" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} /> 
-            <Route path="/setAvatar" element={isLoggedIn ? <SetAvatarPage /> : <Homepage />} />
+            <Route path="/setAvatar" element={<SetAvatarPage />} />
             <Route path="/home" element={<PrivateHomePage />} />
-            <Route path="/saved" element={isLoggedIn ? <SavedRecipesPage /> : <Homepage />} />
+            <Route path="/saved" element={<SavedRecipesPage />} />
             <Route path="/generate" element={<Generate />} />
             <Route path="/create" element={<Create />} />
-            <Route path="/inspiration" element={isLoggedIn ? <SearchRecipesPage /> : <Homepage />} />
+            <Route path="/inspiration" element={<SearchRecipesPage />} />
             <Route path='recipes/:name' element={<Recipe />}/>
             <Route path='/settings' element={<AccountAndSettingsPage />} />
           </Routes>
