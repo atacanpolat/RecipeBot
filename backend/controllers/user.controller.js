@@ -205,23 +205,43 @@ const getUserInfoById = async (req, res) => {
 
 //TODO: update of the default settings
 const updateUserInfoById = async (req, res) => {
-  console.log("Update User");
+  console.log("ReqBody");
   console.log(req.body);
+  //console.log(req.user);
     try {
         const { id } = req.params;
         const { firstName, lastName,newPassword, email, avatar, imageX, createdRecipes, savedRecipes, defaultRecipeSettings} =
             req.body;
+
+        console.log("defaultRecipeSettings");
+        console.log(defaultRecipeSettings);
+        
+        const user2 = await User.findOne({ _id: id })
+            .populate("createdRecipes")
+            .populate("savedRecipes");
+/*
+        if (user2) {
+            res.status(200).json(user2);
+        } else {
+            res.status(404).json({ message: "User not found"});
+        }
+*/
 
         const salt = await bcrypt.genSalt(10)
         const hashedPassword2 = await bcrypt.hash(newPassword, salt)
         const user = req.user;
 
         await user.updateOne({
-          firstName: firstName ? firstName : user.firstName,
-          lastName: lastName ? lastName : user.lastName,
-          email: email ? email : user.email,
-          password: password ? hashedPassword2 : user.password,
-          defaultRecipeSettings: defaultRecipeSettings ? defaultRecipeSettings : user.defaultRecipeSettings
+          firstName: firstName ? firstName : user2.firstName,
+          lastName: lastName ? lastName : user2.lastName,
+          email: email ? email : user2.email,
+          password: newPassword ? hashedPassword2 : user2.password,
+          defaultRecipeSettings: defaultRecipeSettings ? defaultRecipeSettings : user2.defaultRecipeSettings,
+          avatar: user2.avatar,
+          createdRecipes: user2.createdRecipes,
+          savedRecipes: user2.savedRecipes,
+          reviewsWritten: user2.reviewsWritten,
+          resetToken: user2.resetToken
         })
         await user.save();
         /*

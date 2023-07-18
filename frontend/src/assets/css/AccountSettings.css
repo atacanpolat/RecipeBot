@@ -12,6 +12,7 @@
     .account-settings-bold-label {
         font-weight: 600;
         color: black;
+        text-align: left !important;
     }
 }
 
@@ -38,6 +39,7 @@ input[type=file] {
         font-size: xx-large !important;
         font-weight: 600 !important;
         color: black !important;
+        text-align: left  !important;
     }
 }
 
@@ -49,6 +51,7 @@ input[type=file] {
     .account-settings-default-bold-label {
         font-weight: 600;
         color: black;
+        text-align: left !important;
     }
 
     .account-settings-default-dashed-container {
