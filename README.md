@@ -14,7 +14,7 @@ With the dependencies installed, start the backend server by running the command
 Launching the Frontend:
 To activate the frontend of the web application, change the directory to the frontend folder.
 # Installing Frontend Dependencies:
-In the terminal, execute the command "npm install" to install all the frontend dependencies. Wait for the installation to finish before proceeding further.
+In the terminal, execute the command "npm install --legacy-peer-deps" to install all the frontend dependencies. Due to some conflicts in the dependencies we need to run npm install with the --legacy-peer-deps Wait for the installation to finish before proceeding further.
 # Starting the Frontend Application:
 Finally, initiate the frontend application by entering the command "npm start" in the terminal. The web application will be launched and automatically opened in a new browser window.
 By following these steps diligently, the web application will be up and running, with both the backend and frontend components seamlessly integrated. This setup allows for efficient development and testing, ensuring a smooth and successful project execution.
