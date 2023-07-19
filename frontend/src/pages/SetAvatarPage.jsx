@@ -77,7 +77,7 @@ const useStyles = makeStyles(() => ({
   uploadButton: {
     width: '100%',
     marginBottom: theme.spacing(2),
-    color: theme.palette.violet.main,
+    backgroundColor: theme.palette.violet.main,
   },
   submitButton: {
     marginTop: theme.spacing(2),

@@ -132,6 +132,7 @@ h3 {
   text-transform: none;
   font-size: 18px;
   font-weight: 500;
+  color: #673ab7;
 }
 
 .header ul {
@@ -141,7 +142,7 @@ h3 {
 }
 
 .header div.logo Link {
-  color: #3a00e5;
+  color: #7e4f83;
 }
 
 .header ul li {
@@ -313,13 +314,19 @@ h3 {
   align-items: center;
 }
 
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
 .loadingSpinner {
-  width: 64px;
-  height: 64px;
-  border: 8px solid;
-  border-color: #000 transparent #555 transparent;
-  border-radius: 50%;
-  animation: spin 1.2s linear infinite;
+  width: 128px;
+  height: 128px;
+  animation: bounce 1s ease-in-out infinite;
 }
 
 .form-group button.pills {

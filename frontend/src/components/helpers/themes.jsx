@@ -1,7 +1,7 @@
 import { createTheme, colors } from "@mui/material";
 import { green, deepPurple, red } from "@mui/material/colors";
 import { makeStyles, Typography, Button } from "@material-ui/core";
-
+import { toast } from "react-toastify";
 export const theme = createTheme({
     palette: {
       violet: {
@@ -93,8 +93,21 @@ const Subheading = (props) => {
       />
     );
     }
+
+    const toastError = (message) =>  {
+      toast.error(message, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        })
+    }
   
 
 
   export default theme;
-  export { SectionHeading, Subheading, PrimaryButton };
+  export { SectionHeading, Subheading, PrimaryButton, toastError };

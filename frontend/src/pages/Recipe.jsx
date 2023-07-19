@@ -8,14 +8,13 @@ import {
   FaPizzaSlice,
   FaSeedling,
   FaTrash,
-  FaStar
+  FaStar,
 } from "react-icons/fa";
 import ReviewComponent from "../components/ReviewComponent";
 import { HeaderPrivateTop, HeaderPrivate } from "../components/HeaderPrivate";
 import HeartComponent from "../components/Heart";
-import userService from "../features/user/userService";
-import { Rating } from "../components/helpers/styles/RatingStyles";
 import recipeService from "../features/recipe/recipeService";
+import Header from "../components/Header";
 
 function Recipe() {
   const API_URL = "http://localhost:8000/api/v1/recipes/";
@@ -25,9 +24,9 @@ function Recipe() {
   let params = useParams();
   const navigate = useNavigate();
   const [details, setDetails] = useState({});
-  const [isEditing, setIsEditing] = useState(false);
-  const [updatedIngredients, setUpdatedIngredients] = useState([]);
-  const [updatedCookingMethod, setUpdatedCookingMethod] = useState("");
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [updatedIngredients] = useState([]);
+  // const [updatedCookingMethod] = useState("");
   const [recipeInDatabase, setRecipeInDatabase] = useState(false);
   const [isUserRecipe, setIsUserRecipe] = useState(false);
   const [reviews, setReviews] = useState([]);
@@ -38,81 +37,70 @@ function Recipe() {
 
   const getInformation = async () => {
     // try retrieving recipe from the database
-    await axios
-      .get(API_URL + params.name, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(async (response) => {
-        recipeData = response.data;
-        setRecipeInDatabase(true);
-        setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
-  
-        const reviewPromises = recipeData.reviews.map((review) => {
-          return axios.get(`http://localhost:8000/api/v1/users/${review.createdBy}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-        });
-  
-        const userResponses = await Promise.all(reviewPromises);
-        const updatedReviews = recipeData.reviews.map((review, index) => ({
-          ...review,
-          user: userResponses[index].data,
-        }));
-  
-        setReviews(updatedReviews);
-      })
-      .catch((error) => {
-        if (error.response.status === 404 && localStorage.getItem("recipe")) {
-          recipeData = JSON.parse(localStorage.getItem("recipe"));
-          setRecipeInDatabase(false);
+    if (!user) {
+      recipeData = JSON.parse(localStorage.getItem("recipe"));
+      setRecipeInDatabase(false);
+      setDetails(recipeData);
+    } else {
+      await axios
+        .get(API_URL + params.name, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(async (response) => {
+          recipeData = response.data;
+          setRecipeInDatabase(true);
           setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
-          setReviews(recipeData.reviews);
-        } else {
-          throw error;
-        }
-      });
-    console.log("is recipe in database?", recipeInDatabase);
-    console.log(recipeData);
-    setDetails(recipeData);
+
+          const reviewPromises = recipeData.reviews.map((review) => {
+            return axios.get(
+              `http://localhost:8000/api/v1/users/${review.createdBy}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+          });
+
+          const userResponses = await Promise.all(reviewPromises);
+          const updatedReviews = recipeData.reviews.map((review, index) => ({
+            ...review,
+            user: userResponses[index].data,
+          }));
+
+          setReviews(updatedReviews);
+        })
+        .catch((error) => {
+          if (error.response.status === 404 && localStorage.getItem("recipe")) {
+            recipeData = JSON.parse(localStorage.getItem("recipe"));
+            setRecipeInDatabase(false);
+            setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
+            setReviews(recipeData.reviews);
+          } else {
+            throw error;
+          }
+        });
+      setDetails(recipeData);
+    }
   };
-  
+
   useEffect(() => {
     getInformation();
   }, [params.name]);
 
   useEffect(() => {
-    // Calculate the initial rating and review count
-    const calculatedData = recipeService.calculateRecipeData([details]);
-    const meanRating = calculatedData[0].meanRating ;
-    const reviewCount = calculatedData[0].reviewCount;
+    if (user) {
+      // Calculate the initial rating and review count
+      const calculatedData = recipeService.calculateRecipeData([details]);
+      const meanRating = calculatedData[0].meanRating;
+      const reviewCount = calculatedData[0].reviewCount;
 
-    setMeanRating(meanRating ? meanRating : 0);
-    setReviewCount(reviewCount);
+      setMeanRating(meanRating ? meanRating : 0);
+      setReviewCount(reviewCount);
+    }
   }, [details]);
-
-  const handleEditIngredients = () => {
-    setIsEditing(true);
-    setUpdatedIngredients(
-      details.ingredients.map((ingredient) => ({ ...ingredient }))
-    );
-  };
-
-  const handleAddIngredient = () => {
-    setUpdatedIngredients([
-      ...updatedIngredients,
-      { name: "", quantity: "", brand: "" },
-    ]);
-  };
-
-  const handleIngredientChange = (index, field, value) => {
-    const updatedIngredientsCopy = [...updatedIngredients];
-    updatedIngredientsCopy[index][field] = value;
-    setUpdatedIngredients(updatedIngredientsCopy);
-  };
 
   const addRecipeToDatabase = () => {
     const recipeParams = {
@@ -123,7 +111,12 @@ function Recipe() {
       isGenerated: details.isGenerated ? details.isGenerated : false,
       tags: [
         details.instruction.mealType,
-        details.instruction.diet ? details.instruction.diet : "Not diet specific",
+        details.instruction.diet &&
+        details.instruction.diet !== "" &&
+        details.instruction.diet.length > 0 &&
+        details.instruction.diet[0] !== ""
+          ? details.instruction.diet
+          : "Not diet specific",
         details.instruction.cookingTime,
       ],
     };
@@ -146,58 +139,73 @@ function Recipe() {
       });
   };
 
-  const handleCreateNewRecipe = () => {
-    // Save the updatedIngredients and updatedCookingMethod as a new recipe
-    // You can make an API call here to save the new recipe with the updated details
-    // Use the updatedIngredients and updatedCookingMethod to create the new recipe
-    // After successfully saving the new recipe, redirect or display a success message
+  // const handleCreateNewRecipe = () => {
+  //   // Save the updatedIngredients and updatedCookingMethod as a new recipe
+  //   // You can make an API call here to save the new recipe with the updated details
+  //   // Use the updatedIngredients and updatedCookingMethod to create the new recipe
+  //   // After successfully saving the new recipe, redirect or display a success message
 
-    // Example API call:
-    axios
-      .post(
-        API_URL,
-        {
-          title: details.title,
-          ingredients: updatedIngredients,
-          instruction: {
-            0: updatedCookingMethod,
-          },
-          // Other recipe properties
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        // Handle successful response
-        console.log("New recipe saved:", response.data);
-        // Redirect or display success message
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Failed to save new recipe:", error);
-        // Display error message or handle the error in an appropriate way
-      });
-  };
+  //   // Example API call:
+  //   axios
+  //     .post(
+  //       API_URL,
+  //       {
+  //         title: details.title,
+  //         ingredients: updatedIngredients,
+  //         instruction: {
+  //           0: updatedCookingMethod,
+  //         },
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       console.log("New recipe saved:", response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to save new recipe:", error);
+  //     });
+  // };
 
   const formatIngredients = () => {
-    if (details.ingredients && details.ingredients.length > 0) {
-      return details.ingredients.map((ingredient, index) => (
-        <li key={index}>
-          Ingredient {index + 1}: {ingredient.brand} {ingredient.name} -{" "}
-          {ingredient.quantity}
-        </li>
-      ));
+    if (!details.ingredients || details.ingredients.length === 0) {
+      return null;
     }
-    return null;
+
+    return details.ingredients.map((ingredient, index) => {
+      if (ingredient.name === "") {
+        return null;
+      }
+
+      return <li key={index}>{formatIngredientText(ingredient, index)}</li>;
+    });
+  };
+
+  const formatIngredientText = (ingredient, index) => {
+    const brandText =
+      ingredient.brand !== "" ? ` ® ${ingredient.brand}` : ingredient.brand;
+    const quantityText = ` (${ingredient.quantity})`;
+
+    return (
+      <>
+        {index + 1}:<i>&nbsp;{brandText}&nbsp;</i>
+        <strong>&nbsp;{ingredient.name}&nbsp;</strong>
+        {quantityText}
+      </>
+    );
   };
 
   const displayInfo = (info) => {
     if (details.instruction && Object.keys(details.instruction).length > 0) {
       const instructionKey = Object.keys(details.instruction)[info];
       const instruction = details.instruction[instructionKey];
+      // if the instruction is an array, format it properly
+      if (Array.isArray(instruction)) {
+        return instruction.map((obj) => obj).join(", ");
+      }
       if (instruction) {
         return instruction;
       }
@@ -233,37 +241,67 @@ function Recipe() {
     }
   };
 
+  const handleEditRecipeClick = () => {
+    localStorage.setItem("editingRecipe", true);
+    localStorage.setItem("recipeData", JSON.stringify(details));
+
+    // if the recipe has been generated by AI, redirect to the generation page
+    if (details.isGenerated) {
+      window.location.href = "/generate";
+    }
+    // if the recipe has been manually created, redirect to the create page
+    else {
+      window.location.href = "/create";
+    }
+  };
+
   return (
-    <div>
-      <HeaderPrivateTop />
+    <div
+      style={{
+        alignItems: "center",
+        width: "100%",
+        gap: "20px",
+        flexDirection: "column",
+      }}
+    >
+      <>{token ? <HeaderPrivateTop /> : <Header />}</>
       <DetailWrapper>
         <PhotoWrapper>
-          <BackgroundImage style={{ backgroundImage: `url(${details.photo})` }} />
-          <PhotoImage src={details.photo} alt="" />
+          <BackgroundImage
+            style={{ backgroundImage: `url(${details.photo})` }}
+          />
+          <PhotoImage src={details.photo} alt={details.title} />
+          {details.isGenerated ? (
+            <GeneratedText>AI generated recipe</GeneratedText>
+          ) : (
+            <GeneratedText>User created recipe</GeneratedText>
+          )}
         </PhotoWrapper>
         <div style={{ display: "flex", width: "100%" }}>
           <HeaderPrivate />
-          <div style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flex: "1 1 auto",
+            }}
+          >
             <PageWrapper>
               <ContentWrapper>
-                {!recipeInDatabase && (
-                  <Button onClick={addRecipeToDatabase}>
-                    Save recipe to database
-                  </Button>
-                )}
                 <RecipeContainer>
                   <RecipeName>{details.title}</RecipeName>
-                  <RatingContainer>
-                        {meanRating}
-                        <StarIcon className="star-icon" />
-                        <span>     ({reviewCount} reviews)</span>
-                  </RatingContainer>
-                  <HeartComponent user={user} recipe={details} />
-                  <Button>Edit</Button>
-                  {isUserRecipe && recipeInDatabase && (
-                    <ButtonDelete onClick={handleDeleteRecipe}>
-                      <FaTrash /> Delete Recipe
-                    </ButtonDelete>
+
+                  {token && (
+                    <RatingContainer>
+                      {meanRating}
+                      <StarIcon className="star-icon" />
+                      <span> ({reviewCount} reviews)</span>
+                    </RatingContainer>
+                  )}
+
+                  {token && <HeartComponent user={user} recipe={details} />}
+                  {recipeInDatabase && (
+                    <Button onClick={handleEditRecipeClick}>Edit</Button>
                   )}
                 </RecipeContainer>
                 <InfoContainer>
@@ -294,7 +332,7 @@ function Recipe() {
                 </InfoContainer>
                 <IngredientsHeading>
                   <h4>Ingredients:</h4>
-                  {isEditing ? (
+                  {/* {isEditing ? (
                     <div className="edit-container">
                       {updatedIngredients.map((ingredient, index) => (
                         <div className="input-container" key={index}>
@@ -311,8 +349,8 @@ function Recipe() {
                             }
                           />
                           {/* Add other input fields for quantity, brand, etc. as needed */}
-                        </div>
-                      ))}
+                  {/* </div> */}
+                  {/* ))}
                       <div className="add-ingredient-container">
                         <button onClick={handleAddIngredient}>Add</button>
                       </div>
@@ -325,7 +363,7 @@ function Recipe() {
                     </div>
                   ) : (
                     <Button onClick={handleEditIngredients}>Edit</Button>
-                  )}
+                  )} */}
                   <a href="https://www.goflink.com/de-DE/">
                     <ButtonFlink>Order on Flink</ButtonFlink>
                   </a>
@@ -335,18 +373,29 @@ function Recipe() {
                 </IngredientsList>
                 <CookingMethod>
                   <h4>Cooking method:</h4>
-                  <ol>
+                  <div>
                     {formatCookingMethod(displayInfo(0)).map((step, index) => (
                       <li key={index}>{step}</li>
                     ))}
-                  </ol>
+                  </div>
                 </CookingMethod>
+                <HandleRecipeButtons>
+                  {!recipeInDatabase && token && (
+                    <Button onClick={addRecipeToDatabase}>
+                      Save recipe to database
+                    </Button>
+                  )}
 
-                <ReviewComponent
-                  recipe={details}
-                  token={token}
-                />
-                
+                  {isUserRecipe && recipeInDatabase && token && (
+                    <ButtonDelete onClick={handleDeleteRecipe}>
+                      <FaTrash /> Delete Recipe
+                    </ButtonDelete>
+                  )}
+                </HandleRecipeButtons>
+
+                {recipeInDatabase && token && (
+                  <ReviewComponent recipe={details} token={token} />
+                )}
               </ContentWrapper>
             </PageWrapper>
           </div>
@@ -368,21 +417,26 @@ const DetailWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  width:1 00%;
+  width: 1 00%;
 
   .info-row {
     display: flex;
     align-items: flex-start;
+    gap: 20px;
   }
   .info-label {
     font-weight: bold;
     width: 150px;
     text-align: left;
   }
+  .info-label svg {
+    margin-right: 5px;
+  }
   .info-value {
     display: inline-block;
-    width: 150px;
-    height: 25px;
+    width: auto;
+    height: 26px;
+    padding: 0 15px;
     background-color: #d3d3d3; /* Light gray color */
     border-radius: 10px; /* Adjust the value for desired roundness */
     margin-bottom: 10px; /* Adjust the value for desired spacing */
@@ -418,14 +472,25 @@ const BackgroundImage = styled.div`
 `;
 
 const PhotoImage = styled.img`
-  width: 100%;
+  height: 50vh;
+`;
+
+const GeneratedText = styled.p`
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 1.2rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 5px;
 `;
 
 const ContentWrapper = styled.div`
   z-index: 1;
   width: 100%;
-  max-width: 1200px; /* Adjust the maximum width as needed */
-  padding: 1rem;
+  // max-width: 1200px; /* Adjust the maximum width as needed */
+  padding: 1rem 5rem;
   box-sizing: border-box;
 `;
 
@@ -457,6 +522,7 @@ const RecipeContainer = styled.div`
   align-items: center;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  justify-content: space-between;
 `;
 
 const RecipeName = styled.h1`
@@ -471,11 +537,11 @@ const StarIcon = styled(FaStar)`
   margin-left: 0.5rem; /* Add margin to create spacing between the rating and the star */
 `;
 
-
 const IngredientsHeading = styled.div`
   display: flex;
   align-items: center;
   margin-top: 1rem;
+  justify-content: space-between;
   h4 {
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
@@ -514,16 +580,10 @@ const ButtonFlink = styled.div`
   background-color: #c91383;
 `;
 
-const ButtonDelete = styled.button`
-  /* Add your desired button styles here */
+const ButtonDelete = styled(Button)`
   background-color: red;
   color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 `;
-
 
 const IngredientsList = styled.div`
   margin-top: 1rem;
@@ -552,76 +612,16 @@ const CookingMethod = styled.div`
     margin-bottom: 0.5rem;
   }
   text-align: justify;
+  margin-bottom: 4rem;
 `;
 
-const ButtonCancel = styled(Button)`
-  background-color: #d3d3d3;
-  color: #000;
-
-  &:hover {
-    background-color: #ccc;
-  }
-`;
-
-
-const ReviewsContainer = styled.div`
-  margin-top: 2rem;
-
-  h4 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-`;
-
-const ReviewItem = styled.div`
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-`;
-
-const ReviewHeader = styled.div`
+const HandleRecipeButtons = styled.div`
   display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-`;
-
-const ProfileImage = styled.img`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 0.5rem;
-`;
-
-const ReviewUsername = styled.span`
-  font-weight: bold;
+  gap: 1rem;
 `;
 
 const RatingContainer = styled.div`
   margin-bottom: 0.5rem;
 `;
-
-const ReviewText = styled.p`
-  margin-bottom: 0;
-`;
-
-
-
-
-// const InputContainer = styled.div`
-//   display: flex;
-//   margin-bottom: 0.5rem;
-// `;
-
-// const Input = styled.input`
-//   width: 100%;
-//   padding: 0.5rem;
-//   border: 1px solid #ccc;
-//   border-radius: 4px;
-// `;
-
-// const AddIngredientContainer = styled.div`
-//   margin-top: 0.5rem;
-// `;
 
 export default Recipe;

@@ -43,7 +43,10 @@ export const FileSelectButton = ({ onUpload, onRemove }) => {
   return (
     <div>
       <label htmlFor="upload-button">
-        <Button variant="contained" component="span">
+        <Button 
+        variant="contained" 
+        component="span"
+        className={classes.uploadButton}>
           Upload
         </Button>
         <input
@@ -84,12 +87,7 @@ export const UploadButton = ({ selectedFile }) => {
       uploadService
         .uploadUserPhoto(formData)
         .then((response) => {
-          console.log(formData);
-          console.log(selectedFile);
-          console.log(response);
-          console.log(response.avatar);
           localStorage.setItem("user", JSON.stringify(response));
-          console.log(localStorage.getItem("user"));
           setUploading(false);
           setUploadSuccess(true);
         })

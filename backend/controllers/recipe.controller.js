@@ -1,11 +1,11 @@
 import Recipe from "../mongodb/models/recipe.js";
 import asyncHandler from "express-async-handler";
+import axios from "axios";
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { Configuration, OpenAIApi } = require("openai");
 
-// Create a new recipe
 export const createRecipe = asyncHandler(async (req, res) => {
   try {
     const { title, ingredients, instruction, photo, isGenerated, tags } =
@@ -15,13 +15,15 @@ export const createRecipe = asyncHandler(async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const formattedTags = tags.map(tag => Array.isArray(tag) ? tag.join(", ") : tag);
+
     const recipe = new Recipe.recipeModel({
       title: title,
       ingredients: ingredients,
       instruction: instruction,
       photo: photo,
       isGenerated: isGenerated ? isGenerated : false,
-      tags: tags,
+      tags: formattedTags,
       createdBy: user._id,
     });
     await recipe.save();
@@ -34,6 +36,7 @@ export const createRecipe = asyncHandler(async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Get all recipes
 export const getAllRecipes = asyncHandler(async (req, res) => {
@@ -167,16 +170,13 @@ export const getRecipeById = asyncHandler(async (req, res) => {
 export const updateRecipe = asyncHandler(async (req, res) => {
   try {
     const { title, ingredients, instruction, photo } = req.body;
+    // console.log("lista", title, ingredients, instruction, photo);
     const user = req.user;
     const userId = user.id;
 
     const recipe = await Recipe.recipeModel.findById(req.params.id);
     if (!recipe) {
       return res.status(404).json({ error: "Recipe not found" });
-    }
-
-    if (recipe.createdBy.toString() !== userId) {
-      return res.status(401).json({ error: "Unauthorized access" });
     }
 
     recipe.title = title;
@@ -225,42 +225,46 @@ const openai = new OpenAIApi(configuration);
 
 export const generateRecipe = asyncHandler(async (req, res) => {
   try {
-    const user = req.user;
-
+    const user = req.body.user;
     // extract variables from request.body + handle default/empty values
 
     // REQUIRED
-    // ingredients (include)
-    let ingredients = [];
-    if ("ingredients" in req.body) {
-      ingredients = req.body.ingredients;
-    } else {
-      throw new Error("ingredients not found in request body");
-    }
-
-    // servingSize
-    let servingSize = "";
-    if ("servingSize" in req.body) {
-      servingSize = req.body.servingSize;
-    } else {
-      throw new Error("servingSize not found in request body");
-    }
+    const ingredients = req.body.ingredients || [];
+    const servingSize = req.body.servingSize || "any";
 
     // OPTIONAL
     const ingredientsExcl = req.body.ingredientsExcl || [];
-    const utensils =
-      req.body.utensils || user.defaultRecipeSettings.utensils || [];
     const cookingTime = req.body.cookingTime || "any";
-    const diet =
-      req.body.diet || user.defaultRecipeSettings.dietaryRestriction || "none";
     const mealType = req.body.mealType || "any";
-    const measurement =
-      req.body.measurement ||
-      user.defaultRecipeSettings.measurementSystem ||
-      "metric";
-    const allergies =
-      req.body.allergies || user.defaultRecipeSettings.allergies || [];
     const additionalNotes = req.body.additionalNotes || "";
+    const onlyUseIngredients = req.body.onlyUseIngredients;
+
+    const utensils = 
+    req.body.utensils !== undefined && req.body.utensils.length > 0 
+    ? req.body.utensils : 
+    (user && user.defaultRecipeSettings.utensils) || [];
+
+
+    const diet = 
+    req.body.diet !== undefined && req.body.diet.length > 0
+    ? req.body.diet
+    : (user && user.defaultRecipeSettings.dietaryRestrictions) || [];
+
+    const measurement = 
+    req.body.measurementSystem !== undefined && req.body.measurementSystem !== "" 
+    ? req.body.measurementSystem : 
+    (user && user.defaultRecipeSettings.measurementSystem) || "metric";
+
+    const allergies =
+    req.body.allergies !== undefined && req.body.allergies.length > 0 
+    ? req.body.allergies : 
+    (user && user.defaultRecipeSettings.allergies) || [];
+
+    console.log(req.body.diet);
+    console.log(diet);
+    console.log(user.defaultRecipeSettings.dietaryRestrictions)
+
+
 
     const prompt = `
     Generate me a recipe
@@ -284,6 +288,9 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     - If the ingredient is one of {"cream cheese", "skyr"}, use the brand "Exquisia".
     - If the ingredient is a nut butter (e.g., peanut butter, almond butter), use the brand "Calve".
     - If the ingredient is a deli or a meat, use the brand "Vinzenzmurr".
+    - If the ingredient is one of {"feta cheese", "tulum cheese", "goat cheese", "white cheese"}, use the brand "Gazi",
+    - If the ingredient is one of {"burrata", "mozzarella", "scamorza cheese"}, use the brand "Eataly",
+    - If the ingredient is a type of pasta, use the brand "De Cecco",
     - If the ingredient is one of {"oat", "oats", "oatmeal", "müsli", "muesli", "granola"}, use the brand "Köln".
     - If the ingredient is "beer", use the brand "Giesinger".
     - If the ingredient is "protein powder" or any other supplementary bodybuilding product, use the brand "ProteinWorks".
@@ -293,15 +300,22 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       
   
     Measurement System: As measurement system for the ingredient quantities, use  ${measurement.toString()}.
-    If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well.
-    If there are ingredients to include that violate the dietary restriction, then don't include them
+    ${onlyUseIngredients.toString()}
+    If there are ingredients to include that violate the dietary restrictions (${diet.toString()}), then don't include them
     Enumerate each step of the cooking narrative.
+    The cooking time of the generated recipe should always be one of these values: {"under 10 minutes", "10-20 minutes", "under 30 minutes", "under 1 hour", "under 2 hours"}.
     Get inspiration from already existing recipes all around the world.
   
     Generate it in the following JSON format:
   
     {
-      "title": "Creative Recipe Title",
+      "title": ${
+        req.body.title !== null &&
+        req.body.title !== undefined &&
+        req.body.title !== ""
+          ? req.body.title.toString()
+          : '"Creative Recipe Title"'
+      },
       "ingredients": [
         {
           "name": "Ingredient Name",
@@ -329,58 +343,30 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     });
 
     // get response from ChatGPT
-    const response = JSON.parse(completion.data.choices[0].text);
-    console.log(response);
-
-    // const sampleResponse = {
-    //   title: "Tomato Rice Basil Milk",
-    //   ingredients: [
-    //     {
-    //       name: "Tomato",
-    //       quantity: "4 tomatoes",
-    //       brand: "",
-    //     },
-    //     {
-    //       name: "Rice",
-    //       quantity: "2 cups of uncooked rice",
-    //       brand: "",
-    //     },
-    //     {
-    //       name: "Basil",
-    //       quantity: "1/4 cup of fresh basil, diced",
-    //       brand: "",
-    //     },
-    //     {
-    //       name: "Milk",
-    //       quantity: "2 cups of milk",
-    //       brand: "Weihenstephan",
-    //     },
-    //   ],
-    //   instruction: {
-    //     narrative:
-    //       "In a large pan over medium heat, add tomatoes and cook until softened. Add the rice and basil and cook for 3 minutes, stirring occasionally. Reduce heat and add the milk and stir until the milk is absorbed. Cook for 5 more minutes and remove from heat. Serve warm. Enjoy!",
-    //     cookingTime: "Under 30 minutes",
-    //     servingSize: "4 people",
-    //     mealType: "main",
-    //     diet: "kosher",
-    //   },
-    //   twentyWordSummary: "Tomato, Rice, Basil and Milk dish.",
-    //   measurementSystem: "Metric",
-    // };
+    const responseRaw = completion.data.choices[0].text
+      .trim()
+      .replace("Recipe JSON:", "");
+    const response = JSON.parse(responseRaw);
+    console.log("RESPONSE", response);
 
     // add photoUrl and tags to response
     const photoUrl =
-      "https://image.pollinations.ai/prompt/" +
-      encodeURIComponent(response.twentyWordSummary);
-    response.photoUrl = photoUrl;
+    "https://image.pollinations.ai/prompt/" +
+    encodeURIComponent(response.twentyWordSummary);
+
+    // Download the image
+    const imageResponse = await axios.get(photoUrl, { responseType: 'arraybuffer' });
+    const imageData = Buffer.from(imageResponse.data).toString('base64');
+    const dataURI = `data:image/png;base64,${imageData}`;
 
     const tags = [
       response.instruction.mealType,
-      response.instruction.diet
-        ? response.instruction.diet
-        : "Not diet specific",
+      ...(response.instruction.diet !== ""
+        ? response.instruction.diet.split(",").map(item => item.trim())
+        : ["Not diet specific"]),
       response.instruction.cookingTime,
     ];
+    
 
     const instruction = new Recipe.instructionModel({
       narrative: response.instruction.narrative,
@@ -388,26 +374,21 @@ export const generateRecipe = asyncHandler(async (req, res) => {
       mealType: response.instruction.mealType,
       diet: response.instruction.diet,
     });
-    // await instruction.save(); // OLD
 
     const recipe = new Recipe.recipeModel({
       title: response.title,
       ingredients: response.ingredients,
       instruction: response.instruction,
-      photo: response.photoUrl,
-      createdBy: user._id,
+      photo: dataURI,
+      createdBy: user ? user._id : "",
       isGenerated: true,
       tags: tags,
     });
-    // await recipe.save();// OLD
 
     const allData = {
       recipe: recipe,
       instruction: instruction,
     };
-
-    // user.createdRecipes.push(recipe._id);
-    // await user.save();
 
     res.status(201).json(allData);
   } catch (error) {

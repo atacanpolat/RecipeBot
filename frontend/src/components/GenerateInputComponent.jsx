@@ -22,6 +22,8 @@ import { useFilterStyles } from "./helpers/styles/recipesStyles";
 import Enums from "./enums/enums";
 import { toast } from "react-toastify";
 
+import { FormControlLabel } from "@mui/material";
+
 const API_URL_RECIPE = "http://localhost:8000/api/v1/recipes/";
 
 const makeStringLowercase = (string) => {
@@ -44,22 +46,52 @@ const makeStringsInListLowercase = (list) => {
 };
 
 const GenerateInputComponent = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const editingRecipe =
+    localStorage.getItem("editingRecipe") !== null
+      ? JSON.parse(localStorage.getItem("editingRecipe"))
+      : false;
+
+  const editingRecipeData = editingRecipe
+    ? JSON.parse(localStorage.getItem("recipeData"))
+    : null;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [onlyUseIngredients, setOnlyUseIngredients] = useState(false);
   const classes = useFilterStyles();
 
   const [newIngredient, setNewIngredient] = useState("");
-  const [includeIngredients, setIncludeIngredients] = useState([]);
-  const [excludeIngredients, setExcludeIngredients] = useState([]);
-  const [mealType, setMealType] = useState("");
-  const [servingSize, setServingSize] = useState("");
-  const [dietaryRestrictions, setDietaryRestrictions] = useState([]);
-  const [cookingUtensils, setCookingUtensils] = useState([]);
-  const [allergies, setAllergies] = useState([]);
-  const [cookingTime, setCookingTime] = useState("");
-  const [additionalNotes, setAdditionalNotes] = useState("");
-  const exampleNotes = "e.g., 'african style', 'stew', 'spicy', 'use spices'...";
 
+  const [includeIngredients, setIncludeIngredients] = useState(
+    editingRecipe ? editingRecipeData.ingredients.map((obj) => obj.name) : []
+  );
+  const [excludeIngredients, setExcludeIngredients] = useState([]);
+
+  const [mealType, setMealType] = useState(
+    editingRecipe
+      ? makeStringLowercase(editingRecipeData.instruction.mealType)
+      : ""
+  );
+  const [servingSize, setServingSize] = useState(
+    editingRecipe ? editingRecipeData.instruction.servingSize : ""
+  );
+  const [dietaryRestrictions, setDietaryRestrictions] = useState(
+    editingRecipe && editingRecipeData.instruction.diet.length > 0
+      ? makeStringsInListLowercase(editingRecipeData.instruction.diet)
+      : []
+  );
+  const [cookingUtensils, setCookingUtensils] = useState(
+    editingRecipe ? editingRecipeData.instruction.cookingUtensils : []
+  );
+  const [allergies, setAllergies] = useState([]); // TODO: add allergies to recipe data
+  const [cookingTime, setCookingTime] = useState(
+    editingRecipe
+      ? makeStringLowercase(editingRecipeData.instruction.cookingTime)
+      : ""
+  );
+  const [additionalNotes, setAdditionalNotes] = useState(""); // TODO: add additional notes to recipe data
+  const exampleNotes =
+    "e.g., 'african style', 'stew', 'spicy', 'use spices'...";
 
   const addIngredientToList = (list, listName) => {
     // list and listName: either "includeIngredients" or "excludeIngredients"
@@ -115,6 +147,10 @@ const GenerateInputComponent = () => {
     setAllergies(typeof value === "string" ? value.split(",") : value);
   };
 
+  const handleOnlyUseIngredientsChange = (event) => {
+    setOnlyUseIngredients(event.target.checked);
+  };
+
   const handleServingSizeChange = (event) => {
     const selectedValue = event.target.value;
     setServingSize(() => selectedValue);
@@ -125,20 +161,44 @@ const GenerateInputComponent = () => {
     setCookingTime(() => selectedValue);
   };
 
+  const handleUpdatEditedRecipe = (recipeId, editedRecipeData, token) => {
+    /*
+    const response = axios.post(API_URL_RECIPE+'create', editedRecipeData.recipe, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+    
+      .patch(API_URL_RECIPE + recipeId, editedRecipeData.recipe, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    
+      .then(function (response) {
+      */
+    console.log(editedRecipeData);
+    console.log("Recipe updated successfully!!");
+    localStorage.setItem("editingRecipe", JSON.stringify(false));
+    localStorage.setItem("recipe", JSON.stringify(editedRecipeData.recipe));
+    localStorage.removeItem("recipeData");
+    setIsLoading(false);
+    window.location.href = "/recipes/" + editedRecipeData.recipe._id;
+    /*
+      })
+      .catch(function (error) {
+        setIsLoading(false);
+        console.log("error while updating the recipe", error);
+      });
+      */
+  };
+
   const { control, handleSubmit } = useForm();
 
   const formSubmitHandler = (formData) => {
-    if (
-      includeIngredients.length === 0 ||
-      mealType === "" ||
-      servingSize === ""
-    ) {
-      alert("Please fill out all required fields");
-      return;
-    }
-
     setIsLoading(true);
     const generationParams = {
+      user: user,
       ingredients: makeStringsInListLowercase(includeIngredients),
       servingSize: makeStringLowercase(servingSize),
       ingredientsExcl: makeStringsInListLowercase(excludeIngredients),
@@ -147,7 +207,11 @@ const GenerateInputComponent = () => {
       diet: makeStringsInListLowercase(dietaryRestrictions),
       mealType: makeStringLowercase(mealType),
       allergies: makeStringsInListLowercase(allergies),
-      additionalNotes: makeStringLowercase(additionalNotes)
+      additionalNotes: makeStringLowercase(additionalNotes),
+      title: editingRecipe ? editingRecipeData.title : null,
+      onlyUseIngredients: onlyUseIngredients
+        ? "Only use the ingredients listed in the 'ingredients to include', and no other ingredient"
+        : "If necessary for the recipe, feel free to add other ingredients as well, then add them to the JSON under ingredients as well.",
     };
     console.log(generationParams);
 
@@ -170,23 +234,32 @@ const GenerateInputComponent = () => {
         );
         setIsLoading(false);
 
-        // redirect to the recipe page that has just been created
-        window.location.href = "/recipes/" + response.data.recipe._id;
+        // if the recipe needs to be edited, redirect to the edit page
+        if (editingRecipe) {
+          const recipeId = editingRecipeData._id;
+          handleUpdatEditedRecipe(recipeId, response.data, token);
+        } else {
+          // redirect to the recipe page that has just been created
+          window.location.href = "/recipes/" + response.data.recipe._id;
+        }
       })
       .catch(function (error) {
         console.log("logging the error");
         console.log(error);
         setIsLoading(false);
-        toast.error('🦄 Oops, something went wrong whikle generating your recipe, please try it again :)', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-          });
+        toast.error(
+          "🦄 Oops, something went wrong while generating your recipe, please try it again :)",
+          {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          }
+        );
       });
     return response;
   };
@@ -194,6 +267,12 @@ const GenerateInputComponent = () => {
   return (
     <div className={classes.container}>
       <div style={{ flex: "1 0 100%", marginBottom: "20px" }}>
+        {editingRecipe ? (
+          <div>
+            <h4>Editing Recipe:</h4> <h2>{editingRecipeData.title}</h2>
+            <br></br>
+          </div>
+        ) : null}
         <h2>Required Fields</h2>
       </div>
       {isLoading ? <Spinner /> : null}
@@ -261,6 +340,20 @@ const GenerateInputComponent = () => {
             />
           ))}
         </div>
+
+        {/* Only use these ingredients checkbox */}
+        {includeIngredients.length > 0 && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={onlyUseIngredients}
+                onChange={handleOnlyUseIngredientsChange}
+                name="onlyUseIngredients"
+              />
+            }
+            label="Only use these ingredients"
+          />
+        )}
 
         {/* SELECT FIELDS */}
         <div className={classes.filterContainer}>
@@ -474,29 +567,31 @@ const GenerateInputComponent = () => {
               )}
             />
 
-           {/* Additional Notes */}
-           <div className={classes.additionalNotes}>
-             <InputLabel id="additional-notes">Additional Notes</InputLabel>
-             <div className={classes.notesContent}>
-               <TextareaAutosize
-                 id="additional-notes"
-                 placeholder="Enter any additional notes..."
-                 value={additionalNotes}
-                 onChange={(e) => setAdditionalNotes(e.target.value)}
-                 className={classes.textarea}
-               />
-               <div className={classes.exampleNotes}>{exampleNotes}</div>
-             </div>
-           </div>
-
-
-
+            {/* Additional Notes */}
+            <div className={classes.additionalNotes}>
+              <InputLabel id="additional-notes">Additional Notes</InputLabel>
+              <div className={classes.notesContent}>
+                <TextareaAutosize
+                  id="additional-notes"
+                  placeholder="Enter any additional notes..."
+                  value={additionalNotes}
+                  onChange={(e) => setAdditionalNotes(e.target.value)}
+                  className={classes.textarea}
+                />
+                <div className={classes.exampleNotes}>{exampleNotes}</div>
+              </div>
+            </div>
 
             <div style={{ marginBottom: "75px" }}></div>
             {/* SUBMIT BUTTON */}
             <FormControl>
               <Button
-                disabled={isLoading}
+                disabled={
+                  isLoading ||
+                  includeIngredients.length === 0 ||
+                  mealType === "" ||
+                  servingSize === ""
+                }
                 type="submit"
                 variant="contained"
                 style={{
@@ -505,7 +600,7 @@ const GenerateInputComponent = () => {
                   fontWeight: "bold",
                 }}
               >
-                GENERATE RECIPE
+                {editingRecipe ? "GENERATE EDITED" : "GENERATE"} RECIPE
               </Button>
             </FormControl>
           </form>
