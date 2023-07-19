@@ -145,11 +145,21 @@ const SavedRecipesPage = () => {
                 </button>
               </div>
             </Grid>
+
+            {/* Filters */}
             <Grid container spacing={8}>
               <Grid item xs={12}>
                 <FilteringComponent onFilterSubmit={handleFilterSubmit} />
               </Grid>
             </Grid>
+
+            {savedRecipes.length === 0 && activeTab === "saved" && (
+              <div style={{ marginTop: "50px" }}>
+                <p>You have no saved recipes...</p>
+              </div>
+            )}
+
+            {/* Grid of saved recipes */}
             <Grid item xs={12}>
               <Grid container spacing={4} className={classes.cards}>
                 {(activeTab === "saved" ? savedRecipes : createdRecipes)

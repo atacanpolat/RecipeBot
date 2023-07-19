@@ -15,7 +15,9 @@ export const createRecipe = asyncHandler(async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const formattedTags = tags.map(tag => Array.isArray(tag) ? tag.join(", ") : tag);
+    const formattedTags = tags.map((tag) =>
+      Array.isArray(tag) ? tag.join(", ") : tag
+    );
 
     const recipe = new Recipe.recipeModel({
       title: title,
@@ -36,7 +38,6 @@ export const createRecipe = asyncHandler(async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 // Get all recipes
 export const getAllRecipes = asyncHandler(async (req, res) => {
@@ -239,32 +240,30 @@ export const generateRecipe = asyncHandler(async (req, res) => {
     const additionalNotes = req.body.additionalNotes || "";
     const onlyUseIngredients = req.body.onlyUseIngredients;
 
-    const utensils = 
-    req.body.utensils !== undefined && req.body.utensils.length > 0 
-    ? req.body.utensils : 
-    (user && user.defaultRecipeSettings.utensils) || [];
+    const utensils =
+      req.body.utensils !== undefined && req.body.utensils.length > 0
+        ? req.body.utensils
+        : (user && user.defaultRecipeSettings.utensils) || [];
 
+    const diet =
+      req.body.diet !== undefined && req.body.diet.length > 0
+        ? req.body.diet
+        : (user && user.defaultRecipeSettings.dietaryRestrictions) || [];
 
-    const diet = 
-    req.body.diet !== undefined && req.body.diet.length > 0
-    ? req.body.diet
-    : (user && user.defaultRecipeSettings.dietaryRestrictions) || [];
-
-    const measurement = 
-    req.body.measurementSystem !== undefined && req.body.measurementSystem !== "" 
-    ? req.body.measurementSystem : 
-    (user && user.defaultRecipeSettings.measurementSystem) || "metric";
+    const measurement =
+      req.body.measurementSystem !== undefined &&
+      req.body.measurementSystem !== ""
+        ? req.body.measurementSystem
+        : (user && user.defaultRecipeSettings.measurementSystem) || "metric";
 
     const allergies =
-    req.body.allergies !== undefined && req.body.allergies.length > 0 
-    ? req.body.allergies : 
-    (user && user.defaultRecipeSettings.allergies) || [];
+      req.body.allergies !== undefined && req.body.allergies.length > 0
+        ? req.body.allergies
+        : (user && user.defaultRecipeSettings.allergies) || [];
 
     console.log(req.body.diet);
     console.log(diet);
-    console.log(user.defaultRecipeSettings.dietaryRestrictions)
-
-
+    console.log(user.defaultRecipeSettings.dietaryRestrictions);
 
     const prompt = `
     Generate me a recipe
@@ -351,22 +350,23 @@ export const generateRecipe = asyncHandler(async (req, res) => {
 
     // add photoUrl and tags to response
     const photoUrl =
-    "https://image.pollinations.ai/prompt/" +
-    encodeURIComponent(response.twentyWordSummary);
+      "https://image.pollinations.ai/prompt/" +
+      encodeURIComponent(response.twentyWordSummary);
 
     // Download the image
-    const imageResponse = await axios.get(photoUrl, { responseType: 'arraybuffer' });
-    const imageData = Buffer.from(imageResponse.data).toString('base64');
+    const imageResponse = await axios.get(photoUrl, {
+      responseType: "arraybuffer",
+    });
+    const imageData = Buffer.from(imageResponse.data).toString("base64");
     const dataURI = `data:image/png;base64,${imageData}`;
 
     const tags = [
       response.instruction.mealType,
       ...(response.instruction.diet !== ""
-        ? response.instruction.diet.split(",").map(item => item.trim())
+        ? response.instruction.diet.split(",").map((item) => item.trim())
         : ["Not diet specific"]),
       response.instruction.cookingTime,
     ];
-    
 
     const instruction = new Recipe.instructionModel({
       narrative: response.instruction.narrative,

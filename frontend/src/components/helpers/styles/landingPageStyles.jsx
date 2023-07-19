@@ -223,4 +223,6 @@ export const useTeamCardStyles = makeStyles(() => ({
   },
 }));
 
-export default { useHeroStyles, useStepsStyles, useTeamCardStyles };
+const styles = { useHeroStyles, useStepsStyles, useTeamCardStyles };
+
+export default styles;

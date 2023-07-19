@@ -1,8 +1,6 @@
 import axios from "axios";
-import userService2 from "./user/userService";
 
 const API_URL = "http://localhost:8000/api/v1/";
-
 
 //pushtry
 const token = localStorage.getItem("jwt");

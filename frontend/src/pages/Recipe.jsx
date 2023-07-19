@@ -29,9 +29,8 @@ function Recipe() {
   // const [updatedCookingMethod] = useState("");
   const [recipeInDatabase, setRecipeInDatabase] = useState(false);
   const [isUserRecipe, setIsUserRecipe] = useState(false);
-  const [reviews, setReviews] = useState([]);
   const [meanRating, setMeanRating] = useState(0);
-  const [reviewCount, setReviewCount] = useState(0);
+  const [reviewCount] = useState(0);
 
   let recipeData = {};
 
@@ -69,15 +68,12 @@ function Recipe() {
             ...review,
             user: userResponses[index].data,
           }));
-
-          setReviews(updatedReviews);
         })
         .catch((error) => {
           if (error.response.status === 404 && localStorage.getItem("recipe")) {
             recipeData = JSON.parse(localStorage.getItem("recipe"));
             setRecipeInDatabase(false);
             setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
-            setReviews(recipeData.reviews);
           } else {
             throw error;
           }
@@ -98,7 +94,6 @@ function Recipe() {
       const reviewCount = calculatedData[0].reviewCount;
 
       setMeanRating(meanRating ? meanRating : 0);
-      setReviewCount(reviewCount);
     }
   }, [details]);
 
@@ -138,37 +133,6 @@ function Recipe() {
         console.log(error);
       });
   };
-
-  // const handleCreateNewRecipe = () => {
-  //   // Save the updatedIngredients and updatedCookingMethod as a new recipe
-  //   // You can make an API call here to save the new recipe with the updated details
-  //   // Use the updatedIngredients and updatedCookingMethod to create the new recipe
-  //   // After successfully saving the new recipe, redirect or display a success message
-
-  //   // Example API call:
-  //   axios
-  //     .post(
-  //       API_URL,
-  //       {
-  //         title: details.title,
-  //         ingredients: updatedIngredients,
-  //         instruction: {
-  //           0: updatedCookingMethod,
-  //         },
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       console.log("New recipe saved:", response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Failed to save new recipe:", error);
-  //     });
-  // };
 
   const formatIngredients = () => {
     if (!details.ingredients || details.ingredients.length === 0) {
@@ -254,7 +218,6 @@ function Recipe() {
       window.location.href = "/create";
     }
   };
-
   return (
     <div
       style={{
@@ -323,48 +286,22 @@ function Recipe() {
                     </span>
                     <span className="info-value">{displayInfo(2)}</span>
                   </div>
+
                   <div className="info-row">
                     <span className="info-label">
                       <FaSeedling /> Diet:
                     </span>
-                    <span className="info-value">{displayInfo(5)}</span>
+                    <span className="info-value">
+                      {displayInfo(5) === "" ? "-" : displayInfo(5)}
+                    </span>
                   </div>
                 </InfoContainer>
                 <IngredientsHeading>
                   <h4>Ingredients:</h4>
-                  {/* {isEditing ? (
-                    <div className="edit-container">
-                      {updatedIngredients.map((ingredient, index) => (
-                        <div className="input-container" key={index}>
-                          <input
-                            type="text"
-                            placeholder="Enter ingredient"
-                            value={ingredient.name}
-                            onChange={(e) =>
-                              handleIngredientChange(
-                                index,
-                                "name",
-                                e.target.value
-                              )
-                            }
-                          />
-                          {/* Add other input fields for quantity, brand, etc. as needed */}
-                  {/* </div> */}
-                  {/* ))}
-                      <div className="add-ingredient-container">
-                        <button onClick={handleAddIngredient}>Add</button>
-                      </div>
-                      <Button onClick={handleCreateNewRecipe}>
-                        Save as New Recipe
-                      </Button>
-                      <Button onClick={() => setIsEditing(false)}>
-                        Cancel
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button onClick={handleEditIngredients}>Edit</Button>
-                  )} */}
-                  <a href="https://www.goflink.com/de-DE/">
+                  <a
+                    href="https://www.goflink.com/de-DE/?source=recipe-bot-app-seba-2023"
+                    target="_blank"
+                  >
                     <ButtonFlink>Order on Flink</ButtonFlink>
                   </a>
                 </IngredientsHeading>
