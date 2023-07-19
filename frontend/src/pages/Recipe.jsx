@@ -29,9 +29,8 @@ function Recipe() {
   // const [updatedCookingMethod] = useState("");
   const [recipeInDatabase, setRecipeInDatabase] = useState(false);
   const [isUserRecipe, setIsUserRecipe] = useState(false);
-  const [reviews, setReviews] = useState([]);
   const [meanRating, setMeanRating] = useState(0);
-  const [reviewCount, setReviewCount] = useState(0);
+  const [reviewCount] = useState(0);
 
   let recipeData = {};
 
@@ -69,15 +68,12 @@ function Recipe() {
             ...review,
             user: userResponses[index].data,
           }));
-
-          setReviews(updatedReviews);
         })
         .catch((error) => {
           if (error.response.status === 404 && localStorage.getItem("recipe")) {
             recipeData = JSON.parse(localStorage.getItem("recipe"));
             setRecipeInDatabase(false);
             setIsUserRecipe(recipeData.createdBy === user._id); // Check ownership
-            setReviews(recipeData.reviews);
           } else {
             throw error;
           }
@@ -98,7 +94,6 @@ function Recipe() {
       const reviewCount = calculatedData[0].reviewCount;
 
       setMeanRating(meanRating ? meanRating : 0);
-      setReviewCount(reviewCount);
     }
   }, [details]);
 

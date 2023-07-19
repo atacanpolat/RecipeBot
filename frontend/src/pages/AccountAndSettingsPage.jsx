@@ -3,7 +3,7 @@ import { HeaderPrivate, HeaderPrivateTop } from "../components/HeaderPrivate";
 import { PrimaryButton, SectionHeading } from "../components/helpers/themes";
 import { useRecipeContainerStyles } from "../components/helpers/styles/recipesStyles";
 import useAccountSettingStyles from "../components/helpers/styles/accountSettingStyles";
-import { toast } from 'react-toastify'
+import { toast } from "react-toastify";
 import {
   Button,
   Checkbox,
@@ -15,32 +15,26 @@ import {
   RadioGroup,
   TextField,
 } from "@material-ui/core";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import "../assets/css/AccountSettings.css";
 import UpdateUserProfileService from "../features/UpdateUserProfileService";
 import UserService from "../features/user/userService";
 import theme from "../components/helpers/themes";
 import { toastError } from "../components/helpers/themes";
 
-const userInLocalStorage = JSON.parse(localStorage.getItem('user'));
-
-
-
-  
+const userInLocalStorage = JSON.parse(localStorage.getItem("user"));
 
 const AccountAndSettingsPage = () => {
-
   console.log("test3333");
   console.log(userInLocalStorage.defaultRecipeSettings);
-  let abc=JSON.stringify(userInLocalStorage.defaultRecipeSettings);
+  let abc = JSON.stringify(userInLocalStorage.defaultRecipeSettings);
   console.log(abc);
   console.log(userInLocalStorage.defaultRecipeSettings);
   //const valuesArray = JSON.parse(userInLocalStorage.defaultRecipeSettings);
   let valuesArray = JSON.parse(abc);
   console.log("test4444");
 
-  let [measurementSystemState, setMeasurementSystemState] =
-    useState("");
+  let [measurementSystemState, setMeasurementSystemState] = useState("");
   const [dietaryRestrictionsState, setDietaryRestrictionsState] = useState([]);
   const [allergensState, setAllergensState] = useState([]);
   const [cookingUtensilsState, setCookingUtensilsState] = useState([]);
@@ -55,8 +49,6 @@ const AccountAndSettingsPage = () => {
   const classes = useRecipeContainerStyles();
   const pageStyles = useAccountSettingStyles();
 
-  
-  
   let measurementSystem = [
     {
       value: "metric",
@@ -67,7 +59,6 @@ const AccountAndSettingsPage = () => {
       label: "Imperial",
     },
   ];
-
 
   let dietaryRestrictions = [
     {
@@ -145,7 +136,6 @@ const AccountAndSettingsPage = () => {
     },
   ];
 
-
   const cookingUtensils = [
     {
       value: "no oven",
@@ -169,58 +159,47 @@ const AccountAndSettingsPage = () => {
     },
   ];
 
-  
-
- 
-  for (var  j=0;j<valuesArray.dietaryRestrictions.length;j++) {
-    for(var i=0;i<dietaryRestrictions.length;i++)
-    {
+  for (var j = 0; j < valuesArray.dietaryRestrictions.length; j++) {
+    for (var i = 0; i < dietaryRestrictions.length; i++) {
       //console.log(dietaryRestrictions[i].value==valuesArray.dietaryRestrictions[j]);
-      if(dietaryRestrictions[i].value===valuesArray.dietaryRestrictions[j])
-      {
-        dietaryRestrictions[i].checked=true;
+      if (dietaryRestrictions[i].value === valuesArray.dietaryRestrictions[j]) {
+        dietaryRestrictions[i].checked = true;
       }
     }
   }
 
-  for (var  j1=0;j1<valuesArray.allergies.length;j1++) {
-    for(var i1=0;i1<allergens.length;i1++)
-    {
-     // console.log(dietaryRestrictions[i].value==valuesArray.allergies[j]);
-      if(allergens[i1].value===valuesArray.allergies[j1])
-      {
-        allergens[i1].checked=true;
+  for (var j1 = 0; j1 < valuesArray.allergies.length; j1++) {
+    for (var i1 = 0; i1 < allergens.length; i1++) {
+      // console.log(dietaryRestrictions[i].value==valuesArray.allergies[j]);
+      if (allergens[i1].value === valuesArray.allergies[j1]) {
+        allergens[i1].checked = true;
       }
     }
   }
 
-  for (var  j2=0;j2<valuesArray.utensils.length;j2++) {
-    for(var i2=0;i2<cookingUtensils.length;i2++)
-    {
-     // console.log(dietaryRestrictions[i].value==valuesArray.allergies[j]);
-      if(cookingUtensils[i2].value===valuesArray.utensils[j2])
-      {
-        cookingUtensils[i2].checked=true;
+  for (var j2 = 0; j2 < valuesArray.utensils.length; j2++) {
+    for (var i2 = 0; i2 < cookingUtensils.length; i2++) {
+      // console.log(dietaryRestrictions[i].value==valuesArray.allergies[j]);
+      if (cookingUtensils[i2].value === valuesArray.utensils[j2]) {
+        cookingUtensils[i2].checked = true;
       }
     }
   }
-  
-      measurementSystemState=valuesArray.metricSystem;
-      //firstNameValue=userInLocalStorage.firstName;
-      //lastNameValue=userInLocalStorage.lastName;
-      //phoneValue=userInLocalStorage.phone;
+
+  measurementSystemState = valuesArray.metricSystem;
+  //firstNameValue=userInLocalStorage.firstName;
+  //lastNameValue=userInLocalStorage.lastName;
+  //phoneValue=userInLocalStorage.phone;
 
   //console.log("measurementSystemState:" + measurementSystemState);
   //console.log("valuesArray.metricsystem:" + valuesArray.metricSystem);
-  
 
-  
   const setCheckedValues = () => {
     let dietaryVariables = [];
     dietaryRestrictions.forEach((item) => {
       if (item.checked) {
         dietaryVariables.push(item.value);
-      }   
+      }
     });
     setDietaryRestrictionsState(dietaryVariables);
     let allergensVariables = [];
@@ -239,31 +218,24 @@ const AccountAndSettingsPage = () => {
     setCookingUtensilsState(cookingUtensilsVariables);
   };
 
-  
   useEffect(() => {
     //console.log(userInLocalStorage._id);
     //console.log(userInLocalStorage);
-   // const valuesArray = JSON.parse(userInLocalStorage.defaultRecipeSettings);
+    // const valuesArray = JSON.parse(userInLocalStorage.defaultRecipeSettings);
 
     //console.log(valuesArray.dietaryRestrictions);
 
     setCheckedValues();
-
   }, []);
 
-
   const fetchUser = async () => {
-    const userData2 = await UserService.getUserbyId(userInLocalStorage._id)
+    const userData2 = await UserService.getUserbyId(userInLocalStorage._id);
     console.log("Updated User");
     console.log(userData2);
-    localStorage.setItem('user', JSON.stringify(userData2));
-
+    localStorage.setItem("user", JSON.stringify(userData2));
   };
-  
 
   const updateProfileInfos = () => {
-    
-
     const profileInfosAndSettings = {
       firstName: firstNameValue,
       lastName: lastNameValue,
@@ -274,21 +246,25 @@ const AccountAndSettingsPage = () => {
       dietaryRestrictions: dietaryRestrictionsState,
       utensils: cookingUtensilsState,
       imageX: imageFormData,
-      defaultRecipeSettings:{"measurementSystem":"metric",dietaryRestrictions: dietaryRestrictionsState,allergies: allergensState, utensils: cookingUtensilsState}
+      defaultRecipeSettings: {
+        measurementSystem: "metric",
+        dietaryRestrictions: dietaryRestrictionsState,
+        allergies: allergensState,
+        utensils: cookingUtensilsState,
+      },
     };
 
     if (newPassword !== "") {
       profileInfosAndSettings.newPassword = newPassword;
 
       if (newPassword.length < 6) {
-        toastError("Password must have at least 6 characters ")
+        toastError("Password must have at least 6 characters ");
         return;
       }
       if (newPassword !== confirmPassword) {
         toastError("Passwords do not match");
         return;
       }
-      
     }
 
     console.log("profileInfosAndSettings");
@@ -296,7 +272,7 @@ const AccountAndSettingsPage = () => {
 
     UpdateUserProfileService.updateUser(profileInfosAndSettings)
       .then((response) => {
-        toast("Saved!", {position: "top-center"});
+        toast("Saved!", { position: "top-center" });
         console.log("Upload success:", response);
         fetchUser();
         // Kadir:  TODO: login again to get userdata to local storage
@@ -305,12 +281,6 @@ const AccountAndSettingsPage = () => {
         toastError("Error:" + error);
         console.log("Upload error:", error);
       });
-
-
-     
-
-      
-      
   };
 
   const changeDietaryRestrictionsState = (e) => {
@@ -403,7 +373,7 @@ const AccountAndSettingsPage = () => {
                 />
               </div>
               <div className={pageStyles.directionColumn}>
-              <InputLabel className="account-settings-bold-label">
+                <InputLabel className="account-settings-bold-label">
                   New Password
                 </InputLabel>
                 <TextField
@@ -420,21 +390,21 @@ const AccountAndSettingsPage = () => {
                 <InputLabel className="account-settings-bold-label">
                   Profile Picture
                 </InputLabel>
-                <Button 
-                href="/setAvatar" 
-                variant="contained" 
-                startIcon={<AccountCircleIcon />}
-                style={{backgroundColor:theme.palette.violet.main, 
-                        color: theme.palette.grey[100],
-                        width: "350px"                        
-                      }}
-                
+                <Button
+                  href="/setAvatar"
+                  variant="contained"
+                  startIcon={<AccountCircleIcon />}
+                  style={{
+                    backgroundColor: theme.palette.violet.main,
+                    color: theme.palette.grey[100],
+                    width: "350px",
+                  }}
                 >
                   Change Profile Picture
                 </Button>
               </div>
               <div className={pageStyles.directionColumn}>
-              <InputLabel className="account-settings-bold-label">
+                <InputLabel className="account-settings-bold-label">
                   Confirm Password
                 </InputLabel>
                 <TextField
@@ -447,7 +417,7 @@ const AccountAndSettingsPage = () => {
               </div>
             </div>
             <div className="account-settings-default-container">
-              <InputLabel style={{fontWeight:600, fontSize:20}}>
+              <InputLabel style={{ fontWeight: 600, fontSize: 20 }}>
                 Default Settings
               </InputLabel>
 

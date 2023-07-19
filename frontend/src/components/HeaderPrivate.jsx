@@ -57,8 +57,10 @@ export const HeaderPrivate = () => {
           variant="contained"
           startIcon={<EggAltIcon />}
           href="/generate"
-          style={{backgroundColor:theme.palette.violet.main,
-          color:theme.palette.grey[100]}}
+          style={{
+            backgroundColor: theme.palette.violet.main,
+            color: theme.palette.grey[100],
+          }}
         >
           Generate Recipe
         </Button>
@@ -107,4 +109,5 @@ export const HeaderPrivateTop = () => {
   );
 };
 
-export default { HeaderPrivate, HeaderPrivateTop };
+const headers = { HeaderPrivate, HeaderPrivateTop };
+export default headers;

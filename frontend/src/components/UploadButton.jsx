@@ -6,7 +6,6 @@ import uploadButtonStyles from "./helpers/styles/buttonStyles";
 
 export const FileSelectButton = ({ onUpload, onRemove }) => {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState("");
   const classes = uploadButtonStyles();
 
   const handleFileSelect = (event) => {
@@ -14,16 +13,6 @@ export const FileSelectButton = ({ onUpload, onRemove }) => {
     setSelectedFile(file);
     onUpload(file);
     const reader = new FileReader();
-
-    reader.onloadend = () => {
-      const url = reader.result;
-      if (typeof url === "string") {
-        setImageUrl(url);
-        //  onUpload(url);
-      } else {
-        console.error("Invalid file URL:", url);
-      }
-    };
 
     reader.onerror = (error) => {
       console.error("File read error:", error);
@@ -36,17 +25,17 @@ export const FileSelectButton = ({ onUpload, onRemove }) => {
 
   const handleFileRemove = () => {
     setSelectedFile(null);
-    setImageUrl("");
     onRemove();
   };
 
   return (
     <div>
       <label htmlFor="upload-button">
-        <Button 
-        variant="contained" 
-        component="span"
-        className={classes.uploadButton}>
+        <Button
+          variant="contained"
+          component="span"
+          className={classes.uploadButton}
+        >
           Upload
         </Button>
         <input
@@ -118,5 +107,5 @@ export const UploadButton = ({ selectedFile }) => {
     </div>
   );
 };
-
-export default { UploadButton, FileSelectButton };
+const uploadButtons = { UploadButton, FileSelectButton };
+export default uploadButtons;
