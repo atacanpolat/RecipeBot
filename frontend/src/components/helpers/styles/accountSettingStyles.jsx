@@ -36,6 +36,11 @@ const useAccountSettingStyles = makeStyles(() => ({
     backgroundColor: theme.palette.violet.main,
     color: "white",
   },
+  boldLabel: {
+    fontweight: 500
+  }
 }));
+
+
 
 export default useAccountSettingStyles;

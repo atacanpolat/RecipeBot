@@ -15,10 +15,12 @@ import {
   RadioGroup,
   TextField,
 } from "@material-ui/core";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import "../assets/css/AccountSettings.css";
 import UpdateUserProfileService from "../features/UpdateUserProfileService";
 import UserService from "../features/user/userService";
 import theme from "../components/helpers/themes";
+import { toastError } from "../components/helpers/themes";
 
 const userInLocalStorage = JSON.parse(localStorage.getItem('user'));
 
@@ -279,11 +281,11 @@ const AccountAndSettingsPage = () => {
       profileInfosAndSettings.newPassword = newPassword;
 
       if (newPassword.length < 6) {
-        toast("Password must be at least 6 characters");
+        toastError("Password must have at least 6 characters ")
         return;
       }
       if (newPassword !== confirmPassword) {
-        toast("Passwords do not match");
+        toastError("Passwords do not match");
         return;
       }
       
@@ -294,13 +296,13 @@ const AccountAndSettingsPage = () => {
 
     UpdateUserProfileService.updateUser(profileInfosAndSettings)
       .then((response) => {
-        toast("Saving");
+        toast("Saved!", {position: "top-center"});
         console.log("Upload success:", response);
         fetchUser();
         // Kadir:  TODO: login again to get userdata to local storage
       })
       .catch((error) => {
-        toast("Error:" + error);
+        toastError("Error:" + error);
         console.log("Upload error:", error);
       });
 
@@ -421,10 +423,12 @@ const AccountAndSettingsPage = () => {
                 <Button 
                 href="/setAvatar" 
                 variant="contained" 
-                style={{backgroundColor:theme.palette.violet.light, 
+                startIcon={<AccountCircleIcon />}
+                style={{backgroundColor:theme.palette.violet.main, 
                         color: theme.palette.grey[100],
-                        width: "350px"
+                        width: "350px"                        
                       }}
+                
                 >
                   Change Profile Picture
                 </Button>
@@ -443,43 +447,12 @@ const AccountAndSettingsPage = () => {
               </div>
             </div>
             <div className="account-settings-default-container">
-              <InputLabel className="account-settings-default-label">
+              <InputLabel style={{fontWeight:600, fontSize:20}}>
                 Default Settings
               </InputLabel>
+
               <div className="account-settings-default-row-container">
-                <InputLabel className="account-settings-default-bold-label">
-                  Measurement System
-                </InputLabel>
-                <div className="account-settings-default-dashed-container">
-                  <FormControl>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                      defaultValue={measurementSystemState}
-                      onChange={(e) =>
-                        setMeasurementSystemState(e.target.value)
-                      }
-                    >
-                      {measurementSystem.length ? (
-                        measurementSystem.map((item) => (
-                          <FormControlLabel
-                            value={item.value}
-                            control={
-                              <Radio className="account-settings-default-radio" />
-                            }
-                            label={item.label}
-                          />
-                        ))
-                      ) : (
-                        <></>
-                      )}
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-              </div>
-              <div className="account-settings-default-row-container">
-                <InputLabel className="account-settings-default-bold-label">
+                <InputLabel className={pageStyles.boldLabel}>
                   Dietary Restrictions
                 </InputLabel>
                 <div className="account-settings-default-dashed-container">
@@ -507,7 +480,7 @@ const AccountAndSettingsPage = () => {
                 </div>
               </div>
               <div className="account-settings-default-row-container">
-                <InputLabel className="account-settings-default-bold-label">
+                <InputLabel className={pageStyles.boldLabel}>
                   Allergens
                 </InputLabel>
                 <div className="account-settings-default-dashed-container">
@@ -532,7 +505,7 @@ const AccountAndSettingsPage = () => {
                 </div>
               </div>
               <div className="account-settings-default-row-container">
-                <InputLabel className="account-settings-default-bold-label">
+                <InputLabel className={pageStyles.boldLabel}>
                   Cooking Utensils
                 </InputLabel>
                 <div className="account-settings-default-dashed-container">
