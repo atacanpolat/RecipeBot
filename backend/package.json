@@ -7,8 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index",
-    "client": "npm start --prefix frontend",
-    "install": "npm install"
+    "client": "npm start --prefix frontend"
   },
   "keywords": [],
   "author": "",
