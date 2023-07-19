@@ -161,9 +161,6 @@ const recommendRecipes = (recipesData, userRecipes) => {
     }
   }
 
-  console.log("Updated ingredientCounts:", ingredientCounts);
-  console.log("Updated Tag counts:", tagCounts);
-
   const recipes = recipesData.filter((recipe) => {
     return !userRecipes.some((userRecipe) => userRecipe._id === recipe._id);
   });
@@ -195,7 +192,6 @@ const recommendRecipes = (recipesData, userRecipes) => {
   });
 
   similarityScores.sort((a, b) => b.similarityScore - a.similarityScore);
-  console.log(similarityScores);
   const recommendedRecipes = similarityScores.map((entry) => entry.recipe);
 
   return recommendedRecipes;

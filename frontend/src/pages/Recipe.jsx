@@ -298,39 +298,10 @@ function Recipe() {
                 </InfoContainer>
                 <IngredientsHeading>
                   <h4>Ingredients:</h4>
-                  {/* {isEditing ? (
-                    <div className="edit-container">
-                      {updatedIngredients.map((ingredient, index) => (
-                        <div className="input-container" key={index}>
-                          <input
-                            type="text"
-                            placeholder="Enter ingredient"
-                            value={ingredient.name}
-                            onChange={(e) =>
-                              handleIngredientChange(
-                                index,
-                                "name",
-                                e.target.value
-                              )
-                            }
-                          />
-                          {/* Add other input fields for quantity, brand, etc. as needed */}
-                  {/* </div> */}
-                  {/* ))}
-                      <div className="add-ingredient-container">
-                        <button onClick={handleAddIngredient}>Add</button>
-                      </div>
-                      <Button onClick={handleCreateNewRecipe}>
-                        Save as New Recipe
-                      </Button>
-                      <Button onClick={() => setIsEditing(false)}>
-                        Cancel
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button onClick={handleEditIngredients}>Edit</Button>
-                  )} */}
-                  <a href="https://www.goflink.com/de-DE/">
+                  <a
+                    href="https://www.goflink.com/de-DE/?source=recipe-bot-app-seba-2023"
+                    target="_blank"
+                  >
                     <ButtonFlink>Order on Flink</ButtonFlink>
                   </a>
                 </IngredientsHeading>

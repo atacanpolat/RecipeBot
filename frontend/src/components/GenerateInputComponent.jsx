@@ -46,7 +46,7 @@ const makeStringsInListLowercase = (list) => {
 };
 
 const GenerateInputComponent = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
   const editingRecipe =
     localStorage.getItem("editingRecipe") !== null
       ? JSON.parse(localStorage.getItem("editingRecipe"))
@@ -248,7 +248,7 @@ const GenerateInputComponent = () => {
         console.log(error);
         setIsLoading(false);
         toast.error(
-          "🦄 Oops, something went wrong while generating your recipe, please try it again :)",
+          "Oops, something went wrong while generating your recipe, please try it again :) (The error is usually caused by ChatGPT's API response)",
           {
             position: "top-center",
             autoClose: 5000,
