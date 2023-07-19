@@ -132,6 +132,7 @@ h3 {
   text-transform: none;
   font-size: 18px;
   font-weight: 500;
+  color: #673ab7;
 }
 
 .header ul {
@@ -141,7 +142,7 @@ h3 {
 }
 
 .header div.logo Link {
-  color: #3a00e5;
+  color: #7e4f83;
 }
 
 .header ul li {
