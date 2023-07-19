@@ -134,37 +134,6 @@ function Recipe() {
       });
   };
 
-  // const handleCreateNewRecipe = () => {
-  //   // Save the updatedIngredients and updatedCookingMethod as a new recipe
-  //   // You can make an API call here to save the new recipe with the updated details
-  //   // Use the updatedIngredients and updatedCookingMethod to create the new recipe
-  //   // After successfully saving the new recipe, redirect or display a success message
-
-  //   // Example API call:
-  //   axios
-  //     .post(
-  //       API_URL,
-  //       {
-  //         title: details.title,
-  //         ingredients: updatedIngredients,
-  //         instruction: {
-  //           0: updatedCookingMethod,
-  //         },
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       console.log("New recipe saved:", response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Failed to save new recipe:", error);
-  //     });
-  // };
-
   const formatIngredients = () => {
     if (!details.ingredients || details.ingredients.length === 0) {
       return null;
@@ -249,7 +218,6 @@ function Recipe() {
       window.location.href = "/create";
     }
   };
-
   return (
     <div
       style={{
@@ -318,11 +286,14 @@ function Recipe() {
                     </span>
                     <span className="info-value">{displayInfo(2)}</span>
                   </div>
+
                   <div className="info-row">
                     <span className="info-label">
                       <FaSeedling /> Diet:
                     </span>
-                    <span className="info-value">{displayInfo(5)}</span>
+                    <span className="info-value">
+                      {displayInfo(5) === "" ? "-" : displayInfo(5)}
+                    </span>
                   </div>
                 </InfoContainer>
                 <IngredientsHeading>
